@@ -224,6 +224,21 @@ function smartSelect(fullArray, modeKey) {
 function shuffle(array) { return array.sort(() => Math.random() - 0.5); }
 
 function initRound() {
+    const activeStage = document.querySelector('.game-board:not([style*="display: none"]), #math-stage.active, #puzzle-stage:not(.hidden)');
+    if (activeStage) {
+        activeStage.classList.add('fade-out');
+        setTimeout(() => {
+            activeStage.classList.remove('fade-out');
+            activeStage.classList.add('fade-in');
+            executeInitRound();
+            setTimeout(() => activeStage.classList.remove('fade-in'), 500);
+        }, 500);
+    } else {
+        executeInitRound();
+    }
+}
+
+function executeInitRound() {
     document.getElementById('reset-btn').style.display = 'none';
     correctCount = 0;
     if (currentMode === 'math') initMathGame();
@@ -539,7 +554,9 @@ function checkStandardMatch(targetBox, val, originalId) {
     else if (currentMode === 'nature') showNatureReward(val);
     else if (currentMode === 'habitat') showHabitatReward(val);
     else if (currentMode === 'number') { launchModal(val, targetBox.dataset.emoji, targetBox.dataset.name); speakText(`${val}... ${targetBox.dataset.name}`); }
-    else speakText("Yeah!");
+    else {
+        if (targetBox.dataset.label) speakText(targetBox.dataset.label);
+    }
     correctCount++;
     if (correctCount === roundSize) {
         document.getElementById('reset-btn').style.display = 'inline-block';
