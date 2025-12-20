@@ -18,6 +18,7 @@ const ASSETS = [
 // 1. Install & Cache (Debug Version)
 // This will log "❌ FAILED" for any missing file instead of crashing the whole app.
 self.addEventListener('install', (e) => {
+  self.skipWaiting();
   e.waitUntil(
     caches.open(CACHE_NAME).then(async (cache) => {
       console.log('[Service Worker] Starting caching...');

@@ -189,7 +189,7 @@ function setMode(mode, btnEl) {
 }
 
 function smartSelect(fullArray, modeKey) {
-    const lastItems = history[modeKey];
+    const lastItems = history[modeKey] || [];
     let available = fullArray.filter(item => {
         const id = (typeof item === 'string') ? item : (item.id || Object.keys(item)[0]);
         return !lastItems.includes(id);
