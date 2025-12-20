@@ -270,10 +270,52 @@
             .math-question-box { flex-direction: column; gap: 15px; padding: 15px; }
             .math-target { width: 80px; height: 80px; font-size: 40px; }
         }
+
+        /* By default, hide the container */
+.install-hidden {
+    display: none !important;
+}
+
+/* Style for the container when it shows */
+#install-container {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999; /* Ensure it's on top of everything */
+    width: 90%;
+    max-width: 400px;
+}
+
+/* Style for the button itself */
+#btnInstall {
+    width: 100%;
+    padding: 15px;
+    background-color: #4CAF50; /* Nice green color */
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#btnInstall:active {
+    background-color: #3e8e41;
+    transform: translateY(2px);
+}
+
+
+        
     </style>
 </head>
 <body>
-
+<div id="install-container" class="install-hidden">
+    <button id="btnInstall">📲 تحميل اللعبة (Download App)</button>
+</div>
+    
     <div class="header-container">
         <div class="score-board">⭐️ <span id="score-val">0</span></div>
         <div class="nav-bar">
@@ -788,6 +830,50 @@
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js');
     }
+        // --- PWA INSTALL BUTTON LOGIC ---
+
+let deferredPrompt; // To hold the event
+const installContainer = document.getElementById('install-container');
+const btnInstall = document.getElementById('btnInstall');
+
+// 1. Listen for the 'beforeinstallprompt' event.
+// This event is fired by Chrome/Android when the site meets PWA criteria.
+window.addEventListener('beforeinstallprompt', (e) => {
+  // Prevent Chrome 67 and earlier from automatically showing the prompt
+  e.preventDefault();
+  // Stash the event so it can be triggered later.
+  deferredPrompt = e;
+  // Show the install button container
+  installContainer.classList.remove('install-hidden');
+  console.log("Install prompt is ready to be triggered");
+});
+
+// 2. Handle the button click
+btnInstall.addEventListener('click', async () => {
+  if (!deferredPrompt) {
+      return;
+  }
+  // Hide the button container immediately after click
+  installContainer.classList.add('install-hidden');
+  
+  // Show the browser's native install prompt
+  deferredPrompt.prompt();
+  
+  // Wait for the user to respond to the prompt
+  const { outcome } = await deferredPrompt.userChoice;
+  console.log(`User response to install prompt: ${outcome}`);
+  
+  // We've used the prompt, so clear the variable. 
+  // It can only be used once.
+  deferredPrompt = null;
+});
+
+// Optional: Listen for successful installation to log it
+window.addEventListener('appinstalled', () => {
+  installContainer.classList.add('install-hidden');
+  deferredPrompt = null;
+  console.log('PWA was installed successfully');
+});
   </script>
 </body>
 </html>
