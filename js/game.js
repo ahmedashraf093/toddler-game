@@ -13,7 +13,8 @@ const themes = {
     math: { primary: '#84fab0', bg: '#f0fff4', dots: '#d1fae5' },
     feed: { primary: '#ffc107', bg: '#fffde7', dots: '#fff9c4' },
     shape: { primary: '#6c5ce7', bg: '#a29bfe', dots: '#dfe6e9' },
-    weather: { primary: '#00cec9', bg: '#e0fbfb', dots: '#b2ebf2' }
+    weather: { primary: '#00cec9', bg: '#e0fbfb', dots: '#b2ebf2' },
+    nature: { primary: '#00b894', bg: '#e6fffa', dots: '#b3f5e1' }
 };
 
 const shadowLibrary = [
@@ -74,11 +75,15 @@ const weatherLibrary = [
     { id: 'sun', weather: '☀️', obj: '😎', weatherName: 'Sunny', objName: 'Sunglasses', text: 'Wear your Sunglasses!' },
     { id: 'snow', weather: '❄️', obj: '🧣', weatherName: 'Snowy', objName: 'Scarf', text: 'Wear a Scarf!' },
     { id: 'rain', weather: '🌧️', obj: '☂️', weatherName: 'Rainy', objName: 'Umbrella', text: 'Use an Umbrella!' },
-    { id: 'cold', weather: '🥶', obj: '🧤', weatherName: 'Cold', objName: 'Gloves', text: 'Wear Gloves!' },
-    { id: 'moon', weather: '🌙', obj: '🦉', weatherName: 'Night', objName: 'Owl', text: 'The Owl wakes up!' },
-    { id: 'wind', weather: '🌬️', obj: '🍂', weatherName: 'Windy', objName: 'Leaf', text: 'Leaves happen fall!' },
-    { id: 'ocean', weather: '🌊', obj: '🐟', weatherName: 'Ocean', objName: 'Fish', text: 'Fish swim in water!' },
-    { id: 'flower', weather: '🌱', obj: '🐝', weatherName: 'Spring', objName: 'Bee', text: 'Bees love flowers!' }
+    { id: 'cold', weather: '🥶', obj: '🧤', weatherName: 'Cold', objName: 'Gloves', text: 'Wear Gloves!' }
+];
+
+const natureLibrary = [
+    { id: 'moon', nature: '🌙', obj: '🦉', natureName: 'Night', objName: 'Owl', text: 'The Owl wakes up!' },
+    { id: 'wind', nature: '🌬️', obj: '🍂', natureName: 'Windy', objName: 'Leaf', text: 'Leaves fall down!' },
+    { id: 'ocean', nature: '🌊', obj: '🐟', natureName: 'Ocean', objName: 'Fish', text: 'Fish swim in water!' },
+    { id: 'flower', nature: '🌱', obj: '🐝', natureName: 'Spring', objName: 'Bee', text: 'Bees love flowers!' },
+    { id: 'caterpillar', nature: '🐛', obj: '🦋', natureName: 'Caterpillar', objName: 'Butterfly', text: 'It becomes a Butterfly!' }
 ];
 
 const objectPool = [
@@ -98,7 +103,7 @@ let hintTimer = null;
 let mathQuestions = [];
 let currentMathIndex = 0;
 
-const history = { shadow: [], letter: [], job: [], number: [], feed: [], shape: [], weather: [] };
+const history = { shadow: [], letter: [], job: [], number: [], feed: [], shape: [], weather: [], nature: [] };
 
 function setDifficulty(level, btn) {
     mathDifficulty = level;
@@ -201,6 +206,10 @@ function initStandardGame() {
     else if (currentMode === 'weather') {
         const selected = smartSelect([...weatherLibrary], 'weather');
         roundItems = selected.map(w => ({ id: w.id, src: w.weather, tgt: w.obj, type: 'simple', weatherName: w.weatherName, objName: w.objName, text: w.text }));
+    }
+    else if (currentMode === 'nature') {
+        const selected = smartSelect([...natureLibrary], 'nature');
+        roundItems = selected.map(n => ({ id: n.id, src: n.nature, tgt: n.obj, type: 'simple', natureName: n.natureName, objName: n.objName, text: n.text }));
     }
 
     const draggables = shuffle([...roundItems]);
@@ -387,6 +396,7 @@ function checkStandardMatch(targetBox, val, originalId) {
     else if (currentMode === 'feed') showFeedReward(val);
     else if (currentMode === 'shape') showShapeReward(val);
     else if (currentMode === 'weather') showWeatherReward(val);
+    else if (currentMode === 'nature') showNatureReward(val);
     else if (currentMode === 'number') { launchModal(val, targetBox.dataset.emoji, targetBox.dataset.name); speakText(`${val}... ${targetBox.dataset.name}`); }
     else speakText("Yeah!");
     correctCount++;
@@ -412,6 +422,12 @@ function showWeatherReward(weatherId) {
     const wData = weatherLibrary.find(w => w.id === weatherId);
     launchModal(wData.weather, wData.obj, "Correct!");
     speakText(`${wData.weatherName}... ${wData.text}`);
+}
+
+function showNatureReward(natureId) {
+    const nData = natureLibrary.find(n => n.id === natureId);
+    launchModal(nData.nature, nData.obj, "Nature!");
+    speakText(`${nData.natureName}... ${nData.text}`);
 }
 
 function updateScoreUI() {
