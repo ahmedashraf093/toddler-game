@@ -64,8 +64,7 @@ const shapeLibrary = [
     { id: 'circle', shape: '🔴', obj: '⏰', shapeName: 'Circle', objName: 'Clock' },
     { id: 'square', shape: '🟦', obj: '🎁', shapeName: 'Square', objName: 'Gift' },
     { id: 'rectangle', shape: '🟩', obj: '🚪', shapeName: 'Rectangle', objName: 'Door' },
-    { id: 'star', shape: '⭐️', obj: '𓆉', shapeName: 'Star', objName: 'Starfish' },
-    { id: 'heart', shape: '❤️', obj: '🍪', shapeName: 'Heart', objName: 'Cookie' },
+
     { id: 'oval', shape: '🥚', obj: '🥑', shapeName: 'Oval', objName: 'Avocado' },
     { id: 'diamond', shape: '🔶', obj: '🪁', shapeName: 'Diamond', objName: 'Kite' }
 ];
