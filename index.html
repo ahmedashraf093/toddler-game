@@ -43,6 +43,7 @@
             <button class="nav-btn" onclick="setMode('weather', this)">🌤️ Weather</button>
             <button class="nav-btn" onclick="setMode('nature', this)">🍃 Nature</button>
             <button class="nav-btn" onclick="setMode('habitat', this)">🏠 Homes</button>
+            <button class="nav-btn" onclick="setMode('puzzle', this)">🧩 Puzzle</button>
             <button class="nav-btn" onclick="setMode('math', this)">➕ Math</button>
         </div>
 
@@ -56,6 +57,16 @@
     <div class="game-board shadow-mode" id="game-board">
         <div class="column" id="source-col"></div>
         <div class="column" id="target-col"></div>
+    </div>
+
+    <div id="puzzle-stage" class="hidden">
+        <div id="puzzle-pieces-pool"></div>
+        <div id="puzzle-grid">
+            <div class="puzzle-slot" data-pos="0"></div>
+            <div class="puzzle-slot" data-pos="1"></div>
+            <div class="puzzle-slot" data-pos="2"></div>
+            <div class="puzzle-slot" data-pos="3"></div>
+        </div>
     </div>
 
     <div id="math-stage">

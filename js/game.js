@@ -15,7 +15,8 @@ const themes = {
     shape: { primary: '#6c5ce7', bg: '#a29bfe', dots: '#dfe6e9' },
     weather: { primary: '#00cec9', bg: '#e0fbfb', dots: '#b2ebf2' },
     nature: { primary: '#00b894', bg: '#e6fffa', dots: '#b3f5e1' },
-    habitat: { primary: '#fdcb6e', bg: '#fff7d1', dots: '#ffeaa7' }
+    habitat: { primary: '#fdcb6e', bg: '#fff7d1', dots: '#ffeaa7' },
+    puzzle: { primary: '#ff7675', bg: '#fff5f5', dots: '#ffe3e3' }
 };
 
 const shadowLibrary = [
@@ -118,6 +119,13 @@ const habitatLibrary = [
     { id: 'polarbear', animal: '🐻‍❄️', home: '🌊', animalName: 'Polar Bear', homeName: 'Sea' }
 ];
 
+const puzzleImages = [
+    { id: 'lion', src: 'assets/images/puzzle/lion.png', name: 'Lion' },
+    { id: 'car', src: 'assets/images/puzzle/car.png', name: 'Car' },
+    { id: 'butterfly', src: 'assets/images/puzzle/butterfly.png', name: 'Butterfly' },
+    { id: 'apple', src: 'assets/images/puzzle/apple.png', name: 'Apple' }
+];
+
 const objectPool = [
     { e: '☀️', n: 'Suns' }, { e: '👟', n: 'Shoes' }, { e: '🍎', n: 'Apples' },
     { e: '🚗', n: 'Cars' }, { e: '⭐️', n: 'Stars' }, { e: '🦋', n: 'Butterflies' },
@@ -134,8 +142,10 @@ let hintTimer = null;
 
 let mathQuestions = [];
 let currentMathIndex = 0;
+let currentPuzzle = null;
+let puzzlePiecesPlaced = 0;
 
-const history = { shadow: [], letter: [], job: [], number: [], feed: [], shape: [], weather: [], nature: [], habitat: [] };
+const history = { shadow: [], letter: [], job: [], number: [], feed: [], shape: [], weather: [], nature: [], habitat: [], puzzle: [] };
 
 function setDifficulty(level, btn) {
     mathDifficulty = level;
@@ -149,19 +159,27 @@ function setMode(mode, btnEl) {
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
     if (btnEl) btnEl.classList.add('active');
 
+    document.body.className = `${currentMode}-mode`;
+
     const diffBar = document.getElementById('difficulty-bar');
     const standardBoard = document.getElementById('game-board');
     const mathStage = document.getElementById('math-stage');
+    const puzzleStage = document.getElementById('puzzle-stage');
+
+    // Reset visibility for all stages
+    standardBoard.style.display = 'none';
+    mathStage.classList.remove('active');
+    puzzleStage.classList.add('hidden');
+    diffBar.style.display = 'none'; // Hide difficulty bar by default
 
     if (mode === 'math') {
-        standardBoard.classList.add('hidden');
         mathStage.classList.add('active');
-        diffBar.style.display = 'flex';
-    } else {
-        mathStage.classList.remove('active');
-        standardBoard.classList.remove('hidden');
+        diffBar.style.display = 'flex'; // Show difficulty bar for math
+    } else if (mode === 'puzzle') {
+        puzzleStage.classList.remove('hidden');
+    } else { // Standard modes (shadow, letter, job, number, feed, shape, weather, nature, habitat)
+        standardBoard.style.display = 'flex';
         standardBoard.className = 'game-board ' + mode + '-mode';
-        diffBar.style.display = 'none';
     }
 
     const theme = themes[mode];
@@ -524,6 +542,104 @@ function speakText(text) {
         utterance.pitch = 1.0;
         if (selectedVoice) utterance.voice = selectedVoice;
         window.speechSynthesis.speak(utterance);
+    }
+}
+
+
+function initPuzzleGame() {
+    // Select puzzle
+    const puzzle = smartSelect([...puzzleImages], 'puzzle')[0];
+    currentPuzzle = puzzle;
+    puzzlePiecesPlaced = 0;
+
+    speakText(`Let's build a ${puzzle.name}!`);
+
+    // Reset grid
+    const slots = document.querySelectorAll('.puzzle-slot');
+    slots.forEach(slot => {
+        slot.innerHTML = '';
+        slot.classList.remove('matched');
+        // Handle drops for puzzle
+        slot.ondragover = e => e.preventDefault();
+        slot.ondrop = handlePuzzleDrop;
+        // Touch support
+        slot.ontouchend = handlePuzzleTouchDrop;
+    });
+
+    // Create pieces
+    const pool = document.getElementById('puzzle-pieces-pool');
+    pool.innerHTML = '';
+
+    // 4 pieces: 0, 1, 2, 3
+    const pieces = [0, 1, 2, 3];
+    const shuffled = shuffle(pieces);
+
+    shuffled.forEach(pos => {
+        const piece = document.createElement('div');
+        piece.className = 'puzzle-piece draggable';
+        piece.draggable = true;
+        piece.id = `puzzle-piece-${pos}`; // Give unique ID
+        piece.dataset.pos = pos;
+        piece.style.backgroundImage = `url('${puzzle.src}')`;
+
+        const x = (pos % 2) * 100;
+        const y = Math.floor(pos / 2) * 100;
+        piece.style.backgroundPosition = `${x}% ${y}%`;
+
+        piece.ondragstart = drag;
+        piece.ontouchstart = touchStart;
+
+        pool.appendChild(piece);
+    });
+}
+
+function handlePuzzleDrop(e) {
+    e.preventDefault();
+    const data = e.dataTransfer.getData("text");
+    const piece = document.getElementById(data);
+    if (!piece || !piece.classList.contains('puzzle-piece')) return;
+
+    // Check if slot is empty
+    if (e.target.classList.contains('puzzle-slot') && e.target.childElementCount === 0) {
+        e.target.appendChild(piece);
+        checkPuzzleCompletion();
+    }
+}
+
+// Touch support special for puzzle
+function handlePuzzleTouchDrop(e) {
+    if (!dragSrcEl) return;
+    e.preventDefault();
+    const slot = document.elementFromPoint(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+
+    if (slot && slot.classList.contains('puzzle-slot') && slot.childElementCount === 0) {
+        slot.appendChild(dragSrcEl);
+        dragSrcEl.classList.remove('dragging');
+        checkPuzzleCompletion();
+    }
+    dragSrcEl = null;
+}
+
+function checkPuzzleCompletion() {
+    const slots = document.querySelectorAll('.puzzle-slot');
+    let correct = 0;
+
+    slots.forEach(slot => {
+        if (slot.childElementCount > 0) {
+            const piece = slot.firstElementChild;
+            const slotPos = parseInt(slot.dataset.pos);
+            const piecePos = parseInt(piece.dataset.pos);
+            if (slotPos === piecePos) correct++;
+        }
+    });
+
+    if (correct === 4) {
+        // Win!
+        launchModal("🧩", "🌟", "Great Job!");
+        speakText(`You built the ${currentPuzzle.name}!`);
+        setTimeout(() => {
+            initPuzzleGame();
+        }, 3000);
     }
 }
 
