@@ -1,24 +1,32 @@
-const CACHE_NAME = 'toddler-game-v2'; // Change to v3, v4 etc. when you update the game
+const CACHE_NAME = 'toddler-game-v3'; // Incremented version
 const ASSETS = [
-'./',
+  './',
   './index.html',
-  './style.css',
-  './script.js',
-  './site.webmanifest',      // Remove the leading slash!
-  './favicon-96x96.png',     // Remove the leading slash!
+  './site.webmanifest',
+  './favicon-96x96.png',
   './favicon.svg',
   './apple-touch-icon.png',
-  // './sounds/correct.mp3', // Example
+  // ⚠️ VERIFY THESE FILENAMES:
+  // If your files are named "styles.css" or "main.js", update these lines:
+  './style.css', 
+  './script.js',
 ];
 
-// 1. Install Service Worker & Cache Assets
+// 1. Install & Cache (Debug Version)
+// This will log "❌ FAILED" for any missing file instead of crashing the whole app.
 self.addEventListener('install', (e) => {
   e.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => {
-        console.log('[Service Worker] Caching all: app shell and content');
-        return cache.addAll(ASSETS);
-      })
+    caches.open(CACHE_NAME).then(async (cache) => {
+      console.log('[Service Worker] Starting caching...');
+      for (const asset of ASSETS) {
+        try {
+          await cache.add(asset);
+          console.log(`✅ Cached: ${asset}`);
+        } catch (error) {
+          console.error(`❌ FAILED to cache: ${asset}. Check if this file exists in your repo!`);
+        }
+      }
+    })
   );
 });
 
@@ -37,11 +45,10 @@ self.addEventListener('activate', (e) => {
   return self.clients.claim();
 });
 
-// 3. Serve from Cache, fall back to Network
+// 3. Serve from Cache
 self.addEventListener('fetch', (e) => {
   e.respondWith(
     caches.match(e.request).then((response) => {
-      // Return cache if found, otherwise fetch from network
       return response || fetch(e.request);
     })
   );
