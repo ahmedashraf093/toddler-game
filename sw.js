@@ -1,4 +1,4 @@
-const CACHE_NAME = 'toddler-game-v3'; // Incremented version
+const CACHE_NAME = 'toddler-game-v4'; // Incremented version
 const ASSETS = [
   './',
   './index.html',
@@ -8,7 +8,11 @@ const ASSETS = [
   './assets/images/apple-touch-icon.png',
   './css/style.css',
   './js/game.js',
-  'js/sw-register.js'
+  './js/sw-register.js',
+  './assets/images/puzzle/lion.png',
+  './assets/images/puzzle/car.png',
+  './assets/images/puzzle/butterfly.png',
+  './assets/images/puzzle/apple.png'
 ];
 
 // 1. Install & Cache (Debug Version)
