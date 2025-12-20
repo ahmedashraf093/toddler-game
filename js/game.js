@@ -162,10 +162,11 @@ function setDifficulty(level, btn) {
     if (currentMode === 'math') initRound();
 }
 
-function setMode(mode, btnEl) {
+
+function setMode(mode) {
     currentMode = mode;
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    if (btnEl) btnEl.classList.add('active');
+    // Hide menu if open
+    document.getElementById('games-menu-overlay').classList.add('hidden');
 
     document.body.className = `${currentMode}-mode`;
 
@@ -696,23 +697,43 @@ function playVictoryMusic() {
     if (!AudioContext) return;
     const ctx = new AudioContext();
 
-    // Simple melody: C5-E5-G5-C6
-    const notes = [523.25, 659.25, 783.99, 1046.50];
-    let time = ctx.currentTime;
+    // Fanfare Melody: C5, E5, G5, C6 (staccato) ... then C6 Major Chord held
+    // Frequencies: C5=523.25, E5=659.25, G5=783.99, C6=1046.50, E6=1318.51, G6=1567.98
+    const sequence = [
+        { f: 523.25, t: 0, d: 0.1 },    // C5
+        { f: 659.25, t: 0.1, d: 0.1 },  // E5
+        { f: 783.99, t: 0.2, d: 0.1 },  // G5
+        { f: 1046.50, t: 0.3, d: 0.4 }, // C6 (Longer)
+    ];
 
-    notes.forEach((freq, i) => {
+    // Final Chord (C6 Major) at t=0.3
+    const chord = [
+        { f: 523.25, t: 0.3, d: 0.6 },  // C5 (Low root)
+        { f: 1046.50, t: 0.3, d: 0.6 }, // C6
+        { f: 1318.51, t: 0.3, d: 0.6 }, // E6
+        { f: 1567.98, t: 0.3, d: 0.6 }  // G6
+    ];
+
+    const masterGain = ctx.createGain();
+    masterGain.gain.value = 0.3; // Global Volume
+    masterGain.connect(ctx.destination);
+
+    [...sequence, ...chord].forEach(note => {
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(freq, time + i * 0.15);
 
-        gain.gain.setValueAtTime(0.2, time + i * 0.15);
-        gain.gain.exponentialRampToValueAtTime(0.01, time + i * 0.15 + 0.4);
+        osc.type = 'triangle'; // Brighter sound
+        osc.frequency.setValueAtTime(note.f, ctx.currentTime + note.t);
+
+        gain.gain.setValueAtTime(0, ctx.currentTime + note.t);
+        gain.gain.linearRampToValueAtTime(0.3, ctx.currentTime + note.t + 0.05); // Attack
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + note.t + note.d); // Decay
 
         osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start(time + i * 0.15);
-        osc.stop(time + i * 0.15 + 0.5);
+        gain.connect(masterGain);
+
+        osc.start(ctx.currentTime + note.t);
+        osc.stop(ctx.currentTime + note.t + note.d + 0.1);
     });
 }
 
@@ -732,58 +753,59 @@ function showCelebration() {
     console.log("Celebration Type:", type);
 
     if (type === 'confetti') {
-        const colors = ['#f00', '#0f0', '#00f', '#ff0', '#0ff', '#f0f'];
-        for (let i = 0; i < 50; i++) {
+        const colors = ['#f00', '#0f0', '#00f', '#ff0', '#0ff', '#f0f', '#FFA500', '#800080'];
+        // Massive confetti explosion
+        for (let i = 0; i < 150; i++) {
             const c = document.createElement('div');
             c.className = 'confetti';
             c.style.left = Math.random() * 100 + 'vw';
             c.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-            c.style.animationDuration = (Math.random() * 2 + 2) + 's';
-            c.style.animationDelay = (Math.random() * 1) + 's';
+            c.style.animationDuration = (Math.random() * 2 + 1.5) + 's'; // Faster
+            c.style.animationDelay = (Math.random() * 0.5) + 's'; // Immediate start
             container.appendChild(c);
         }
     } else if (type === 'balloons') {
-        for (let i = 0; i < 30; i++) {
+        for (let i = 0; i < 60; i++) {
             const b = document.createElement('div');
             b.className = 'balloon';
             b.textContent = '🎈';
             b.style.left = Math.random() * 100 + 'vw';
-            b.style.animationDuration = (Math.random() * 3 + 3) + 's';
-            b.style.fontSize = (Math.random() * 30 + 40) + 'px';
+            b.style.animationDuration = (Math.random() * 2 + 2) + 's'; // Faster rise
+            b.style.fontSize = (Math.random() * 40 + 40) + 'px'; // Bigger
             container.appendChild(b);
         }
     } else if (type === 'stars') {
-        for (let i = 0; i < 40; i++) {
+        for (let i = 0; i < 100; i++) {
             const s = document.createElement('div');
             s.className = 'star-anim';
             s.textContent = Math.random() > 0.5 ? '⭐️' : '🌟';
             s.style.left = Math.random() * 100 + 'vw';
             s.style.top = Math.random() * 100 + 'vh';
-            s.style.animationDuration = (Math.random() * 1 + 1) + 's';
-            s.style.animationDelay = (Math.random() * 2) + 's';
+            s.style.animationDuration = (Math.random() * 1 + 0.5) + 's';
+            s.style.animationDelay = (Math.random() * 1) + 's';
             container.appendChild(s);
         }
     } else if (type === 'emojis') {
-        const partyEmojis = ['🥳', '😎', '🦁', '🐶', '🦄', '🌈', '🎉'];
-        for (let i = 0; i < 40; i++) {
+        const partyEmojis = ['🥳', '😎', '🦁', '🐶', '🦄', '🌈', '🎉', '🔥', '💃', '🚀'];
+        for (let i = 0; i < 80; i++) {
             const e = document.createElement('div');
             e.className = 'emoji-bounce';
             e.textContent = partyEmojis[Math.floor(Math.random() * partyEmojis.length)];
             e.style.left = Math.random() * 100 + 'vw';
-            e.style.animationDuration = (Math.random() * 2 + 2) + 's';
-            e.style.animationDelay = (Math.random() * 1) + 's';
+            e.style.animationDuration = (Math.random() * 2 + 1.5) + 's';
+            e.style.animationDelay = (Math.random() * 0.5) + 's';
             container.appendChild(e);
         }
     } else if (type === 'bubbles') {
-        for (let i = 0; i < 40; i++) {
+        for (let i = 0; i < 80; i++) {
             const b = document.createElement('div');
             b.className = 'bubble';
             b.style.left = Math.random() * 100 + 'vw';
-            const size = Math.random() * 40 + 10;
+            const size = Math.random() * 60 + 20; // Bigger bubbles
             b.style.width = size + 'px';
             b.style.height = size + 'px';
-            b.style.animationDuration = (Math.random() * 4 + 3) + 's';
-            b.style.animationDelay = (Math.random() * 2) + 's';
+            b.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            b.style.animationDelay = (Math.random() * 1) + 's';
             container.appendChild(b);
         }
     }
@@ -912,7 +934,54 @@ function toggleOtherDraggables(activeId, disable) {
     });
 }
 
-setMode('shadow', document.querySelector('.nav-btn.active'));
+
+
+function toggleMenu() {
+    const overlay = document.getElementById('games-menu-overlay');
+    overlay.classList.toggle('hidden');
+    if (!overlay.classList.contains('hidden')) {
+        populateGamesMenu();
+    }
+}
+
+const gameModes = [
+    { id: 'shadow', name: 'Shadows', icon: '🐶' },
+    { id: 'letter', name: 'Letters', icon: '🅰️' },
+    { id: 'job', name: 'Jobs', icon: '👮' },
+    { id: 'feed', name: 'Feed', icon: '🥕' },
+    { id: 'number', name: 'Numbers', icon: '1️⃣' },
+    { id: 'shape', name: 'Shapes', icon: '🔷' },
+    { id: 'weather', name: 'Weather', icon: '🌤️' },
+    { id: 'nature', name: 'Nature', icon: '🍃' },
+    { id: 'habitat', name: 'Homes', icon: '🏠' },
+    { id: 'puzzle', name: 'Puzzle', icon: '🧩' },
+    { id: 'math', name: 'Math', icon: '➕' }
+];
+
+function populateGamesMenu() {
+    const grid = document.querySelector('.games-grid');
+    grid.innerHTML = '';
+
+    gameModes.forEach(game => {
+        const card = document.createElement('div');
+        card.className = `game-select-card ${game.id === currentMode ? 'active' : ''}`;
+        card.onclick = () => setMode(game.id);
+
+        const icon = document.createElement('div');
+        icon.className = 'game-icon';
+        icon.textContent = game.icon;
+
+        const name = document.createElement('div');
+        name.className = 'game-name';
+        name.textContent = game.name;
+
+        card.appendChild(icon);
+        card.appendChild(name);
+        grid.appendChild(card);
+    });
+}
+
+setMode('shadow');
 
 // Audio Context unlock for iOS/Android
 let audioCtxUnlocked = false;

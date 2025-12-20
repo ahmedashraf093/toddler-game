@@ -1,4 +1,4 @@
-const CACHE_NAME = 'toddler-game-v8'; // Incremented version
+const CACHE_NAME = 'toddler-game-v9'; // Incremented version
 const ASSETS = [
   './',
   './index.html',

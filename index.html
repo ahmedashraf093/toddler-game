@@ -33,19 +33,9 @@
     </div>
 
     <div class="header-container">
-        <div class="score-board">⭐️ <span id="score-val">0</span></div>
-        <div class="nav-bar">
-            <button class="nav-btn active" onclick="setMode('shadow', this)">🐶 Shadows</button>
-            <button class="nav-btn" onclick="setMode('letter', this)">🅰️ Letters</button>
-            <button class="nav-btn" onclick="setMode('job', this)">👮 Jobs</button>
-            <button class="nav-btn" onclick="setMode('feed', this)">🥕 Feed</button>
-            <button class="nav-btn" onclick="setMode('number', this)">1️⃣ Numbers</button>
-            <button class="nav-btn" onclick="setMode('shape', this)">🔷 Shapes</button>
-            <button class="nav-btn" onclick="setMode('weather', this)">🌤️ Weather</button>
-            <button class="nav-btn" onclick="setMode('nature', this)">🍃 Nature</button>
-            <button class="nav-btn" onclick="setMode('habitat', this)">🏠 Homes</button>
-            <button class="nav-btn" onclick="setMode('puzzle', this)">🧩 Puzzle</button>
-            <button class="nav-btn" onclick="setMode('math', this)">➕ Math</button>
+        <div class="header-row">
+            <div class="score-board">⭐️ <span id="score-val">0</span></div>
+            <button id="menu-btn" onclick="toggleMenu()">🎮 Games</button>
         </div>
 
         <div id="difficulty-bar">
@@ -93,6 +83,17 @@
 
     <div id="controls">
         <button id="reset-btn" onclick="initRound()">Next Round ➡️</button>
+    </div>
+
+    <!-- Full Screen Games Menu -->
+    <div id="games-menu-overlay" class="hidden">
+        <div class="menu-header">
+            <h2>Choose a Game! 🎮</h2>
+            <button class="close-menu-btn" onclick="toggleMenu()">❌</button>
+        </div>
+        <div class="games-grid">
+            <!-- Buttons will be injected by JS -->
+        </div>
     </div>
 
     <div id="celebration-overlay" class="hidden">
