@@ -117,10 +117,10 @@ const habitatLibrary = [
 ];
 
 const puzzleImages = [
-    { id: 'lion', src: 'assets/images/p_lion.png', name: 'Lion' },
-    { id: 'car', src: 'assets/images/p_car.png', name: 'Car' },
-    { id: 'butterfly', src: 'assets/images/p_butterfly.png', name: 'Butterfly' },
-    { id: 'apple', src: 'assets/images/p_apple.png', name: 'Apple' }
+    { id: 'lion', src: puzzleImageData.lion, name: 'Lion' },
+    { id: 'car', src: puzzleImageData.car, name: 'Car' },
+    { id: 'butterfly', src: puzzleImageData.butterfly, name: 'Butterfly' },
+    { id: 'apple', src: puzzleImageData.apple, name: 'Apple' }
 ];
 
 const objectPool = [
