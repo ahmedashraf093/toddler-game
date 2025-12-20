@@ -1,8 +1,10 @@
+![Game Preview](./unnamed.jpg)
+
 # 🦁 Toddler Learning Game
 
 A free, ad-free, browser-based educational game for toddlers (ages 2-5). Designed to be frustration-free, accessible, and playable on any device.
 
-**[🎮 Play the Game Here](YOUR_GITHUB_PAGES_URL_HERE)**
+**[[🎮 Play the Game Here](https://ahmedashraf093.github.io/toddler-game/)]**
 
 ## ✨ Features
 
@@ -17,12 +19,6 @@ A free, ad-free, browser-based educational game for toddlers (ages 2-5). Designe
 ## 🚀 How to Run Locally
 
 Since this is a standalone static application, no installation is required.
-
-1.  Clone the repo:
-    ```bash
-    git clone [https://github.com/YOUR_USERNAME/toddler-learning-game.git](https://github.com/YOUR_USERNAME/toddler-learning-game.git)
-    ```
-2.  Open `index.html` in any modern web browser.
 
 ## 🛠️ Tech Stack
 
