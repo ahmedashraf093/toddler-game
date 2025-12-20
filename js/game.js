@@ -90,14 +90,14 @@ const natureLibrary = [
 
 const habitatLibrary = [
     // Farm Animals
-    { id: 'cow', animal: '🐄', home: '🚜', animalName: 'Cow', homeName: 'Farm' },
-    { id: 'rooster', animal: '🐓', home: '🚜', animalName: 'Rooster', homeName: 'Farm' },
-    { id: 'horse', animal: '🐎', home: '🚜', animalName: 'Horse', homeName: 'Farm' },
-    { id: 'dog', animal: '🐶', home: '🚜', animalName: 'Dog', homeName: 'Farm' },
-    { id: 'cat', animal: '🐱', home: '🚜', animalName: 'Cat', homeName: 'Farm' },
+    { id: 'cow', animal: '🐄', home: '🏡', animalName: 'Cow', homeName: 'Farm' },
+    { id: 'rooster', animal: '🐓', home: '🏡', animalName: 'Rooster', homeName: 'Farm' },
+    { id: 'horse', animal: '🐎', home: '🏡', animalName: 'Horse', homeName: 'Farm' },
+    { id: 'dog', animal: '🐶', home: '🏡', animalName: 'Dog', homeName: 'Farm' },
+    { id: 'cat', animal: '🐱', home: '🏡', animalName: 'Cat', homeName: 'Farm' },
 
-    { id: 'mouse', animal: '🐭', home: '🚜', animalName: 'Mouse', homeName: 'Farm' },
-    { id: 'bee', animal: '🐝', home: '🚜', animalName: 'Bee', homeName: 'Farm' },
+    { id: 'mouse', animal: '🐭', home: '🏡', animalName: 'Mouse', homeName: 'Farm' },
+    { id: 'bee', animal: '🐝', home: '🏡', animalName: 'Bee', homeName: 'Farm' },
 
     // Jungle Animals
     { id: 'lion', animal: '🦁', home: '🌴', animalName: 'Lion', homeName: 'Jungle' },
