@@ -410,10 +410,20 @@ function dragStart(e) {
     // Voice effect on drag start
     if (e.target.dataset.label) speakText(e.target.dataset.label, true); // true = throttle
 
+    toggleOtherDraggables(e.target.id, true);
     startHintTimer(draggedVal);
 }
-function dragEnd(e) { clearHint(); }
-function drop(e) { e.preventDefault(); clearHint(); const box = e.target.closest('.droppable'); if (box && currentMode !== 'math') checkStandardMatch(box, draggedVal, draggedElId); }
+function dragEnd(e) {
+    clearHint();
+    toggleOtherDraggables(null, false);
+}
+function drop(e) {
+    e.preventDefault();
+    clearHint();
+    toggleOtherDraggables(null, false);
+    const box = e.target.closest('.droppable');
+    if (box && currentMode !== 'math') checkStandardMatch(box, draggedVal, draggedElId);
+}
 
 function dropMath(e) {
     e.preventDefault(); clearHint();
@@ -434,6 +444,8 @@ function touchStart(e) {
     // Voice effect on touch start
     if (activeTouchEl.dataset.label) speakText(activeTouchEl.dataset.label, true);
 
+    toggleOtherDraggables(activeTouchEl.id, true);
+
     startHintTimer(draggedVal);
     const spacer = document.createElement('div');
     spacer.id = 'drag-spacer';
@@ -450,6 +462,14 @@ function touchMove(e) { e.preventDefault(); if (!activeTouchEl) return; const t 
 function touchEnd(e) {
     if (!activeTouchEl) return; clearHint();
     const spacer = document.getElementById('drag-spacer'); if (spacer) spacer.remove();
+    // Restore original position/style for the dragged element
+    activeTouchEl.style.top = '';
+    activeTouchEl.style.left = '';
+    activeTouchEl.style.zIndex = '';
+    activeTouchEl.style.transform = '';
+
+    toggleOtherDraggables(null, false);
+
     const t = e.changedTouches[0]; activeTouchEl.style.display = 'none';
     const below = document.elementFromPoint(t.clientX, t.clientY); activeTouchEl.style.display = 'flex';
     activeTouchEl.style.position = 'static'; activeTouchEl.style.zIndex = ''; activeTouchEl.style.width = '';
@@ -832,9 +852,9 @@ function checkPuzzleCompletion() {
     slots.forEach(slot => {
         if (slot.childElementCount > 0) {
             const piece = slot.firstElementChild;
-            const slotPos = parseInt(slot.dataset.pos);
-            const piecePos = parseInt(piece.dataset.pos);
-            if (slotPos === piecePos) correct++;
+            const slotIndex = parseInt(slot.dataset.pos);
+            const pieceIndex = parseInt(piece.dataset.pos);
+            if (slotIndex === pieceIndex) correct++;
         }
     });
 
@@ -849,5 +869,24 @@ function checkPuzzleCompletion() {
     }
 }
 
-setMode('shadow', document.querySelector('.nav-btn.active'));
+function toggleOtherDraggables(activeId, disable) {
+    const draggables = document.querySelectorAll('.draggable, .puzzle-piece');
+    draggables.forEach(el => {
+        if (activeId && el.id === activeId) {
+            // Active element: ensure it's enabled
+            el.style.pointerEvents = 'auto';
+            el.style.opacity = '1';
+        } else {
+            // Other elements
+            if (disable) {
+                el.style.pointerEvents = 'none';
+                el.style.opacity = '0.5';
+            } else {
+                el.style.pointerEvents = '';
+                el.style.opacity = '';
+            }
+        }
+    });
+}
 
+setMode('shadow', document.querySelector('.nav-btn.active'));
