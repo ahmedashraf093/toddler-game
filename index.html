@@ -37,7 +37,7 @@
             min-height: 100vh;
             margin: 0;
             user-select: none;
-            touch-action: none;
+            /* [FIX] Removed touch-action: none to allow scrolling on non-draggable areas */
             overflow-x: hidden;
             transition: background-color 0.5s ease;
         }
@@ -169,6 +169,8 @@
             flex-grow: 1;
             justify-content: center;
             gap: 20px;
+            /* [FIX] Added padding so bottom elements aren't hidden behind footer */
+            padding-bottom: 120px;
         }
         #math-stage.active { display: flex; }
 
@@ -211,7 +213,12 @@
         .math-option { width: 90px; height: 90px; font-size: 45px; cursor: grab; }
 
         /* --- General Draggable --- */
-        .draggable { cursor: grab; border-color: white; }
+        .draggable { 
+            cursor: grab; 
+            border-color: white; 
+            /* [FIX] Only disable touch actions on the draggable items themselves */
+            touch-action: none; 
+        }
         .draggable:active { transform: scale(1.1) rotate(5deg); z-index: 100; cursor: grabbing; box-shadow: 0 10px 20px rgba(0,0,0,0.15); }
         .droppable { background-color: rgba(255,255,255,0.5); border: 4px dashed #bbb; box-shadow: none; overflow: hidden; }
 
@@ -737,19 +744,54 @@
             }
         }
 
+        // [FIX] Updated touchStart to insert a spacer
         function touchStart(e) {
-            e.preventDefault(); const actualItem = e.target.closest('.draggable'); if(!actualItem) return;
-            activeTouchEl = actualItem; draggedVal = activeTouchEl.dataset.val; draggedElId = activeTouchEl.id;
+            e.preventDefault(); 
+            const actualItem = e.target.closest('.draggable'); 
+            if(!actualItem) return;
+            
+            activeTouchEl = actualItem; 
+            draggedVal = activeTouchEl.dataset.val; 
+            draggedElId = activeTouchEl.id;
             startHintTimer(draggedVal);
-            const t = e.touches[0]; activeTouchEl.style.position = 'fixed'; activeTouchEl.style.zIndex = '1000';
-            activeTouchEl.style.left = (t.clientX - 50) + 'px'; activeTouchEl.style.top = (t.clientY - 50) + 'px';
+            
+            // Create a spacer to hold the layout position
+            const spacer = document.createElement('div');
+            spacer.id = 'drag-spacer';
+            spacer.style.width = activeTouchEl.offsetWidth + 'px';
+            spacer.style.height = activeTouchEl.offsetHeight + 'px';
+            spacer.style.display = 'block'; // Ensure it takes space
+            // Insert spacer before the item leaves the flow
+            activeTouchEl.parentNode.insertBefore(spacer, activeTouchEl);
+
+            const t = e.touches[0]; 
+            activeTouchEl.style.position = 'fixed'; 
+            activeTouchEl.style.zIndex = '1000';
+            activeTouchEl.style.width = spacer.style.width; // Maintain width while fixed
+            activeTouchEl.style.left = (t.clientX - 50) + 'px'; 
+            activeTouchEl.style.top = (t.clientY - 50) + 'px';
         }
+
         function touchMove(e) { e.preventDefault(); if(!activeTouchEl) return; const t = e.touches[0]; activeTouchEl.style.left = (t.clientX - 50) + 'px'; activeTouchEl.style.top = (t.clientY - 50) + 'px'; }
+        
+        // [FIX] Updated touchEnd to remove the spacer
         function touchEnd(e) {
-            if(!activeTouchEl) return; clearHint();
-            const t = e.changedTouches[0]; activeTouchEl.style.display = 'none';
-            const below = document.elementFromPoint(t.clientX, t.clientY); activeTouchEl.style.display = 'flex';
-            activeTouchEl.style.position = 'static'; activeTouchEl.style.zIndex = '';
+            if(!activeTouchEl) return; 
+            clearHint();
+            
+            // Remove the spacer
+            const spacer = document.getElementById('drag-spacer');
+            if(spacer) spacer.remove();
+
+            const t = e.changedTouches[0]; 
+            activeTouchEl.style.display = 'none';
+            const below = document.elementFromPoint(t.clientX, t.clientY); 
+            activeTouchEl.style.display = 'flex';
+            
+            activeTouchEl.style.position = 'static'; 
+            activeTouchEl.style.zIndex = '';
+            activeTouchEl.style.width = ''; // Reset width
+
             const box = below ? below.closest('.droppable') : null;
             if(box) {
                 if(currentMode === 'math') {
