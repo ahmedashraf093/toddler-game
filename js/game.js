@@ -1,3 +1,11 @@
+// Hide loader when page is fully loaded
+window.addEventListener('load', () => {
+    const loader = document.getElementById('loading-screen');
+    if (loader) {
+        loader.classList.add('hidden');
+    }
+});
+
 // --- Start Game Logic ---
 function startGame() {
     document.getElementById('start-screen').style.display = 'none';
