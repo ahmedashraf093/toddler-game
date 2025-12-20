@@ -93,30 +93,27 @@ const habitatLibrary = [
     // Farm Animals
     { id: 'cow', animal: '🐄', home: '🏡', animalName: 'Cow', homeName: 'Farm' },
     { id: 'rooster', animal: '🐓', home: '🏡', animalName: 'Rooster', homeName: 'Farm' },
-    { id: 'horse', animal: '🐎', home: '🏡', animalName: 'Horse', homeName: 'Farm' },
+    { id: 'chicken', animal: '🐔', home: '🏡', animalName: 'Chicken', homeName: 'Farm' },
     { id: 'dog', animal: '🐶', home: '🏡', animalName: 'Dog', homeName: 'Farm' },
     { id: 'cat', animal: '🐱', home: '🏡', animalName: 'Cat', homeName: 'Farm' },
-
     { id: 'mouse', animal: '🐭', home: '🏡', animalName: 'Mouse', homeName: 'Farm' },
-    { id: 'bee', animal: '🐝', home: '🏡', animalName: 'Bee', homeName: 'Farm' },
 
-    // Jungle Animals
+    // Jungle/Wild Animals
     { id: 'lion', animal: '🦁', home: '🌴', animalName: 'Lion', homeName: 'Jungle' },
+    { id: 'tiger', animal: '🐯', home: '🌴', animalName: 'Tiger', homeName: 'Jungle' },
+    { id: 'zebra', animal: '🦓', home: '🌴', animalName: 'Zebra', homeName: 'Jungle' },
+    { id: 'giraffe', animal: '🦒', home: '🌴', animalName: 'Giraffe', homeName: 'Jungle' },
     { id: 'monkey', animal: '🐒', home: '🌴', animalName: 'Monkey', homeName: 'Jungle' },
-    { id: 'panda', animal: '🐼', home: '🌴', animalName: 'Panda', homeName: 'Jungle' },
-    { id: 'frog', animal: '🐸', home: '🌴', animalName: 'Frog', homeName: 'Jungle' },
-    { id: 'bird', animal: '🐦', home: '🌴', animalName: 'Bird', homeName: 'Jungle' },
-    { id: 'bat', animal: '🦇', home: '🌴', animalName: 'Bat', homeName: 'Jungle' },
-    { id: 'spider', animal: '🕷️', home: '🌴', animalName: 'Spider', homeName: 'Jungle' },
-    { id: 'squirrel', animal: '🐿️', home: '🌴', animalName: 'Squirrel', homeName: 'Jungle' },
+    { id: 'gorilla', animal: '🦍', home: '🌴', animalName: 'Gorilla', homeName: 'Jungle' },
+    { id: 'wolf', animal: '🐺', home: '🌴', animalName: 'Wolf', homeName: 'Jungle' },
+    { id: 'buffalo', animal: '🐃', home: '🌴', animalName: 'Buffalo', homeName: 'Jungle' },
+    { id: 'deer', animal: '🦌', home: '🌴', animalName: 'Deer', homeName: 'Jungle' },
 
     // Sea Animals
     { id: 'octopus', animal: '🐙', home: '🌊', animalName: 'Octopus', homeName: 'Sea' },
     { id: 'whale', animal: '🐋', home: '🌊', animalName: 'Whale', homeName: 'Sea' },
     { id: 'fish', animal: '🐟', home: '🌊', animalName: 'Fish', homeName: 'Sea' },
-    { id: 'shark', animal: '🦈', home: '🌊', animalName: 'Shark', homeName: 'Sea' },
-    { id: 'penguin', animal: '🐧', home: '🌊', animalName: 'Penguin', homeName: 'Sea' },
-    { id: 'polarbear', animal: '🐻‍❄️', home: '🌊', animalName: 'Polar Bear', homeName: 'Sea' }
+    { id: 'turtle', animal: '🐢', home: '🌊', animalName: 'Turtle', homeName: 'Sea' }
 ];
 
 const puzzleImages = [
