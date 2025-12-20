@@ -95,7 +95,7 @@ const habitatLibrary = [
     { id: 'horse', animal: '🐎', home: '🚜', animalName: 'Horse', homeName: 'Farm' },
     { id: 'dog', animal: '🐶', home: '🚜', animalName: 'Dog', homeName: 'Farm' },
     { id: 'cat', animal: '🐱', home: '🚜', animalName: 'Cat', homeName: 'Farm' },
-    { id: 'pig', animal: '🐖', home: '🚜', animalName: 'Pig', homeName: 'Farm' },
+
     { id: 'mouse', animal: '🐭', home: '🚜', animalName: 'Mouse', homeName: 'Farm' },
     { id: 'bee', animal: '🐝', home: '🚜', animalName: 'Bee', homeName: 'Farm' },
 
