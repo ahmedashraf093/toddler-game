@@ -3,13 +3,12 @@ const ASSETS = [
   './',
   './index.html',
   './site.webmanifest',
-  './favicon-96x96.png',
-  './favicon.svg',
-  './apple-touch-icon.png',
-  // ⚠️ VERIFY THESE FILENAMES:
-  // If your files are named "styles.css" or "main.js", update these lines:
-  './style.css', 
-  './script.js',
+  './assets/images/favicon-96x96.png',
+  './assets/images/favicon.svg',
+  './assets/images/apple-touch-icon.png',
+  './css/style.css',
+  './js/game.js',
+  'js/sw-register.js'
 ];
 
 // 1. Install & Cache (Debug Version)

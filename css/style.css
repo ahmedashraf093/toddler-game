@@ -1,0 +1,322 @@
+:root {
+    --primary-color: #4facfe;
+    --bg-color: #e6f7ff;
+    --dot-color: #d0efff;
+}
+
+body {
+    font-family: 'Comic Sans MS', 'Chalkboard SE', 'Comic Neue', sans-serif;
+    background-color: var(--bg-color);
+    background-image: radial-gradient(var(--dot-color) 20%, transparent 20%),
+                      radial-gradient(var(--dot-color) 20%, transparent 20%);
+    background-position: 0 0, 25px 25px;
+    background-size: 50px 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    user-select: none;
+    overflow-x: hidden;
+    transition: background-color 0.5s ease;
+}
+
+/* --- Header --- */
+.header-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 95%;
+    max-width: 800px;
+    margin-top: 5px;
+    gap: 5px;
+}
+
+.score-board {
+    background: #fff;
+    padding: 5px 20px;
+    border-radius: 50px;
+    font-size: 20px;
+    font-weight: 900;
+    color: #ffaa00;
+    border: 3px solid #eee;
+    box-shadow: 0 4px 0px rgba(0,0,0,0.05);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nav-bar {
+    display: flex;
+    gap: 5px;
+    z-index: 10;
+    background: rgba(255,255,255,0.6);
+    padding: 5px;
+    border-radius: 30px;
+    backdrop-filter: blur(5px);
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.nav-btn {
+    padding: 8px 12px;
+    font-size: 15px;
+    border: 2px solid transparent;
+    border-radius: 20px;
+    background: transparent;
+    cursor: pointer;
+    font-weight: bold;
+    color: #555;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+.nav-btn.active {
+    background: #fff;
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transform: scale(1.05);
+}
+
+/* --- Difficulty Controls (Math Only) --- */
+#difficulty-bar {
+    display: none; /* Hidden by default */
+    gap: 10px;
+    margin-top: 5px;
+}
+.diff-btn {
+    padding: 5px 15px;
+    border-radius: 15px;
+    border: none;
+    font-weight: bold;
+    color: white;
+    opacity: 0.6;
+    transform: scale(0.9);
+    transition: all 0.2s;
+    cursor: pointer;
+}
+.diff-btn.active { opacity: 1; transform: scale(1.1); box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+.diff-easy { background-color: #44cc44; }
+.diff-med  { background-color: #ffaa00; }
+.diff-hard { background-color: #ff4444; }
+
+/* --- Standard Game Board --- */
+.game-board {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 100%;
+    max-width: 900px;
+    flex-grow: 1;
+    padding-bottom: 80px;
+}
+.game-board.hidden { display: none; }
+
+.column {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 45%;
+    align-items: center;
+    justify-content: center;
+}
+
+.item {
+    width: 160px;
+    height: 110px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 55px;
+    border-radius: 20px;
+    background: white;
+    border: 4px solid #fff; 
+    box-shadow: 0 8px 0px rgba(0,0,0,0.1); 
+    font-weight: bold;
+    color: #444;
+    position: relative;
+    transition: transform 0.1s;
+}
+
+/* --- Math Step-by-Step Board --- */
+#math-stage {
+    display: none; 
+    flex-direction: column;
+    align-items: center;
+    width: 95%;
+    max-width: 600px;
+    flex-grow: 1;
+    justify-content: center;
+    gap: 20px;
+    padding-bottom: 120px;
+}
+#math-stage.active { display: flex; }
+
+.math-question-box {
+    background: white;
+    border-radius: 30px;
+    padding: 15px;
+    width: 100%;
+    min-height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 10px 0 rgba(0,0,0,0.05);
+    border: 5px solid white;
+}
+
+.math-equation {
+    display: flex; align-items: center; flex-wrap: wrap; gap: 8px; flex-grow: 1; justify-content: center;
+}
+.emoji-group {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 2px; max-width: 130px;
+}
+
+.math-emoji { font-size: 32px; line-height: 1.1; }
+.math-operator { font-size: 45px; color: #84fab0; font-weight: 900; margin: 0 8px; }
+.math-equals { font-size: 45px; color: #ccc; margin: 0 8px; }
+
+.math-target {
+    width: 90px; height: 90px;
+    border: 4px dashed #ccc; border-radius: 20px; background: #f9f9f9;
+    display: flex; justify-content: center; align-items: center;
+    font-size: 45px; color: #ddd; flex-shrink: 0; transition: all 0.3s;
+}
+.math-target.hint-active { border-color: #ffd700; background-color: #ffffe0; transform: scale(1.05); }
+.math-target.matched { border-color: #44cc44; background-color: #aaffaa; color: #000; border-style: solid; }
+
+.math-options {
+    display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;
+}
+.math-option { width: 90px; height: 90px; font-size: 45px; cursor: grab; }
+
+/* --- General Draggable --- */
+.draggable { 
+    cursor: grab; 
+    border-color: white; 
+    touch-action: none; 
+}
+.draggable:active { transform: scale(1.1) rotate(5deg); z-index: 100; cursor: grabbing; box-shadow: 0 10px 20px rgba(0,0,0,0.15); }
+.droppable { background-color: rgba(255,255,255,0.5); border: 4px dashed #bbb; box-shadow: none; overflow: hidden; }
+
+/* --- Visibility Modes --- */
+.shadow-mode .droppable .content { filter: brightness(0); opacity: 0.5; pointer-events: none; }
+.letter-mode .droppable .content { opacity: 0.6; pointer-events: none; }
+.job-mode .droppable .content,
+.number-mode .droppable .content { opacity: 0.95; filter: grayscale(100%); pointer-events: none; }
+
+/* --- Custom Grids --- */
+.number-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    width: 100%; height: 100%; padding: 4px; box-sizing: border-box;
+    align-items: center; justify-items: center;
+}
+.mini-emoji { font-size: 30px; line-height: 1; }
+
+/* --- Hint & Match --- */
+.hint-active { border-color: #ffd700 !important; background-color: #ffffe0 !important; animation: hintPulse 1s infinite; z-index: 50; }
+@keyframes hintPulse {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.7); }
+    50% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(255, 215, 0, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 215, 0, 0); }
+}
+.matched {
+    background-color: #aaffaa !important; border: 4px solid #44cc44 !important;
+    box-shadow: 0 0 0 5px rgba(170, 255, 170, 0.5); animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.matched .content { filter: none !important; opacity: 1 !important; }
+@keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.2) rotate(-5deg); } }
+
+/* --- Footer --- */
+#controls { position: fixed; bottom: 20px; width: 100%; text-align: center; pointer-events: none; }
+#reset-btn {
+    pointer-events: auto; padding: 12px 30px; font-size: 24px; background: #ff6b6b; color: white;
+    border: 3px solid #ff4444; border-radius: 50px; cursor: pointer; display: none; font-weight: 900;
+    font-family: inherit; box-shadow: 0 6px 0 #cc3333;
+}
+#reset-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #cc3333; }
+
+/* --- Modal --- */
+#reward-modal {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(3px);
+    display: flex; justify-content: center; align-items: center; z-index: 2000; visibility: hidden; opacity: 0; transition: opacity 0.3s;
+}
+#reward-modal.show { visibility: visible; opacity: 1; }
+.modal-card {
+    background: white; padding: 30px; border-radius: 30px; text-align: center; border: 5px solid var(--primary-color);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.3); min-width: 220px; transform: scale(0.5); transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+#reward-modal.show .modal-card { transform: scale(1); }
+.big-letter { font-size: 70px; display: block; line-height: 1; color: var(--primary-color); margin-bottom: 5px; }
+.big-emoji { font-size: 90px; display: block; margin: 5px 0; }
+.big-word { font-size: 35px; color: #444; font-weight: 900; display: block; }
+
+/* --- Start Screen (New) --- */
+#start-screen {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(255,255,255,0.9);
+    display: flex; justify-content: center; align-items: center;
+    z-index: 5000;
+    backdrop-filter: blur(5px);
+    flex-direction: column;
+}
+#start-btn {
+    font-size: 40px; padding: 15px 40px; border-radius: 50px;
+    background: #4CAF50; color: white; border: none;
+    box-shadow: 0 10px 0 #2E7D32; cursor: pointer;
+    font-family: inherit; font-weight: 900;
+    animation: pulse 1.5s infinite;
+}
+#start-btn:active { transform: translateY(5px); box-shadow: 0 5px 0 #2E7D32; animation: none; }
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+@media (max-width: 600px) {
+    .nav-btn { padding: 6px 8px; font-size: 12px; }
+    .score-board { font-size: 16px; padding: 4px 12px; }
+    .column { gap: 8px; width: 48%; } 
+    .item { width: 100%; height: 90px; font-size: 45px; border-width: 3px; }
+    .math-question-box { flex-direction: column; gap: 15px; padding: 15px; }
+    .math-target { width: 80px; height: 80px; font-size: 40px; }
+}
+
+/* --- Install Button Styling --- */
+#install-container {
+    display: none; /* Default: Hidden on Desktop and before logic runs */
+    position: fixed;
+    bottom: 80px; /* Moved up to avoid overlapping Next Round button */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    width: 90%;
+    max-width: 400px;
+}
+
+/* Logic: Only show when class 'show' is added AND screen is mobile */
+@media (max-width: 600px) {
+    #install-container.show {
+        display: block;
+    }
+}
+
+#btnInstall {
+    width: 100%;
+    padding: 15px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+#btnInstall:active {
+    background-color: #3e8e41;
+    transform: translateY(2px);
+}
