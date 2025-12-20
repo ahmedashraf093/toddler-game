@@ -394,17 +394,46 @@ function launchModal(topText, emoji, word) {
     modal.classList.add('show');
     setTimeout(() => { modal.classList.remove('show'); }, 2500);
 }
+let selectedVoice = null;
+let voiceList = [];
+
+function loadVoices() {
+    if (!('speechSynthesis' in window)) return;
+    voiceList = window.speechSynthesis.getVoices().filter(v => v.lang.startsWith('en'));
+
+    // Smart Select: 1. Google US, 2. Microsoft Zira/Eva, 3. Any Female, 4. Any English
+    selectedVoice = voiceList.find(v => v.name.includes('Google US English'))
+        || voiceList.find(v => v.name.includes('Zira') || v.name.includes('Eva'))
+        || voiceList.find(v => v.name.includes('Female'))
+        || voiceList[0];
+}
+
+if ('speechSynthesis' in window) {
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+    loadVoices(); // Try immediately in case they are already loaded
+}
+
+function changeVoice(btn) {
+    if (voiceList.length === 0) { loadVoices(); }
+    if (voiceList.length === 0) return;
+
+    let idx = voiceList.indexOf(selectedVoice);
+    idx = (idx + 1) % voiceList.length;
+    selectedVoice = voiceList[idx];
+
+    speakText(`Voice changed to ${selectedVoice.name}`);
+    launchModal('🗣️', 'Voice', selectedVoice.name.replace(/Microsoft|Google|English|United States/g, '').trim().substring(0, 10));
+}
+
 function speakText(text) {
     if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
         const utterance = new SpeechSynthesisUtterance(text);
-        utterance.rate = 0.8; utterance.pitch = 1.1;
-        const voices = window.speechSynthesis.getVoices();
-        const enVoice = voices.find(v => v.lang.startsWith('en'));
-        if (enVoice) utterance.voice = enVoice;
+        utterance.rate = 0.9;
+        utterance.pitch = 1.0;
+        if (selectedVoice) utterance.voice = selectedVoice;
         window.speechSynthesis.speak(utterance);
     }
 }
-if ('speechSynthesis' in window) window.speechSynthesis.onvoiceschanged = () => { };
 
 setMode('shadow', document.querySelector('.nav-btn.active'));
