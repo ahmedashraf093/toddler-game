@@ -271,6 +271,30 @@
         .big-emoji { font-size: 90px; display: block; margin: 5px 0; }
         .big-word { font-size: 35px; color: #444; font-weight: 900; display: block; }
 
+        /* --- Start Screen (New) --- */
+        #start-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255,255,255,0.9);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 5000;
+            backdrop-filter: blur(5px);
+            flex-direction: column;
+        }
+        #start-btn {
+            font-size: 40px; padding: 15px 40px; border-radius: 50px;
+            background: #4CAF50; color: white; border: none;
+            box-shadow: 0 10px 0 #2E7D32; cursor: pointer;
+            font-family: inherit; font-weight: 900;
+            animation: pulse 1.5s infinite;
+        }
+        #start-btn:active { transform: translateY(5px); box-shadow: 0 5px 0 #2E7D32; animation: none; }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
         @media (max-width: 600px) {
             .nav-btn { padding: 6px 8px; font-size: 12px; }
             .score-board { font-size: 16px; padding: 4px 12px; }
@@ -319,6 +343,10 @@
     </style>
 </head>
 <body>
+    <div id="start-screen">
+        <button id="start-btn" onclick="startGame()">▶️ Play!</button>
+    </div>
+
     <div id="install-container">
         <button id="btnInstall">📲 تحميل اللعبة (Download App)</button>
     </div>
@@ -367,6 +395,12 @@
     </div>
 
     <script>
+        // --- Start Game Logic ---
+        function startGame() {
+            document.getElementById('start-screen').style.display = 'none';
+            speakText("Welcome! Let's play!");
+        }
+
         // --- Configuration & Data ---
         const themes = {
             shadow: { primary: '#4facfe', bg: '#e6f7ff', dots: '#d0efff' }, 
@@ -376,7 +410,6 @@
             math:   { primary: '#84fab0', bg: '#f0fff4', dots: '#d1fae5' }
         };
 
-        // Pig icon removed from list
         const shadowLibrary = [
             '🐶','🐱','🦁','🐮','🐸','🐵','🐧','🐘','🦒','🦓','🦋',
             '🚗','🚌','🚑','🚒','🚓','🚜','🚂','✈️','🚀','🚁',
