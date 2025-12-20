@@ -125,7 +125,12 @@ const puzzleImages = [
     { id: 'lion', src: puzzleImageData.lion, name: 'Lion' },
     { id: 'car', src: puzzleImageData.car, name: 'Car' },
     { id: 'butterfly', src: puzzleImageData.butterfly, name: 'Butterfly' },
-    { id: 'apple', src: puzzleImageData.apple, name: 'Apple' }
+    { id: 'apple', src: puzzleImageData.apple, name: 'Apple' },
+    { id: 'train', src: puzzleImageData.train, name: 'Train' },
+    { id: 'duck', src: puzzleImageData.duck, name: 'Duck' },
+    { id: 'ball', src: puzzleImageData.ball, name: 'Ball' },
+    { id: 'house', src: puzzleImageData.house, name: 'House' },
+    { id: 'flower', src: puzzleImageData.flower, name: 'Flower' }
 ];
 
 const objectPool = [
@@ -454,10 +459,28 @@ function touchStart(e) {
     spacer.style.display = 'block';
     activeTouchEl.parentNode.insertBefore(spacer, activeTouchEl);
     const t = e.touches[0]; activeTouchEl.style.position = 'fixed'; activeTouchEl.style.zIndex = '1000';
-    activeTouchEl.style.width = spacer.style.width; activeTouchEl.style.left = (t.clientX - 50) + 'px'; activeTouchEl.style.top = (t.clientY - 50) + 'px';
+    activeTouchEl.style.width = spacer.style.width;
+
+    // Offset standard drags so finger doesn't hide object
+    const offsetY = currentMode === 'puzzle' ? 0 : 70; // Keep puzzle pieces under finger for precision, others above
+
+    activeTouchEl.style.left = (t.clientX - 50) + 'px';
+    activeTouchEl.style.top = (t.clientY - 50 - offsetY) + 'px';
+
+    // Unlock Audio Context on first touch
+    resumeAudioContext();
 }
 
-function touchMove(e) { e.preventDefault(); if (!activeTouchEl) return; const t = e.touches[0]; activeTouchEl.style.left = (t.clientX - 50) + 'px'; activeTouchEl.style.top = (t.clientY - 50) + 'px'; }
+function touchMove(e) {
+    e.preventDefault();
+    if (!activeTouchEl) return;
+    const t = e.touches[0];
+
+    const offsetY = currentMode === 'puzzle' ? 0 : 70;
+
+    activeTouchEl.style.left = (t.clientX - 50) + 'px';
+    activeTouchEl.style.top = (t.clientY - 50 - offsetY) + 'px';
+}
 
 function touchEnd(e) {
     if (!activeTouchEl) return; clearHint();
@@ -890,3 +913,21 @@ function toggleOtherDraggables(activeId, disable) {
 }
 
 setMode('shadow', document.querySelector('.nav-btn.active'));
+
+// Audio Context unlock for iOS/Android
+let audioCtxUnlocked = false;
+function resumeAudioContext() {
+    if (audioCtxUnlocked) return;
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (AudioContext) {
+        const ctx = new AudioContext(); // Just creating it or accessing global
+        if (ctx.state === 'suspended') {
+            ctx.resume().then(() => {
+                console.log("Audio Context Resumed");
+                audioCtxUnlocked = true;
+            });
+        } else {
+            audioCtxUnlocked = true;
+        }
+    }
+}

@@ -16,9 +16,12 @@ body {
     align-items: center;
     min-height: 100vh;
     margin: 0;
+    /* Disable text selection to prevent accidental highlighting during drag/touch */
     user-select: none;
     overflow-x: hidden;
     transition: background-color 0.5s ease;
+    touch-action: none;
+    overscroll-behavior: none;
 }
 
 /* --- Header --- */
