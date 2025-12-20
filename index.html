@@ -8,14 +8,14 @@
     <meta property="og:image" content="https://ahmedashraf093.github.io/toddler-game/social-preview.png">
     <meta property="og:url" content="https://ahmedashraf093.github.io/toddler-game/">
     <meta property="og:type" content="website">
-<link rel="icon" type="image/png" href="./favicon-96x96.png" sizes="96x96" />
-<link rel="icon" type="image/svg+xml" href="./favicon.svg" />
-<link rel="shortcut icon" href="./favicon.ico" />
-<link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png" />
-<link rel="manifest" href="./site.webmanifest" />
     
-  <meta name="theme-color" content="#ffffff">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="icon" type="image/png" href="./favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="shortcut icon" href="./favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png" />
+    <link rel="manifest" href="./manifest.json" />
+    
+    <meta name="theme-color" content="#ffffff">
     <meta name="twitter:card" content="summary_large_image">
     <style>
         :root {
@@ -37,7 +37,6 @@
             min-height: 100vh;
             margin: 0;
             user-select: none;
-            /* [FIX] Removed touch-action: none to allow scrolling on non-draggable areas */
             overflow-x: hidden;
             transition: background-color 0.5s ease;
         }
@@ -169,7 +168,6 @@
             flex-grow: 1;
             justify-content: center;
             gap: 20px;
-            /* [FIX] Added padding so bottom elements aren't hidden behind footer */
             padding-bottom: 120px;
         }
         #math-stage.active { display: flex; }
@@ -216,7 +214,6 @@
         .draggable { 
             cursor: grab; 
             border-color: white; 
-            /* [FIX] Only disable touch actions on the draggable items themselves */
             touch-action: none; 
         }
         .draggable:active { transform: scale(1.1) rotate(5deg); z-index: 100; cursor: grabbing; box-shadow: 0 10px 20px rgba(0,0,0,0.15); }
@@ -283,50 +280,48 @@
             .math-target { width: 80px; height: 80px; font-size: 40px; }
         }
 
-        /* By default, hide the container */
-.install-hidden {
-    display: none !important;
-}
+        /* --- Install Button Styling --- */
+        #install-container {
+            display: none; /* Default: Hidden on Desktop and before logic runs */
+            position: fixed;
+            bottom: 80px; /* Moved up to avoid overlapping Next Round button */
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            width: 90%;
+            max-width: 400px;
+        }
 
-/* Style for the container when it shows */
-#install-container {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 9999; /* Ensure it's on top of everything */
-    width: 90%;
-    max-width: 400px;
-}
+        /* Logic: Only show when class 'show' is added AND screen is mobile */
+        @media (max-width: 600px) {
+            #install-container.show {
+                display: block;
+            }
+        }
 
-/* Style for the button itself */
-#btnInstall {
-    width: 100%;
-    padding: 15px;
-    background-color: #4CAF50; /* Nice green color */
-    color: white;
-    border: none;
-    border-radius: 12px;
-    font-size: 18px;
-    font-weight: bold;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-#btnInstall:active {
-    background-color: #3e8e41;
-    transform: translateY(2px);
-}
-
-
-        
+        #btnInstall {
+            width: 100%;
+            padding: 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #btnInstall:active {
+            background-color: #3e8e41;
+            transform: translateY(2px);
+        }
     </style>
 </head>
 <body>
-<div id="install-container" class="install-hidden">
-    <button id="btnInstall">📲 تحميل اللعبة (Download App)</button>
-</div>
+    <div id="install-container">
+        <button id="btnInstall">📲 تحميل اللعبة (Download App)</button>
+    </div>
     
     <div class="header-container">
         <div class="score-board">⭐️ <span id="score-val">0</span></div>
@@ -414,7 +409,6 @@
             { id: 'scientist', person: '👨‍🔬', tool: '🔬', name: 'Scientist', toolName: 'Microscope' }
         ];
 
-        // Separation of Object and Quantity
         const objectPool = [
             { e: '☀️', n: 'Suns' }, { e: '👟', n: 'Shoes' }, { e: '🍎', n: 'Apples' }, 
             { e: '🚗', n: 'Cars' }, { e: '⭐️', n: 'Stars' }, { e: '🦋', n: 'Butterflies' }, 
@@ -422,9 +416,8 @@
             { e: '⚽', n: 'Balls' }, { e: '🐶', n: 'Dogs' }, { e: '🍦', n: 'Ice Cream' }
         ];
 
-        // --- State ---
         let currentMode = 'shadow'; 
-        let mathDifficulty = 'easy'; // easy, medium, hard
+        let mathDifficulty = 'easy';
         let correctCount = 0;
         let totalScore = 0;
         const roundSize = 5;
@@ -435,24 +428,18 @@
 
         const history = { shadow: [], letter: [], job: [], number: [] };
 
-        // --- Core Functions ---
-        
         function setDifficulty(level, btn) {
             mathDifficulty = level;
             document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            // Restart math game with new difficulty if already in math mode
             if(currentMode === 'math') initRound();
         }
 
         function setMode(mode, btnEl) {
             currentMode = mode;
-            
-            // Buttons
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             if(btnEl) btnEl.classList.add('active');
             
-            // UI Toggles
             const diffBar = document.getElementById('difficulty-bar');
             const standardBoard = document.getElementById('game-board');
             const mathStage = document.getElementById('math-stage');
@@ -468,7 +455,6 @@
                 diffBar.style.display = 'none';
             }
 
-            // Theme
             const theme = themes[mode];
             const root = document.documentElement;
             root.style.setProperty('--primary-color', theme.primary);
@@ -496,12 +482,8 @@
         function initRound() {
             document.getElementById('reset-btn').style.display = 'none';
             correctCount = 0;
-
-            if (currentMode === 'math') {
-                initMathGame();
-            } else {
-                initStandardGame();
-            }
+            if (currentMode === 'math') initMathGame();
+            else initStandardGame();
         }
 
         function initStandardGame() {
@@ -525,33 +507,20 @@
                 roundItems = selected.map(j => ({ id: j.id, src: j.person, tgt: j.tool, type: 'simple' }));
             }
             else if (currentMode === 'number') {
-                // Generate numbers 1-9 randomly
                 const nums = [1,2,3,4,5,6,7,8,9];
-                const selectedNums = smartSelect(nums.map(String), 'number'); // store history as strings
-                
+                const selectedNums = smartSelect(nums.map(String), 'number'); 
                 roundItems = selectedNums.map(nStr => {
                     const count = parseInt(nStr);
-                    // Randomly select an object for this number
                     const randomObj = objectPool[Math.floor(Math.random() * objectPool.length)];
-                    
                     let gridHtml = `<div class="number-grid">`;
                     for(let i=0; i<count; i++) gridHtml += `<span class="mini-emoji">${randomObj.e}</span>`;
                     gridHtml += `</div>`;
-                    
-                    return { 
-                        id: nStr, 
-                        src: gridHtml, 
-                        tgt: nStr, 
-                        type: 'html',
-                        emoji: randomObj.e,
-                        name: randomObj.n
-                    };
+                    return { id: nStr, src: gridHtml, tgt: nStr, type: 'html', emoji: randomObj.e, name: randomObj.n };
                 });
             }
 
             const draggables = shuffle([...roundItems]);
             const targets = shuffle([...roundItems]);
-
             draggables.forEach(obj => createStandardItem(obj.src, obj.id, sourceCol, true, obj.type, obj));
             targets.forEach(obj => createStandardItem(obj.tgt, obj.id, targetCol, false, obj.type, obj));
         }
@@ -559,10 +528,8 @@
         function createStandardItem(content, id, container, isDrag, type, dataObj) {
             const el = document.createElement('div');
             el.className = `item ${isDrag ? 'draggable' : 'droppable'}`;
-            
             if(isDrag) {
-                if (type === 'html') el.innerHTML = content;
-                else el.textContent = content;
+                if (type === 'html') el.innerHTML = content; else el.textContent = content;
                 el.draggable = true;
                 el.id = 'drag-' + id + '-' + Math.random().toString(36).substr(2, 5);
                 el.dataset.val = id;
@@ -571,65 +538,34 @@
                 el.dataset.match = id;
                 const c = document.createElement('div');
                 c.className = 'content';
-                if (type === 'html') c.innerHTML = content; 
-                else c.textContent = content;
+                if (type === 'html') c.innerHTML = content; else c.textContent = content;
                 el.appendChild(c);
                 el.addEventListener('dragover', e => e.preventDefault());
                 el.addEventListener('drop', drop);
-                
-                // Store data for rewards
-                if(dataObj) {
-                    el.dataset.emoji = dataObj.emoji;
-                    el.dataset.name = dataObj.name;
-                }
+                if(dataObj) { el.dataset.emoji = dataObj.emoji; el.dataset.name = dataObj.name; }
             }
             container.appendChild(el);
         }
 
-        // --- MATH GAME LOGIC ---
         function initMathGame() {
             currentMathIndex = 0;
             mathQuestions = [];
-
-            // Generate 5 questions based on difficulty
             for(let i=0; i<roundSize; i++) {
                 let A, B, op, ans;
-
                 if (mathDifficulty === 'easy') {
-                    // Addition, Sum <= 5
-                    ans = Math.floor(Math.random() * 4) + 2; // 2 to 5
-                    A = Math.floor(Math.random() * (ans - 1)) + 1; // 1 to ans-1
-                    B = ans - A;
-                    op = '+';
+                    ans = Math.floor(Math.random() * 4) + 2; A = Math.floor(Math.random() * (ans - 1)) + 1; B = ans - A; op = '+';
                 } 
                 else if (mathDifficulty === 'medium') {
-                    // Addition, Sum <= 9
-                    ans = Math.floor(Math.random() * 8) + 2; // 2 to 9
-                    A = Math.floor(Math.random() * (ans - 1)) + 1;
-                    B = ans - A;
-                    op = '+';
+                    ans = Math.floor(Math.random() * 8) + 2; A = Math.floor(Math.random() * (ans - 1)) + 1; B = ans - A; op = '+';
                 } 
-                else { // Hard
-                    // Subtraction (Result 1-9) or Addition (Sum 1-9)
+                else { 
                     if (Math.random() > 0.5) {
-                        // Add
-                        ans = Math.floor(Math.random() * 8) + 2;
-                        A = Math.floor(Math.random() * (ans - 1)) + 1;
-                        B = ans - A;
-                        op = '+';
+                        ans = Math.floor(Math.random() * 8) + 2; A = Math.floor(Math.random() * (ans - 1)) + 1; B = ans - A; op = '+';
                     } else {
-                        // Subtract
-                        ans = Math.floor(Math.random() * 9) + 1; // Result 1-9
-                        // A - B = ans -> A = ans + B. Max A should probably be 9 for visuals
-                        // Actually, let's keep A <= 9 so grids look nice.
-                        A = Math.floor(Math.random() * (9 - ans)) + ans;
-                        if (A === ans) A = ans + 1; // Ensure some subtraction occurs
-                        if (A > 9) A = 9;
-                        B = A - ans;
-                        op = '-';
+                        ans = Math.floor(Math.random() * 9) + 1; A = Math.floor(Math.random() * (9 - ans)) + ans;
+                        if (A === ans) A = ans + 1; if (A > 9) A = 9; B = A - ans; op = '-';
                     }
                 }
-                
                 mathQuestions.push({ A, B, op, ans });
             }
             loadMathQuestion();
@@ -641,49 +577,31 @@
                 speakText("All done! Good job!");
                 return;
             }
-
             const q = mathQuestions[currentMathIndex];
             const container = document.getElementById('math-eq-container');
             const target = document.getElementById('math-target-zone');
             const optionsRow = document.getElementById('math-options-row');
-
-            // Pick random object for visuals
             const randomObj = objectPool[Math.floor(Math.random() * objectPool.length)];
             const emoji = randomObj.e;
-
             const buildGroup = (n) => {
                 let s = '<div class="emoji-group">';
                 for(let i=0; i<n; i++) s += `<span class="math-emoji">${emoji}</span>`;
                 s += '</div>';
                 return s;
             };
-
-            container.innerHTML = `
-                ${buildGroup(q.A)}
-                <div class="math-operator">${q.op === '+' ? '➕' : '➖'}</div>
-                ${buildGroup(q.B)}
-            `;
-
+            container.innerHTML = `${buildGroup(q.A)}<div class="math-operator">${q.op === '+' ? '➕' : '➖'}</div>${buildGroup(q.B)}`;
             target.textContent = '?';
             target.className = 'math-target droppable';
             target.dataset.match = q.ans.toString();
-            // Store TTS and Emoji for reward
             const opWord = q.op === '+' ? 'plus' : 'minus';
             target.dataset.tts = `${q.A} ${opWord} ${q.B} equals ${q.ans}`;
             target.dataset.emoji = emoji;
-
             target.addEventListener('dragover', e => e.preventDefault());
             target.addEventListener('drop', dropMath);
-
-            // Generate Options (Always include Answer + 2 Randoms)
             optionsRow.innerHTML = '';
             let opts = [q.ans];
-            while(opts.length < 3) {
-                let r = Math.floor(Math.random() * 9) + 1;
-                if(!opts.includes(r)) opts.push(r);
-            }
+            while(opts.length < 3) { let r = Math.floor(Math.random() * 9) + 1; if(!opts.includes(r)) opts.push(r); }
             shuffle(opts);
-
             opts.forEach(val => {
                 const el = document.createElement('div');
                 el.className = 'item math-option draggable';
@@ -696,7 +614,6 @@
             });
         }
 
-        // --- Interaction Logic ---
         function addDragEvents(el) {
             el.addEventListener('dragstart', dragStart);
             el.addEventListener('dragend', dragEnd);
@@ -708,18 +625,14 @@
         let draggedVal = null, draggedElId = null, activeTouchEl = null;
 
         function startHintTimer(val) {
-            clearHint(); 
-            hintTimer = setTimeout(() => { showHint(val); }, 5000);
+            clearHint(); hintTimer = setTimeout(() => { showHint(val); }, 5000);
         }
 
         function showHint(val) {
             const targets = document.querySelectorAll('.droppable');
             targets.forEach(t => {
-                if(currentMode === 'math') {
-                    if (t.id === 'math-target-zone' && t.dataset.match === val) t.classList.add('hint-active');
-                } else {
-                    if(t.dataset.match === val && !t.classList.contains('matched')) t.classList.add('hint-active');
-                }
+                if(currentMode === 'math') { if (t.id === 'math-target-zone' && t.dataset.match === val) t.classList.add('hint-active'); } 
+                else { if(t.dataset.match === val && !t.classList.contains('matched')) t.classList.add('hint-active'); }
             });
         }
         function clearHint() {
@@ -735,8 +648,7 @@
             e.preventDefault(); clearHint();
             const box = e.target.closest('.droppable');
             if(box && box.dataset.match === draggedVal) {
-                box.classList.add('matched');
-                box.textContent = draggedVal;
+                box.classList.add('matched'); box.textContent = draggedVal;
                 totalScore += 10; updateScoreUI();
                 speakText("Correct! " + box.dataset.tts);
                 launchModal(draggedVal, box.dataset.emoji, "Correct!");
@@ -744,54 +656,28 @@
             }
         }
 
-        // [FIX] Updated touchStart to insert a spacer
         function touchStart(e) {
-            e.preventDefault(); 
-            const actualItem = e.target.closest('.draggable'); 
-            if(!actualItem) return;
-            
-            activeTouchEl = actualItem; 
-            draggedVal = activeTouchEl.dataset.val; 
-            draggedElId = activeTouchEl.id;
+            e.preventDefault(); const actualItem = e.target.closest('.draggable'); if(!actualItem) return;
+            activeTouchEl = actualItem; draggedVal = activeTouchEl.dataset.val; draggedElId = activeTouchEl.id;
             startHintTimer(draggedVal);
-            
-            // Create a spacer to hold the layout position
             const spacer = document.createElement('div');
             spacer.id = 'drag-spacer';
             spacer.style.width = activeTouchEl.offsetWidth + 'px';
             spacer.style.height = activeTouchEl.offsetHeight + 'px';
-            spacer.style.display = 'block'; // Ensure it takes space
-            // Insert spacer before the item leaves the flow
+            spacer.style.display = 'block'; 
             activeTouchEl.parentNode.insertBefore(spacer, activeTouchEl);
-
-            const t = e.touches[0]; 
-            activeTouchEl.style.position = 'fixed'; 
-            activeTouchEl.style.zIndex = '1000';
-            activeTouchEl.style.width = spacer.style.width; // Maintain width while fixed
-            activeTouchEl.style.left = (t.clientX - 50) + 'px'; 
-            activeTouchEl.style.top = (t.clientY - 50) + 'px';
+            const t = e.touches[0]; activeTouchEl.style.position = 'fixed'; activeTouchEl.style.zIndex = '1000';
+            activeTouchEl.style.width = spacer.style.width; activeTouchEl.style.left = (t.clientX - 50) + 'px'; activeTouchEl.style.top = (t.clientY - 50) + 'px';
         }
 
         function touchMove(e) { e.preventDefault(); if(!activeTouchEl) return; const t = e.touches[0]; activeTouchEl.style.left = (t.clientX - 50) + 'px'; activeTouchEl.style.top = (t.clientY - 50) + 'px'; }
         
-        // [FIX] Updated touchEnd to remove the spacer
         function touchEnd(e) {
-            if(!activeTouchEl) return; 
-            clearHint();
-            
-            // Remove the spacer
-            const spacer = document.getElementById('drag-spacer');
-            if(spacer) spacer.remove();
-
-            const t = e.changedTouches[0]; 
-            activeTouchEl.style.display = 'none';
-            const below = document.elementFromPoint(t.clientX, t.clientY); 
-            activeTouchEl.style.display = 'flex';
-            
-            activeTouchEl.style.position = 'static'; 
-            activeTouchEl.style.zIndex = '';
-            activeTouchEl.style.width = ''; // Reset width
-
+            if(!activeTouchEl) return; clearHint();
+            const spacer = document.getElementById('drag-spacer'); if(spacer) spacer.remove();
+            const t = e.changedTouches[0]; activeTouchEl.style.display = 'none';
+            const below = document.elementFromPoint(t.clientX, t.clientY); activeTouchEl.style.display = 'flex';
+            activeTouchEl.style.position = 'static'; activeTouchEl.style.zIndex = ''; activeTouchEl.style.width = ''; 
             const box = below ? below.closest('.droppable') : null;
             if(box) {
                 if(currentMode === 'math') {
@@ -802,9 +688,7 @@
                         launchModal(draggedVal, box.dataset.emoji, "Correct!");
                         setTimeout(() => { currentMathIndex++; loadMathQuestion(); }, 2500);
                     }
-                } else {
-                    checkStandardMatch(box, draggedVal, draggedElId);
-                }
+                } else { checkStandardMatch(box, draggedVal, draggedElId); }
             }
             activeTouchEl = null;
         }
@@ -812,19 +696,12 @@
         function checkStandardMatch(targetBox, val, originalId) {
             if (targetBox.classList.contains('matched') || targetBox.dataset.match !== val) return;
             targetBox.classList.add('matched');
-            const source = document.getElementById(originalId);
-            if(source) source.style.visibility = 'hidden';
+            const source = document.getElementById(originalId); if(source) source.style.visibility = 'hidden';
             totalScore += 10; updateScoreUI();
-
             if (currentMode === 'letter') showLetterReward(val);
             else if (currentMode === 'job') showJobReward(val);
-            else if (currentMode === 'number') {
-                // Use stored data for randomized reward
-                launchModal(val, targetBox.dataset.emoji, targetBox.dataset.name);
-                speakText(`${val}... ${targetBox.dataset.name}`);
-            }
+            else if (currentMode === 'number') { launchModal(val, targetBox.dataset.emoji, targetBox.dataset.name); speakText(`${val}... ${targetBox.dataset.name}`); }
             else speakText("Yeah!");
-
             correctCount++;
             if (correctCount === roundSize) {
                 document.getElementById('reset-btn').style.display = 'inline-block';
@@ -870,57 +747,39 @@
         }
         if ('speechSynthesis' in window) window.speechSynthesis.onvoiceschanged = () => {};
 
-        // Init
         setMode('shadow', document.querySelector('.nav-btn.active'));
     </script>
     <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js');
     }
-        // --- PWA INSTALL BUTTON LOGIC ---
 
-let deferredPrompt; // To hold the event
-const installContainer = document.getElementById('install-container');
-const btnInstall = document.getElementById('btnInstall');
+    let deferredPrompt; 
+    const installContainer = document.getElementById('install-container');
+    const btnInstall = document.getElementById('btnInstall');
 
-// 1. Listen for the 'beforeinstallprompt' event.
-// This event is fired by Chrome/Android when the site meets PWA criteria.
-window.addEventListener('beforeinstallprompt', (e) => {
-  // Prevent Chrome 67 and earlier from automatically showing the prompt
-  e.preventDefault();
-  // Stash the event so it can be triggered later.
-  deferredPrompt = e;
-  // Show the install button container
-  installContainer.classList.remove('install-hidden');
-  console.log("Install prompt is ready to be triggered");
-});
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      // Add 'show' class to display the button (subject to CSS media query)
+      installContainer.classList.add('show');
+      console.log("Install prompt is ready to be triggered");
+    });
 
-// 2. Handle the button click
-btnInstall.addEventListener('click', async () => {
-  if (!deferredPrompt) {
-      return;
-  }
-  // Hide the button container immediately after click
-  installContainer.classList.add('install-hidden');
-  
-  // Show the browser's native install prompt
-  deferredPrompt.prompt();
-  
-  // Wait for the user to respond to the prompt
-  const { outcome } = await deferredPrompt.userChoice;
-  console.log(`User response to install prompt: ${outcome}`);
-  
-  // We've used the prompt, so clear the variable. 
-  // It can only be used once.
-  deferredPrompt = null;
-});
+    btnInstall.addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      installContainer.classList.remove('show');
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      console.log(`User response to install prompt: ${outcome}`);
+      deferredPrompt = null;
+    });
 
-// Optional: Listen for successful installation to log it
-window.addEventListener('appinstalled', () => {
-  installContainer.classList.add('install-hidden');
-  deferredPrompt = null;
-  console.log('PWA was installed successfully');
-});
+    window.addEventListener('appinstalled', () => {
+      installContainer.classList.remove('show');
+      deferredPrompt = null;
+      console.log('PWA was installed successfully');
+    });
   </script>
 </body>
 </html>
