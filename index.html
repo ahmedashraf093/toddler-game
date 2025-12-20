@@ -784,5 +784,10 @@
         // Init
         setMode('shadow', document.querySelector('.nav-btn.active'));
     </script>
+    <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js');
+    }
+  </script>
 </body>
 </html>
