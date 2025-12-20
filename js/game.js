@@ -14,7 +14,8 @@ const themes = {
     feed: { primary: '#ffc107', bg: '#fffde7', dots: '#fff9c4' },
     shape: { primary: '#6c5ce7', bg: '#a29bfe', dots: '#dfe6e9' },
     weather: { primary: '#00cec9', bg: '#e0fbfb', dots: '#b2ebf2' },
-    nature: { primary: '#00b894', bg: '#e6fffa', dots: '#b3f5e1' }
+    nature: { primary: '#00b894', bg: '#e6fffa', dots: '#b3f5e1' },
+    habitat: { primary: '#fdcb6e', bg: '#fff7d1', dots: '#ffeaa7' }
 };
 
 const shadowLibrary = [
@@ -84,6 +85,33 @@ const natureLibrary = [
     { id: 'ocean', nature: '🌊', obj: '🐟', natureName: 'Ocean', objName: 'Fish', text: 'Fish swim in water!' },
     { id: 'flower', nature: '🌱', obj: '🐝', natureName: 'Spring', objName: 'Bee', text: 'Bees love flowers!' },
     { id: 'caterpillar', nature: '🐛', obj: '🦋', natureName: 'Caterpillar', objName: 'Butterfly', text: 'It becomes a Butterfly!' }
+
+];
+
+const habitatLibrary = [
+    { id: 'lion', animal: '🦁', home: '🌴', animalName: 'Lion', homeName: 'Jungle' },
+    { id: 'rooster', animal: '🐓', home: '🚜', animalName: 'Rooster', homeName: 'Farm' },
+    { id: 'cow', animal: '🐄', home: '🏚️', animalName: 'Cow', homeName: 'Barn' },
+    { id: 'horse', animal: '🐎', home: '🏚️', animalName: 'Horse', homeName: 'Stable' },
+
+    { id: 'dog', animal: '🐶', home: '🏠', animalName: 'Dog', homeName: 'Doghouse' },
+    { id: 'cat', animal: '🐱', home: '🛋️', animalName: 'Cat', homeName: 'House' },
+    { id: 'mouse', animal: '🐭', home: '🕳️', animalName: 'Mouse', homeName: 'Hole' },
+    { id: 'octopus', animal: '🐙', home: '🌊', animalName: 'Octopus', homeName: 'Sea' },
+    { id: 'whale', animal: '🐋', home: '🌊', animalName: 'Whale', homeName: 'Ocean' },
+    { id: 'fish', animal: '🐟', home: '💧', animalName: 'Fish', homeName: 'River' },
+    { id: 'shark', animal: '🦈', home: '🌊', animalName: 'Shark', homeName: 'Deep Sea' },
+    { id: 'frog', animal: '🐸', home: '🪷', animalName: 'Frog', homeName: 'Pond' },
+    { id: 'penguin', animal: '🐧', home: '🧊', animalName: 'Penguin', homeName: 'Ice' },
+    { id: 'polarbear', animal: '🐻‍❄️', home: '❄️', animalName: 'Polar Bear', homeName: 'Snow' },
+    { id: 'monkey', animal: '🐒', home: '🌳', animalName: 'Monkey', homeName: 'Tree' },
+    { id: 'bird', animal: '🐦', home: '🪺', animalName: 'Bird', homeName: 'Nest' },
+    { id: 'bat', animal: '🦇', home: '⛰️', animalName: 'Bat', homeName: 'Cave' },
+    { id: 'bee', animal: '🐝', home: '🍯', animalName: 'Bee', homeName: 'Hive' },
+    { id: 'spider', animal: '🕷️', home: '🕸️', animalName: 'Spider', homeName: 'Web' },
+    { id: 'camel', animal: '🐫', home: '🌵', animalName: 'Camel', homeName: 'Desert' },
+    { id: 'panda', animal: '🐼', home: '🎋', animalName: 'Panda', homeName: 'Bamboo' },
+    { id: 'squirrel', animal: '🐿️', home: '🌳', animalName: 'Squirrel', homeName: 'Tree Hollow' }
 ];
 
 const objectPool = [
@@ -103,7 +131,7 @@ let hintTimer = null;
 let mathQuestions = [];
 let currentMathIndex = 0;
 
-const history = { shadow: [], letter: [], job: [], number: [], feed: [], shape: [], weather: [], nature: [] };
+const history = { shadow: [], letter: [], job: [], number: [], feed: [], shape: [], weather: [], nature: [], habitat: [] };
 
 function setDifficulty(level, btn) {
     mathDifficulty = level;
@@ -210,6 +238,10 @@ function initStandardGame() {
     else if (currentMode === 'nature') {
         const selected = smartSelect([...natureLibrary], 'nature');
         roundItems = selected.map(n => ({ id: n.id, src: n.nature, tgt: n.obj, type: 'simple', natureName: n.natureName, objName: n.objName, text: n.text }));
+    }
+    else if (currentMode === 'habitat') {
+        const selected = smartSelect([...habitatLibrary], 'habitat');
+        roundItems = selected.map(h => ({ id: h.id, src: h.animal, tgt: h.home, type: 'simple', animalName: h.animalName, homeName: h.homeName }));
     }
 
     const draggables = shuffle([...roundItems]);
@@ -397,6 +429,7 @@ function checkStandardMatch(targetBox, val, originalId) {
     else if (currentMode === 'shape') showShapeReward(val);
     else if (currentMode === 'weather') showWeatherReward(val);
     else if (currentMode === 'nature') showNatureReward(val);
+    else if (currentMode === 'habitat') showHabitatReward(val);
     else if (currentMode === 'number') { launchModal(val, targetBox.dataset.emoji, targetBox.dataset.name); speakText(`${val}... ${targetBox.dataset.name}`); }
     else speakText("Yeah!");
     correctCount++;
@@ -428,6 +461,12 @@ function showNatureReward(natureId) {
     const nData = natureLibrary.find(n => n.id === natureId);
     launchModal(nData.nature, nData.obj, "Nature!");
     speakText(`${nData.natureName}... ${nData.text}`);
+}
+
+function showHabitatReward(habId) {
+    const hData = habitatLibrary.find(h => h.id === habId);
+    launchModal(hData.animal, hData.home, "Home!");
+    speakText(`The ${hData.animalName} lives in the ${hData.homeName}!`);
 }
 
 function updateScoreUI() {
