@@ -551,6 +551,9 @@ function initPuzzleGame() {
 
     speakText(`Let's build a ${puzzle.name}!`);
 
+    // Set preview
+    document.getElementById('puzzle-target-img').src = puzzle.src;
+
     // Reset grid
     const slots = document.querySelectorAll('.puzzle-slot');
     slots.forEach(slot => {
