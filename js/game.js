@@ -20,9 +20,14 @@ const themes = {
 };
 
 const shadowLibrary = [
-    '🐶', '🐱', '🦁', '🐮', '🐸', '🐵', '🐧', '🐘', '🦒', '🦓', '🦋',
-    '🚗', '🚌', '🚑', '🚒', '🚓', '🚜', '🚂', '✈️', '🚀', '🚁',
-    '🍎', '🍌', '🍇', '🍓', '🍦', '🍪', '🍕', '⚽', '🧸', '🎈', '🖍️'
+    { e: '🐶', n: 'Dog' }, { e: '🐱', n: 'Cat' }, { e: '🦁', n: 'Lion' }, { e: '🐮', n: 'Cow' },
+    { e: '🐸', n: 'Frog' }, { e: '🐵', n: 'Monkey' }, { e: '🐧', n: 'Penguin' }, { e: '🐘', n: 'Elephant' },
+    { e: '🦒', n: 'Giraffe' }, { e: '🦓', n: 'Zebra' }, { e: '🦋', n: 'Butterfly' }, { e: '🚗', n: 'Car' },
+    { e: '🚌', n: 'Bus' }, { e: '🚑', n: 'Ambulance' }, { e: '🚒', n: 'Fire Truck' }, { e: '🚓', n: 'Police Car' },
+    { e: '🚜', n: 'Tractor' }, { e: '🚂', n: 'Train' }, { e: '✈️', n: 'Airplane' }, { e: '🚀', n: 'Rocket' },
+    { e: '🚁', n: 'Helicopter' }, { e: '🍎', n: 'Apple' }, { e: '🍌', n: 'Banana' }, { e: '🍇', n: 'Grapes' },
+    { e: '🍓', n: 'Strawberry' }, { e: '🍦', n: 'Ice Cream' }, { e: '🍪', n: 'Cookie' }, { e: '🍕', n: 'Pizza' },
+    { e: '⚽', n: 'Ball' }, { e: '🧸', n: 'Teddy Bear' }, { e: '🎈', n: 'Balloon' }, { e: '🖍️', n: 'Crayon' }
 ];
 
 const letterExamples = {
@@ -141,6 +146,7 @@ let mathQuestions = [];
 let currentMathIndex = 0;
 let currentPuzzle = null;
 let puzzlePiecesPlaced = 0;
+let consecutiveCompletions = 0;
 
 const history = { shadow: [], letter: [], job: [], number: [], feed: [], shape: [], weather: [], nature: [], habitat: [], puzzle: [] };
 
@@ -207,6 +213,7 @@ function initRound() {
     document.getElementById('reset-btn').style.display = 'none';
     correctCount = 0;
     if (currentMode === 'math') initMathGame();
+    else if (currentMode === 'puzzle') initPuzzleGame();
     else initStandardGame();
 }
 
@@ -219,16 +226,16 @@ function initStandardGame() {
 
     if (currentMode === 'shadow') {
         const selected = smartSelect([...shadowLibrary], 'shadow');
-        roundItems = selected.map(i => ({ id: i, src: i, tgt: i, type: 'simple' }));
+        roundItems = selected.map(i => ({ id: i.e, src: i.e, tgt: i.e, type: 'simple', srcLabel: i.n, tgtLabel: i.n }));
     }
     else if (currentMode === 'letter') {
         const allKeys = Object.keys(letterExamples);
         const selectedKeys = smartSelect(allKeys, 'letter');
-        roundItems = selectedKeys.map(k => ({ id: k, src: k, tgt: k.toLowerCase(), type: 'simple' }));
+        roundItems = selectedKeys.map(k => ({ id: k, src: k, tgt: k.toLowerCase(), type: 'simple', srcLabel: k, tgtLabel: letterExamples[k].w }));
     }
     else if (currentMode === 'job') {
         const selected = smartSelect([...jobLibrary], 'job');
-        roundItems = selected.map(j => ({ id: j.id, src: j.person, tgt: j.tool, type: 'simple' }));
+        roundItems = selected.map(j => ({ id: j.id, src: j.person, tgt: j.tool, type: 'simple', srcLabel: j.name, tgtLabel: j.toolName }));
     }
     else if (currentMode === 'number') {
         const nums = [1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -239,28 +246,28 @@ function initStandardGame() {
             let gridHtml = `<div class="number-grid">`;
             for (let i = 0; i < count; i++) gridHtml += `<span class="mini-emoji">${randomObj.e}</span>`;
             gridHtml += `</div>`;
-            return { id: nStr, src: gridHtml, tgt: nStr, type: 'html', emoji: randomObj.e, name: randomObj.n };
+            return { id: nStr, src: gridHtml, tgt: nStr, type: 'html', emoji: randomObj.e, name: randomObj.n, srcLabel: randomObj.n, tgtLabel: nStr };
         });
     }
     else if (currentMode === 'feed') {
         const selected = smartSelect([...feedLibrary], 'feed');
-        roundItems = selected.map(f => ({ id: f.id, src: f.food, tgt: f.animal, type: 'simple', foodName: f.foodName, animalName: f.animalName }));
+        roundItems = selected.map(f => ({ id: f.id, src: f.food, tgt: f.animal, type: 'simple', srcLabel: f.foodName, tgtLabel: f.animalName }));
     }
     else if (currentMode === 'shape') {
         const selected = smartSelect([...shapeLibrary], 'shape');
-        roundItems = selected.map(s => ({ id: s.id, src: s.shape, tgt: s.obj, type: 'simple', shapeName: s.shapeName, objName: s.objName }));
+        roundItems = selected.map(s => ({ id: s.id, src: s.shape, tgt: s.obj, type: 'simple', srcLabel: s.shapeName, tgtLabel: s.objName }));
     }
     else if (currentMode === 'weather') {
         const selected = smartSelect([...weatherLibrary], 'weather');
-        roundItems = selected.map(w => ({ id: w.id, src: w.weather, tgt: w.obj, type: 'simple', weatherName: w.weatherName, objName: w.objName, text: w.text }));
+        roundItems = selected.map(w => ({ id: w.id, src: w.weather, tgt: w.obj, type: 'simple', srcLabel: w.weatherName, tgtLabel: w.objName, text: w.text }));
     }
     else if (currentMode === 'nature') {
         const selected = smartSelect([...natureLibrary], 'nature');
-        roundItems = selected.map(n => ({ id: n.id, src: n.nature, tgt: n.obj, type: 'simple', natureName: n.natureName, objName: n.objName, text: n.text }));
+        roundItems = selected.map(n => ({ id: n.id, src: n.nature, tgt: n.obj, type: 'simple', srcLabel: n.natureName, tgtLabel: n.objName, text: n.text }));
     }
     else if (currentMode === 'habitat') {
         const selected = smartSelect([...habitatLibrary], 'habitat');
-        roundItems = selected.map(h => ({ id: h.id, src: h.animal, tgt: h.home, type: 'simple', animalName: h.animalName, homeName: h.homeName }));
+        roundItems = selected.map(h => ({ id: h.id, src: h.animal, tgt: h.home, type: 'simple', srcLabel: h.animalName, tgtLabel: h.homeName }));
     }
 
     const draggables = shuffle([...roundItems]);
@@ -272,6 +279,17 @@ function initStandardGame() {
 function createStandardItem(content, id, container, isDrag, type, dataObj) {
     const el = document.createElement('div');
     el.className = `item ${isDrag ? 'draggable' : 'droppable'}`;
+    const ttsText = isDrag ? (dataObj.srcLabel || '') : (dataObj.tgtLabel || '');
+    if (ttsText) el.dataset.label = ttsText;
+
+    // Add click handler for TTS
+    el.onclick = () => {
+        if (ttsText) speakText(ttsText);
+        // Visual effect
+        el.style.transform = "scale(1.2)";
+        setTimeout(() => { el.style.transform = "scale(1)"; }, 200);
+    };
+
     if (isDrag) {
         if (type === 'html') el.innerHTML = content; else el.textContent = content;
         el.draggable = true;
@@ -384,7 +402,16 @@ function clearHint() {
     document.querySelectorAll('.hint-active').forEach(el => el.classList.remove('hint-active'));
 }
 
-function dragStart(e) { draggedVal = e.target.dataset.val; draggedElId = e.target.id; startHintTimer(draggedVal); }
+function dragStart(e) {
+    draggedVal = e.target.dataset.val;
+    draggedElId = e.target.id;
+    if (e.dataTransfer) e.dataTransfer.setData("text", e.target.id);
+
+    // Voice effect on drag start
+    if (e.target.dataset.label) speakText(e.target.dataset.label, true); // true = throttle
+
+    startHintTimer(draggedVal);
+}
 function dragEnd(e) { clearHint(); }
 function drop(e) { e.preventDefault(); clearHint(); const box = e.target.closest('.droppable'); if (box && currentMode !== 'math') checkStandardMatch(box, draggedVal, draggedElId); }
 
@@ -403,6 +430,10 @@ function dropMath(e) {
 function touchStart(e) {
     e.preventDefault(); const actualItem = e.target.closest('.draggable'); if (!actualItem) return;
     activeTouchEl = actualItem; draggedVal = activeTouchEl.dataset.val; draggedElId = activeTouchEl.id;
+
+    // Voice effect on touch start
+    if (activeTouchEl.dataset.label) speakText(activeTouchEl.dataset.label, true);
+
     startHintTimer(draggedVal);
     const spacer = document.createElement('div');
     spacer.id = 'drag-spacer';
@@ -430,8 +461,14 @@ function touchEnd(e) {
                 totalScore += 10; updateScoreUI();
                 speakText("Correct! " + box.dataset.tts);
                 launchModal(draggedVal, box.dataset.emoji, "Correct!");
-                setTimeout(() => { currentMathIndex++; loadMathQuestion(); }, 2500);
+                setTimeout(() => {
+                    currentMathIndex++;
+                    if (currentMathIndex >= mathQuestions.length) checkOverallProgress();
+                    loadMathQuestion();
+                }, 2500);
             }
+        } else if (currentMode === 'puzzle') {
+            handlePuzzleTouchDrop(box, activeTouchEl);
         } else { checkStandardMatch(box, draggedVal, draggedElId); }
     }
     activeTouchEl = null;
@@ -455,6 +492,7 @@ function checkStandardMatch(targetBox, val, originalId) {
     if (correctCount === roundSize) {
         document.getElementById('reset-btn').style.display = 'inline-block';
         setTimeout(() => speakText("Good Job!"), 1000);
+        checkOverallProgress();
     }
 }
 
@@ -531,15 +569,28 @@ if ('speechSynthesis' in window) {
     loadVoices();
 }
 
-function speakText(text) {
-    if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.rate = 0.9;
-        utterance.pitch = 1.0;
-        if (selectedVoice) utterance.voice = selectedVoice;
-        window.speechSynthesis.speak(utterance);
+let lastSpokenText = '';
+let lastSpokenTime = 0;
+
+function speakText(text, throttle = false) {
+    if (!('speechSynthesis' in window)) return;
+
+    const now = Date.now();
+    // If throttled, don't repeat the same text within 1.5 seconds
+    if (throttle && text === lastSpokenText && (now - lastSpokenTime) < 1500) {
+        return;
     }
+
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = 0.9;
+    utterance.pitch = 1.0;
+    if (selectedVoice) utterance.voice = selectedVoice;
+
+    lastSpokenText = text;
+    lastSpokenTime = now;
+
+    window.speechSynthesis.speak(utterance);
 }
 
 
@@ -559,16 +610,18 @@ function initPuzzleGame() {
     slots.forEach(slot => {
         slot.innerHTML = '';
         slot.classList.remove('matched');
+        slot.classList.add('droppable'); // Ensure it can be dropped upon
         // Handle drops for puzzle
         slot.ondragover = e => e.preventDefault();
         slot.ondrop = handlePuzzleDrop;
-        // Touch support
-        slot.ontouchend = handlePuzzleTouchDrop;
     });
 
     // Create pieces
     const pool = document.getElementById('puzzle-pieces-pool');
     pool.innerHTML = '';
+    pool.className = 'droppable'; // Make pool a valid drop target
+    pool.ondragover = e => e.preventDefault();
+    pool.ondrop = handlePuzzleDrop;
 
     // 4 pieces: 0, 1, 2, 3
     const pieces = [0, 1, 2, 3];
@@ -586,38 +639,190 @@ function initPuzzleGame() {
         const y = Math.floor(pos / 2) * 100;
         piece.style.backgroundPosition = `${x}% ${y}%`;
 
-        piece.ondragstart = drag;
-        piece.ontouchstart = touchStart;
+        addDragEvents(piece);
 
         pool.appendChild(piece);
     });
+
+    console.log("Puzzle Game Initialized. Target:", puzzle.name);
+    console.log("Image Data Length:", puzzle.src ? puzzle.src.length : "Missing");
+}
+
+function playVictoryMusic() {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContext) return;
+    const ctx = new AudioContext();
+
+    // Simple melody: C5-E5-G5-C6
+    const notes = [523.25, 659.25, 783.99, 1046.50];
+    let time = ctx.currentTime;
+
+    notes.forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, time + i * 0.15);
+
+        gain.gain.setValueAtTime(0.2, time + i * 0.15);
+        gain.gain.exponentialRampToValueAtTime(0.01, time + i * 0.15 + 0.4);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(time + i * 0.15);
+        osc.stop(time + i * 0.15 + 0.5);
+    });
+}
+
+function showCelebration() {
+    const overlay = document.getElementById('celebration-overlay');
+    const container = overlay.querySelector('.confetti-container');
+    overlay.classList.remove('hidden');
+    playVictoryMusic();
+    speakText("Amazing! Three in a row!");
+
+    container.innerHTML = '';
+
+    // Pick a random animation type
+    const types = ['confetti', 'balloons', 'stars', 'emojis', 'bubbles'];
+    const type = types[Math.floor(Math.random() * types.length)];
+
+    console.log("Celebration Type:", type);
+
+    if (type === 'confetti') {
+        const colors = ['#f00', '#0f0', '#00f', '#ff0', '#0ff', '#f0f'];
+        for (let i = 0; i < 50; i++) {
+            const c = document.createElement('div');
+            c.className = 'confetti';
+            c.style.left = Math.random() * 100 + 'vw';
+            c.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            c.style.animationDuration = (Math.random() * 2 + 2) + 's';
+            c.style.animationDelay = (Math.random() * 1) + 's';
+            container.appendChild(c);
+        }
+    } else if (type === 'balloons') {
+        for (let i = 0; i < 30; i++) {
+            const b = document.createElement('div');
+            b.className = 'balloon';
+            b.textContent = '🎈';
+            b.style.left = Math.random() * 100 + 'vw';
+            b.style.animationDuration = (Math.random() * 3 + 3) + 's';
+            b.style.fontSize = (Math.random() * 30 + 40) + 'px';
+            container.appendChild(b);
+        }
+    } else if (type === 'stars') {
+        for (let i = 0; i < 40; i++) {
+            const s = document.createElement('div');
+            s.className = 'star-anim';
+            s.textContent = Math.random() > 0.5 ? '⭐️' : '🌟';
+            s.style.left = Math.random() * 100 + 'vw';
+            s.style.top = Math.random() * 100 + 'vh';
+            s.style.animationDuration = (Math.random() * 1 + 1) + 's';
+            s.style.animationDelay = (Math.random() * 2) + 's';
+            container.appendChild(s);
+        }
+    } else if (type === 'emojis') {
+        const partyEmojis = ['🥳', '😎', '🦁', '🐶', '🦄', '🌈', '🎉'];
+        for (let i = 0; i < 40; i++) {
+            const e = document.createElement('div');
+            e.className = 'emoji-bounce';
+            e.textContent = partyEmojis[Math.floor(Math.random() * partyEmojis.length)];
+            e.style.left = Math.random() * 100 + 'vw';
+            e.style.animationDuration = (Math.random() * 2 + 2) + 's';
+            e.style.animationDelay = (Math.random() * 1) + 's';
+            container.appendChild(e);
+        }
+    } else if (type === 'bubbles') {
+        for (let i = 0; i < 40; i++) {
+            const b = document.createElement('div');
+            b.className = 'bubble';
+            b.style.left = Math.random() * 100 + 'vw';
+            const size = Math.random() * 40 + 10;
+            b.style.width = size + 'px';
+            b.style.height = size + 'px';
+            b.style.animationDuration = (Math.random() * 4 + 3) + 's';
+            b.style.animationDelay = (Math.random() * 2) + 's';
+            container.appendChild(b);
+        }
+    }
+
+    setTimeout(() => {
+        overlay.classList.add('hidden');
+    }, 4500);
+}
+
+function checkOverallProgress() {
+    consecutiveCompletions++;
+    console.log("Streak:", consecutiveCompletions);
+    if (consecutiveCompletions % 3 === 0) {
+        setTimeout(showCelebration, 500);
+    }
 }
 
 function handlePuzzleDrop(e) {
     e.preventDefault();
-    const data = e.dataTransfer.getData("text");
+    const data = e.dataTransfer ? e.dataTransfer.getData("text") : draggedElId;
     const piece = document.getElementById(data);
     if (!piece || !piece.classList.contains('puzzle-piece')) return;
 
-    // Check if slot is empty
-    if (e.target.classList.contains('puzzle-slot') && e.target.childElementCount === 0) {
-        e.target.appendChild(piece);
+    let target = e.target;
+    // If dropped on a piece, find the parent slot/pool
+    if (target.classList.contains('puzzle-piece')) target = target.parentNode;
+
+    const parentA = piece.parentNode;
+
+    // 1. Drop to Pool
+    if (target.id === 'puzzle-pieces-pool') {
+        target.appendChild(piece);
+        checkPuzzleCompletion();
+        return;
+    }
+
+    // 2. Drop to Slot
+    if (target.classList.contains('puzzle-slot')) {
+        if (target.childElementCount === 0) {
+            // Empty slot: just move
+            target.appendChild(piece);
+        } else if (target !== parentA) {
+            // Occupied slot: SWAP
+            const pieceB = target.firstElementChild;
+            // Move B to A's old home
+            parentA.appendChild(pieceB);
+            // Move A to new home
+            target.appendChild(piece);
+        }
         checkPuzzleCompletion();
     }
 }
 
 // Touch support special for puzzle
-function handlePuzzleTouchDrop(e) {
-    if (!dragSrcEl) return;
-    e.preventDefault();
-    const slot = document.elementFromPoint(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+function handlePuzzleTouchDrop(target, pieceEl) {
+    if (!target || !pieceEl) return;
 
-    if (slot && slot.classList.contains('puzzle-slot') && slot.childElementCount === 0) {
-        slot.appendChild(dragSrcEl);
-        dragSrcEl.classList.remove('dragging');
+    // Find the actual container if dropped on a child element
+    let container = target;
+    if (container.classList.contains('puzzle-piece')) container = container.parentNode;
+
+    const parentA = pieceEl.parentNode;
+
+    // 1. Drop to Pool
+    if (container.id === 'puzzle-pieces-pool') {
+        container.appendChild(pieceEl);
+        checkPuzzleCompletion();
+        return;
+    }
+
+    // 2. Drop to Slot
+    if (container.classList.contains('puzzle-slot')) {
+        if (container.childElementCount === 0) {
+            container.appendChild(pieceEl);
+        } else if (container !== parentA) {
+            // Swap
+            const pieceB = container.firstElementChild;
+            parentA.appendChild(pieceB);
+            container.appendChild(pieceEl);
+        }
         checkPuzzleCompletion();
     }
-    dragSrcEl = null;
 }
 
 function checkPuzzleCompletion() {
@@ -637,6 +842,7 @@ function checkPuzzleCompletion() {
         // Win!
         launchModal("🧩", "🌟", "Great Job!");
         speakText(`You built the ${currentPuzzle.name}!`);
+        checkOverallProgress();
         setTimeout(() => {
             initPuzzleGame();
         }, 3000);

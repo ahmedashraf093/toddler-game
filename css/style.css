@@ -494,17 +494,124 @@ body {
     animation: none;
 }
 
-@keyframes pulse {
+@keyframes popIn {
     0% {
-        transform: scale(1);
+        transform: scale(0);
+        opacity: 0;
     }
 
-    50% {
-        transform: scale(1.05);
+    80% {
+        transform: scale(1.2);
+        opacity: 1;
     }
 
     100% {
         transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* --- New Animations --- */
+
+/* 1. Balloons */
+.balloon {
+    position: absolute;
+    font-size: 50px;
+    bottom: -10vh;
+    animation: balloon-rise 4s ease-in forwards;
+    opacity: 0.9;
+}
+
+@keyframes balloon-rise {
+    0% {
+        transform: translateY(0) rotate(0deg);
+    }
+
+    100% {
+        transform: translateY(-120vh) rotate(20deg);
+    }
+}
+
+/* 2. Stars */
+.star-anim {
+    position: absolute;
+    font-size: 40px;
+    opacity: 0;
+    animation: star-sparkle 2s ease-in-out infinite;
+}
+
+@keyframes star-sparkle {
+    0% {
+        transform: scale(0) rotate(0deg);
+        opacity: 0;
+    }
+
+    50% {
+        transform: scale(1.5) rotate(180deg);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(0) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* 3. Bouncing Emojis */
+.emoji-bounce {
+    position: absolute;
+    font-size: 60px;
+    animation: bounce-fall 3s linear forwards;
+}
+
+@keyframes bounce-fall {
+    0% {
+        top: -10vh;
+        transform: translateX(0);
+    }
+
+    20% {
+        transform: translateX(20px);
+    }
+
+    40% {
+        transform: translateX(-20px);
+    }
+
+    60% {
+        transform: translateX(20px);
+    }
+
+    100% {
+        top: 110vh;
+        transform: translateX(0);
+    }
+}
+
+/* 4. Bubbles */
+.bubble {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    bottom: -10vh;
+    animation: bubble-rise 5s linear forwards;
+}
+
+@keyframes bubble-rise {
+    0% {
+        transform: translateY(0) scale(0.5);
+        opacity: 0;
+    }
+
+    20% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(-120vh) scale(1.5);
+        opacity: 0;
     }
 }
 
@@ -687,5 +794,85 @@ body {
 
     .puzzle-piece {
         background-size: 200px 200px;
+    }
+}
+
+/* Celebration Overlay */
+#celebration-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(45deg, #ff9a9e, #fad0c4, #fbc2eb, #a6c1ee, #c2e9fb);
+    background-size: 400% 400%;
+    z-index: 2000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    animation: gradientBG 3s ease infinite;
+}
+
+#celebration-overlay.hidden {
+    display: none;
+}
+
+@keyframes gradientBG {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.celebration-message {
+    font-size: 5rem;
+    font-weight: bold;
+    color: white;
+    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.confetti {
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    background-color: #f00;
+    animation: confetti-fall 3s linear forwards;
+}
+
+@keyframes confetti-fall {
+    0% {
+        transform: translateY(-10vh) rotate(0deg);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(110vh) rotate(720deg);
+        opacity: 0;
+    }
+}
+
+@keyframes popIn {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+
+    80% {
+        transform: scale(1.2);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
     }
 }

@@ -1,5 +1,24 @@
 if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js');
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+            .then(reg => {
+                console.log('Service Worker Registered');
+
+                // Check for updates periodically
+                setInterval(() => {
+                    reg.update();
+                }, 60 * 60 * 1000); // Check every hour
+            })
+            .catch(err => console.log('SW Registration Failed:', err));
+    });
+
+    // Force reload when new SW takes control
+    let refreshing;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (refreshing) return;
+        window.location.reload();
+        refreshing = true;
+    });
 }
 
 let deferredPrompt;
