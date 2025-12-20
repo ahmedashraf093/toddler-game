@@ -64,8 +64,8 @@ const feedLibrary = [
 const shapeLibrary = [
     { id: 'triangle', shape: '🔺', obj: '🍕', shapeName: 'Triangle', objName: 'Pizza Slice' },
     { id: 'circle', shape: '🔴', obj: '⏰', shapeName: 'Circle', objName: 'Clock' },
-    { id: 'square', shape: '🟦', obj: '🎁', shapeName: 'Square', objName: 'Gift' },
-    { id: 'rectangle', shape: '🟩', obj: '🚪', shapeName: 'Rectangle', objName: 'Door' },
+    { id: 'square', shape: '🟧', obj: '🎁', shapeName: 'Square', objName: 'Gift' },
+    { id: 'rectangle', shape: '📟', obj: '🚪', shapeName: 'Rectangle', objName: 'Door' },
 
     { id: 'oval', shape: '🥚', obj: '🥑', shapeName: 'Oval', objName: 'Avocado' },
     { id: 'diamond', shape: '🔶', obj: '🪁', shapeName: 'Diamond', objName: 'Kite' }
