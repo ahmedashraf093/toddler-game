@@ -11,7 +11,8 @@ const themes = {
     job: { primary: '#f6d365', bg: '#fffbe6', dots: '#fff0b3' },
     number: { primary: '#c084fc', bg: '#f3e8ff', dots: '#e9d5ff' },
     math: { primary: '#84fab0', bg: '#f0fff4', dots: '#d1fae5' },
-    feed: { primary: '#ffc107', bg: '#fffde7', dots: '#fff9c4' }
+    feed: { primary: '#ffc107', bg: '#fffde7', dots: '#fff9c4' },
+    shape: { primary: '#6c5ce7', bg: '#a29bfe', dots: '#dfe6e9' }
 };
 
 const shadowLibrary = [
@@ -58,6 +59,17 @@ const feedLibrary = [
     { id: 'squirrel', animal: '🐿️', food: '🌰', foodName: 'Nut', animalName: 'Squirrel' }
 ];
 
+const shapeLibrary = [
+    { id: 'triangle', shape: '🔺', obj: '🍕', shapeName: 'Triangle', objName: 'Pizza Slice' },
+    { id: 'circle', shape: '🔴', obj: '⏰', shapeName: 'Circle', objName: 'Clock' },
+    { id: 'square', shape: '🟦', obj: '🎁', shapeName: 'Square', objName: 'Gift' },
+    { id: 'rectangle', shape: '🟩', obj: '🚪', shapeName: 'Rectangle', objName: 'Door' },
+    { id: 'star', shape: '⭐️', obj: '𓆉', shapeName: 'Star', objName: 'Starfish' },
+    { id: 'heart', shape: '❤️', obj: '🍪', shapeName: 'Heart', objName: 'Cookie' },
+    { id: 'oval', shape: '🥚', obj: '🥑', shapeName: 'Oval', objName: 'Avocado' },
+    { id: 'diamond', shape: '🔶', obj: '🪁', shapeName: 'Diamond', objName: 'Kite' }
+];
+
 const objectPool = [
     { e: '☀️', n: 'Suns' }, { e: '👟', n: 'Shoes' }, { e: '🍎', n: 'Apples' },
     { e: '🚗', n: 'Cars' }, { e: '⭐️', n: 'Stars' }, { e: '🦋', n: 'Butterflies' },
@@ -75,7 +87,7 @@ let hintTimer = null;
 let mathQuestions = [];
 let currentMathIndex = 0;
 
-const history = { shadow: [], letter: [], job: [], number: [], feed: [] };
+const history = { shadow: [], letter: [], job: [], number: [], feed: [], shape: [] };
 
 function setDifficulty(level, btn) {
     mathDifficulty = level;
@@ -170,6 +182,10 @@ function initStandardGame() {
     else if (currentMode === 'feed') {
         const selected = smartSelect([...feedLibrary], 'feed');
         roundItems = selected.map(f => ({ id: f.id, src: f.food, tgt: f.animal, type: 'simple', foodName: f.foodName, animalName: f.animalName }));
+    }
+    else if (currentMode === 'shape') {
+        const selected = smartSelect([...shapeLibrary], 'shape');
+        roundItems = selected.map(s => ({ id: s.id, src: s.shape, tgt: s.obj, type: 'simple', shapeName: s.shapeName, objName: s.objName }));
     }
 
     const draggables = shuffle([...roundItems]);
@@ -354,6 +370,7 @@ function checkStandardMatch(targetBox, val, originalId) {
     if (currentMode === 'letter') showLetterReward(val);
     else if (currentMode === 'job') showJobReward(val);
     else if (currentMode === 'feed') showFeedReward(val);
+    else if (currentMode === 'shape') showShapeReward(val);
     else if (currentMode === 'number') { launchModal(val, targetBox.dataset.emoji, targetBox.dataset.name); speakText(`${val}... ${targetBox.dataset.name}`); }
     else speakText("Yeah!");
     correctCount++;
@@ -367,6 +384,12 @@ function showFeedReward(feedId) {
     const feedData = feedLibrary.find(f => f.id === feedId);
     launchModal(feedData.animal, feedData.food, "Yummy!");
     speakText(`The ${feedData.animalName} eats the ${feedData.foodName}!`);
+}
+
+function showShapeReward(shapeId) {
+    const shapeData = shapeLibrary.find(s => s.id === shapeId);
+    launchModal(shapeData.shape, shapeData.obj, "Match!");
+    speakText(`A ${shapeData.objName} looks like a ${shapeData.shapeName}!`);
 }
 
 function updateScoreUI() {
