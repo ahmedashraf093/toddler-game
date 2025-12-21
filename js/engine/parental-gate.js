@@ -1,3 +1,5 @@
+import { speakText } from './audio.js';
+
 export const ParentalGate = {
     checkInterval: null,
     storageKey: 'parentalGateStartTime',
@@ -37,6 +39,12 @@ export const ParentalGate = {
     show() {
         const overlay = document.getElementById('parental-gate-overlay');
         if (!overlay || !overlay.classList.contains('hidden')) return; // Already shown or missing
+
+        try {
+            speakText("Need parent help");
+        } catch (e) {
+            console.warn("ParentalGate: TTS failed", e);
+        }
 
         // Generate Question
         // Requirements: "around 6x6 7x7". Range 5-9 seems appropriate.
