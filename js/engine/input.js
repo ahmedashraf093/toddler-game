@@ -86,7 +86,7 @@ function dragStart(e) {
         e.dataTransfer.setDragImage(e.target, e.target.offsetWidth / 2, e.target.offsetHeight / 2);
     }
 
-    if (e.target.dataset.label) speakText(e.target.dataset.label, true);
+    if (e.target.dataset.label) speakText(e.target.dataset.label, null, true);
 
     toggleOtherDraggables(e.target.id, true);
     if(draggedVal) startHintTimer(draggedVal);
@@ -122,7 +122,7 @@ function touchStart(e) {
     draggedVal = activeTouchEl.dataset.val;
     draggedElId = activeTouchEl.id;
 
-    if (activeTouchEl.dataset.label) speakText(activeTouchEl.dataset.label, true);
+    if (activeTouchEl.dataset.label) speakText(activeTouchEl.dataset.label, null, true);
 
     toggleOtherDraggables(activeTouchEl.id, true);
     if(draggedVal) startHintTimer(draggedVal);
