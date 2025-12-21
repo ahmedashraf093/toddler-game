@@ -130,17 +130,63 @@ const habitatLibrary = [
     { id: 'turtle', animal: '🐢', home: '🌊', animalName: 'Turtle', homeName: 'Sea' }
 ];
 
-const puzzleImages = [
-    { id: 'lion', src: puzzleImageData.lion, name: 'Lion' },
-    { id: 'car', src: puzzleImageData.car, name: 'Car' },
-    { id: 'butterfly', src: puzzleImageData.butterfly, name: 'Butterfly' },
-    { id: 'apple', src: puzzleImageData.apple, name: 'Apple' },
-    { id: 'train', src: puzzleImageData.train, name: 'Train' },
-    { id: 'duck', src: puzzleImageData.duck, name: 'Duck' },
-    { id: 'ball', src: puzzleImageData.ball, name: 'Ball' },
-    { id: 'house', src: puzzleImageData.house, name: 'House' },
-    { id: 'flower', src: puzzleImageData.flower, name: 'Flower' }
+const puzzleConfig = [
+    { id: 'lion', key: 'lion', name: 'Lion' },
+    { id: 'car', key: 'car', name: 'Car' },
+    { id: 'butterfly', key: 'butterfly', name: 'Butterfly' },
+    { id: 'apple', key: 'apple', name: 'Apple' },
+    { id: 'train', key: 'train', name: 'Train' },
+    { id: 'duck', key: 'duck', name: 'Duck' },
+    { id: 'ball', key: 'ball', name: 'Ball' },
+    { id: 'house', key: 'house', name: 'House' },
+    { id: 'flower', key: 'flower', name: 'Flower' }
 ];
+let puzzleImages = [];
+let puzzleDataLoaded = false;
+
+function loadPuzzleAssets(callback) {
+    if (puzzleDataLoaded) {
+        if (callback) callback();
+        return;
+    }
+
+    const loader = document.getElementById('loading-screen');
+    if (loader) {
+        loader.classList.remove('hidden');
+        const textEl = loader.querySelector('.loader-text');
+        if (textEl) textEl.textContent = "Downloading Puzzle Pack...";
+    }
+
+    const script = document.createElement('script');
+    script.src = 'js/image-data.js';
+    script.onload = () => {
+        puzzleDataLoaded = true;
+        puzzleImages = puzzleConfig.map(item => ({
+            id: item.id,
+            name: item.name,
+            src: puzzleImageData[item.key]
+        }));
+
+        if (loader) {
+            loader.classList.add('hidden');
+             // Reset text for next time
+            setTimeout(() => {
+                const textEl = loader.querySelector('.loader-text');
+                if (textEl) textEl.textContent = "Loading Fun...";
+            }, 500);
+        }
+        if (callback) callback();
+    };
+    script.onerror = () => {
+        if (loader) {
+             const textEl = loader.querySelector('.loader-text');
+             if (textEl) textEl.textContent = "Error loading puzzles!";
+             setTimeout(() => loader.classList.add('hidden'), 2000);
+        }
+        alert("Failed to load puzzle data. Please check connection.");
+    };
+    document.body.appendChild(script);
+}
 
 const objectPool = [
     { e: '☀️', n: 'Suns' }, { e: '👟', n: 'Shoes' }, { e: '🍎', n: 'Apples' },
@@ -178,6 +224,11 @@ function setDifficulty(level, btn) {
 
 
 function setMode(mode) {
+    if (mode === 'puzzle' && !puzzleDataLoaded) {
+        loadPuzzleAssets(() => setMode(mode));
+        return;
+    }
+
     currentMode = mode;
     // Hide menu if open
     document.getElementById('games-menu-overlay').classList.add('hidden');
