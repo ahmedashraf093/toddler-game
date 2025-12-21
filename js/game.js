@@ -502,7 +502,10 @@ function clearHint() {
 function dragStart(e) {
     draggedVal = e.target.dataset.val;
     draggedElId = e.target.id;
-    if (e.dataTransfer) e.dataTransfer.setData("text", e.target.id);
+    if (e.dataTransfer) {
+        e.dataTransfer.setData("text", e.target.id);
+        e.dataTransfer.setDragImage(e.target, e.target.offsetWidth / 2, e.target.offsetHeight / 2);
+    }
 
     // Voice effect on drag start
     if (e.target.dataset.label) speakText(e.target.dataset.label, true); // true = throttle
@@ -553,11 +556,11 @@ function touchStart(e) {
     const t = e.touches[0]; activeTouchEl.style.position = 'fixed'; activeTouchEl.style.zIndex = '1000';
     activeTouchEl.style.width = spacer.style.width;
 
-    // Offset standard drags so finger doesn't hide object
-    const offsetY = currentMode === 'puzzle' ? 0 : 70; // Keep puzzle pieces under finger for precision, others above
+    const halfWidth = activeTouchEl.offsetWidth / 2;
+    const halfHeight = activeTouchEl.offsetHeight / 2;
 
-    activeTouchEl.style.left = (t.clientX - 50) + 'px';
-    activeTouchEl.style.top = (t.clientY - 50 - offsetY) + 'px';
+    activeTouchEl.style.left = (t.clientX - halfWidth) + 'px';
+    activeTouchEl.style.top = (t.clientY - halfHeight) + 'px';
 
     // Unlock Audio Context on first touch
     resumeAudioContext();
@@ -568,10 +571,11 @@ function touchMove(e) {
     if (!activeTouchEl) return;
     const t = e.touches[0];
 
-    const offsetY = currentMode === 'puzzle' ? 0 : 70;
+    const halfWidth = activeTouchEl.offsetWidth / 2;
+    const halfHeight = activeTouchEl.offsetHeight / 2;
 
-    activeTouchEl.style.left = (t.clientX - 50) + 'px';
-    activeTouchEl.style.top = (t.clientY - 50 - offsetY) + 'px';
+    activeTouchEl.style.left = (t.clientX - halfWidth) + 'px';
+    activeTouchEl.style.top = (t.clientY - halfHeight) + 'px';
 }
 
 function touchEnd(e) {
