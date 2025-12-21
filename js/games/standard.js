@@ -5,7 +5,7 @@ import {
 } from '../data/content.js';
 import { smartSelect, shuffle } from '../engine/utils.js';
 import { makeDraggable, makeDroppable, setDropCallback } from '../engine/input.js';
-import { speakText } from '../engine/audio.js';
+import { speakText, speakSequence } from '../engine/audio.js'; // Imported speakSequence
 import { launchModal, updateScoreUI, showLoader } from '../engine/ui.js';
 import { checkOverallProgress } from '../challenges/manager.js';
 
@@ -32,11 +32,11 @@ export function initStandardGame() {
     else if (mode === 'letter') {
         const allKeys = Object.keys(letterExamples);
         const selectedKeys = smartSelect(allKeys, 'letter', roundSize);
-        roundItems = selectedKeys.map(k => ({ id: k, src: k, tgt: k.toLowerCase(), type: 'simple', srcLabel: k, tgtLabel: letterExamples[k].w }));
+        roundItems = selectedKeys.map(k => ({ id: k, src: k, tgt: k.toLowerCase(), type: 'simple', srcLabel: k, tgtLabel: letterExamples[k].w, audioId: k.toLowerCase() }));
     }
     else if (mode === 'job') {
         const selected = smartSelect([...jobLibrary], 'job', roundSize);
-        roundItems = selected.map(j => ({ id: j.id, src: j.person, tgt: j.tool, type: 'simple', srcLabel: j.name, tgtLabel: j.toolName }));
+        roundItems = selected.map(j => ({ id: j.id, src: j.person, tgt: j.tool, type: 'simple', srcLabel: j.name, tgtLabel: j.toolName, audioId: j.id }));
     }
     else if (mode === 'number') {
         const nums = [1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -52,23 +52,23 @@ export function initStandardGame() {
     }
     else if (mode === 'feed') {
         const selected = smartSelect([...feedLibrary], 'feed', roundSize);
-        roundItems = selected.map(f => ({ id: f.id, src: f.food, tgt: f.animal, type: 'simple', srcLabel: f.foodName, tgtLabel: f.animalName }));
+        roundItems = selected.map(f => ({ id: f.id, src: f.food, tgt: f.animal, type: 'simple', srcLabel: f.foodName, tgtLabel: f.animalName, audioId: f.id }));
     }
     else if (mode === 'shape') {
         const selected = smartSelect([...shapeLibrary], 'shape', roundSize);
-        roundItems = selected.map(s => ({ id: s.id, src: s.shape, tgt: s.obj, type: 'simple', srcLabel: s.shapeName, tgtLabel: s.objName }));
+        roundItems = selected.map(s => ({ id: s.id, src: s.shape, tgt: s.obj, type: 'simple', srcLabel: s.shapeName, tgtLabel: s.objName, audioId: s.id }));
     }
     else if (mode === 'weather') {
         const selected = smartSelect([...weatherLibrary], 'weather', roundSize);
-        roundItems = selected.map(w => ({ id: w.id, src: w.weather, tgt: w.obj, type: 'simple', srcLabel: w.weatherName, tgtLabel: w.objName, text: w.text }));
+        roundItems = selected.map(w => ({ id: w.id, src: w.weather, tgt: w.obj, type: 'simple', srcLabel: w.weatherName, tgtLabel: w.objName, text: w.text, audioId: w.id }));
     }
     else if (mode === 'nature') {
         const selected = smartSelect([...natureLibrary], 'nature', roundSize);
-        roundItems = selected.map(n => ({ id: n.id, src: n.nature, tgt: n.obj, type: 'simple', srcLabel: n.natureName, tgtLabel: n.objName, text: n.text }));
+        roundItems = selected.map(n => ({ id: n.id, src: n.nature, tgt: n.obj, type: 'simple', srcLabel: n.natureName, tgtLabel: n.objName, text: n.text, audioId: n.id }));
     }
     else if (mode === 'habitat') {
         const selected = smartSelect([...habitatLibrary], 'habitat', roundSize);
-        roundItems = selected.map(h => ({ id: h.id, src: h.animal, tgt: h.home, type: 'simple', srcLabel: h.animalName, tgtLabel: h.homeName }));
+        roundItems = selected.map(h => ({ id: h.id, src: h.animal, tgt: h.home, type: 'simple', srcLabel: h.animalName, tgtLabel: h.homeName, audioId: h.id }));
     }
 
     const draggables = shuffle([...roundItems]);
@@ -85,7 +85,37 @@ function createStandardItem(content, id, container, isDrag, type, dataObj) {
 
     // Add click handler for TTS
     el.onclick = () => {
-        if (ttsText) speakText(ttsText);
+        // Try to construct a simple key sequence for click
+        let audioKey = null;
+
+        // Use explicit audioId if available (set in initStandardGame)
+        if (dataObj && dataObj.audioId) {
+             // Prefix based on mode logic?
+             // In initStandardGame, we passed audioId.
+             // But we need to map it to the sprite keys: 'alpha_x', 'noun_x', etc.
+
+             // Check if it looks like a known sprite key or prefix it
+             // Actually, easier to use the dataObj properties we already have or just infer.
+             // Most items are Nouns. Letters are Alphas.
+
+             const label = (dataObj.srcLabel || dataObj.tgtLabel || '').toLowerCase().replace(' ', '_');
+
+             // Heuristic to match sprite keys
+             // Letters: 'alpha_a'
+             if (type === 'simple' && label.length === 1 && label >= 'a' && label <= 'z') {
+                 audioKey = 'alpha_' + label;
+             } else {
+                 // Try noun
+                 audioKey = 'noun_' + label;
+             }
+        }
+
+        if (audioKey) {
+             speakText(ttsText, audioKey);
+        } else {
+             speakText(ttsText);
+        }
+
         // Visual effect
         el.style.transform = "scale(1.2)";
         setTimeout(() => { el.style.transform = "scale(1)"; }, 200);
@@ -135,50 +165,88 @@ function handleDrop(targetBox, draggedVal, draggedElId) {
         speakText(`${draggedVal}... ${targetBox.dataset.name}`);
     }
     else {
-        if (targetBox.dataset.label) speakText(targetBox.dataset.label);
+        // Generic match
+        speakText("Match!", "generic_match");
     }
 
     const currentCorrect = incrementCorrect();
     if (currentCorrect === roundSize) {
         document.getElementById('reset-btn').style.display = 'inline-block';
-        setTimeout(() => speakText("Good Job!"), 1000);
-        checkOverallProgress(mode); // Delegate to manager/main to handle streak/celebration
+        setTimeout(() => speakText("Good Job!", "generic_good_job"), 1000);
+        checkOverallProgress(mode);
     }
 }
 
-// Reward Helpers
+// Reward Helpers - Now using speakSequence!
 function showLetterReward(letter) {
     const data = letterExamples[letter];
     launchModal(`${letter}${letter.toLowerCase()}`, data.e, data.w);
-    speakText(`${letter}... ${data.w}`);
+    // "A... Apple"
+    const letterKey = `alpha_${letter.toLowerCase()}`;
+    const wordKey = `noun_${data.w.toLowerCase().replace(' ', '_')}`;
+    speakSequence([letterKey, wordKey], `${letter}... ${data.w}`);
 }
+
 function showJobReward(jobId) {
     const jobData = jobLibrary.find(j => j.id === jobId);
     launchModal(jobData.person, jobData.tool, jobData.name);
-    speakText(`${jobData.name}... uses... ${jobData.toolName}`);
+    // "Fireman... uses... Fire Truck"
+    const pKey = `noun_${jobData.name.toLowerCase().replace(' ', '_')}`;
+    const tKey = `noun_${jobData.toolName.toLowerCase().replace(' ', '_')}`;
+    speakSequence([pKey, 'conn_uses', tKey], `${jobData.name}... uses... ${jobData.toolName}`);
 }
+
 function showFeedReward(feedId) {
     const feedData = feedLibrary.find(f => f.id === feedId);
     launchModal(feedData.animal, feedData.food, "Yummy!");
-    speakText(`The ${feedData.animalName} eats the ${feedData.foodName}!`);
+    // "The Rabbit eats the Carrot"
+    const aKey = `noun_${feedData.animalName.toLowerCase().replace(' ', '_')}`;
+    const fKey = `noun_${feedData.foodName.toLowerCase().replace(' ', '_')}`;
+    speakSequence(['conn_the', aKey, 'conn_eats_the', fKey], `The ${feedData.animalName} eats the ${feedData.foodName}!`);
 }
+
 function showShapeReward(shapeId) {
     const shapeData = shapeLibrary.find(s => s.id === shapeId);
     launchModal(shapeData.shape, shapeData.obj, "Match!");
-    speakText(`A ${shapeData.objName} looks like a ${shapeData.shapeName}!`);
+    // "A Pizza Slice looks like a Triangle"
+    const oKey = `noun_${shapeData.objName.toLowerCase().replace(' ', '_')}`;
+    const sKey = `noun_${shapeData.shapeName.toLowerCase().replace(' ', '_')}`;
+    // Use generic "A" or "An" logic? Simpler to just use "A" for now or mapped connector
+    speakSequence(['conn_a', oKey, 'conn_looks_like_a', sKey], `A ${shapeData.objName} looks like a ${shapeData.shapeName}!`);
 }
+
 function showWeatherReward(weatherId) {
     const wData = weatherLibrary.find(w => w.id === weatherId);
     launchModal(wData.weather, wData.obj, "Correct!");
-    speakText(`${wData.weatherName}... ${wData.text}`);
+    // "Sunny... Wear your Sunglasses"
+    const wKey = `noun_${wData.weatherName.toLowerCase().replace(' ', '_')}`;
+    const oKey = `noun_${wData.objName.toLowerCase().replace(' ', '_')}`;
+    // We don't have perfect mapping for "Wear your", let's check connectors
+    // 'wear_your' exists
+    speakSequence([wKey, 'conn_wear_your', oKey], `${wData.weatherName}... ${wData.text}`);
 }
+
 function showNatureReward(natureId) {
     const nData = natureLibrary.find(n => n.id === natureId);
     launchModal(nData.nature, nData.obj, "Nature!");
-    speakText(`${nData.natureName}... ${nData.text}`);
+    // "Night... The Owl wakes up" -> "Night... Owl... wakes up" (Simplified for fragments)
+    const nKey = `noun_${nData.natureName.toLowerCase().replace(' ', '_')}`;
+    const oKey = `noun_${nData.objName.toLowerCase().replace(' ', '_')}`;
+
+    // Mapping specific phrases based on ID
+    if (natureId === 'moon') speakSequence([nKey, 'conn_the', oKey, 'conn_wakes_up'], nData.text);
+    else if (natureId === 'wind') speakSequence([nKey, 'noun_leaf', 'conn_fall_down'], nData.text);
+    else if (natureId === 'ocean') speakSequence([nKey, 'noun_fish', 'conn_swim_in_water'], nData.text);
+    else if (natureId === 'flower') speakSequence([nKey, 'noun_bee', 'conn_love_flowers'], nData.text);
+    else if (natureId === 'caterpillar') speakSequence([nKey, 'conn_becomes_a', 'noun_butterfly'], nData.text);
+    else speakText(nData.text);
 }
+
 function showHabitatReward(habId) {
     const hData = habitatLibrary.find(h => h.id === habId);
     launchModal(hData.animal, hData.home, "Home!");
-    speakText(`The ${hData.animalName} lives in the ${hData.homeName}!`);
+    // "The Lion lives in the Jungle"
+    const aKey = `noun_${hData.animalName.toLowerCase().replace(' ', '_')}`;
+    const hKey = `noun_${hData.homeName.toLowerCase().replace(' ', '_')}`;
+    speakSequence(['conn_the', aKey, 'conn_lives_in_the', hKey], `The ${hData.animalName} lives in the ${hData.homeName}!`);
 }
