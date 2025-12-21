@@ -684,13 +684,23 @@ function showJobReward(jobId) {
     launchModal(jobData.person, jobData.tool, jobData.name);
     speakText(`${jobData.name}... uses... ${jobData.toolName}`);
 }
+
+let modalTimeout = null;
 function launchModal(topText, emoji, word) {
     const modal = document.getElementById('reward-modal');
     document.getElementById('modal-top').textContent = topText;
     document.getElementById('modal-emoji').textContent = emoji;
     document.getElementById('modal-word').textContent = word;
     modal.classList.add('show');
-    setTimeout(() => { modal.classList.remove('show'); }, 2500);
+
+    if (modalTimeout) clearTimeout(modalTimeout);
+    modalTimeout = setTimeout(() => { modal.classList.remove('show'); }, 2500);
+
+    modal.onclick = () => {
+        if (modalTimeout) clearTimeout(modalTimeout);
+        modal.classList.remove('show');
+        // Do NOT stop speech here (per request)
+    };
 }
 let selectedVoice = null;
 
