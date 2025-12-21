@@ -17,10 +17,11 @@ let spriteMap = null;
 export function initAudio() {
     isMuted = localStorage.getItem('isMuted') === 'true';
 
-    if ('speechSynthesis' in window) {
-        window.speechSynthesis.onvoiceschanged = loadVoices;
-        loadVoices();
-    }
+    // Disable TTS init for debugging
+    // if ('speechSynthesis' in window) {
+    //     window.speechSynthesis.onvoiceschanged = loadVoices;
+    //     loadVoices();
+    // }
 
     // Load Sprites
     loadSprites();
@@ -28,11 +29,14 @@ export function initAudio() {
 
 async function loadSprites() {
     try {
+        console.log("Loading sprites...");
         const mapResp = await fetch('assets/audio/sprites.json');
         spriteMap = await mapResp.json();
+        console.log("Sprite Map Loaded. Keys:", Object.keys(spriteMap).length);
 
         const audioResp = await fetch('assets/audio/sprites.mp3');
         const arrayBuffer = await audioResp.arrayBuffer();
+        console.log("Sprite MP3 Loaded. Size:", arrayBuffer.byteLength);
 
         // Decode logic requires AudioContext.
         // We defer decoding until audioCtx is initialized (first user click)
@@ -44,12 +48,8 @@ async function loadSprites() {
 }
 
 function loadVoices() {
-    if (!('speechSynthesis' in window)) return;
-    const voiceList = window.speechSynthesis.getVoices().filter(v => v.lang.startsWith('en'));
-    selectedVoice = voiceList.find(v => v.name.includes('Great Britain') || v.name.includes('UK') || v.name.includes('United Kingdom'))
-        || voiceList.find(v => v.name.includes('Google UK English'))
-        || voiceList.find(v => v.name.includes('Female'))
-        || voiceList[0];
+    // Disabled for debugging
+    return;
 }
 
 export function toggleMute() {
@@ -58,7 +58,7 @@ export function toggleMute() {
 
     if (isMuted) {
         stopBackgroundMusic();
-        window.speechSynthesis.cancel();
+        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
     } else {
         playBackgroundMusic();
     }
@@ -72,38 +72,60 @@ export function getMuteState() {
 // --- Speaking Logic ---
 
 export function speakText(text, key = null, throttle = false) {
+    console.log(`speakText called: text="${text}", key="${key}"`);
     // Legacy support for single key (though we now prefer sequences)
     if (key) {
         speakSequence([key], text);
     } else {
-        fallbackTTS(text, throttle);
+        console.log("speakText: No key provided, skipping TTS (Disabled).");
+        // fallbackTTS(text, throttle);
     }
 }
 
 export function speakSequence(keys, fallbackText) {
-    if (isMuted) return;
+    if (isMuted) {
+        console.log("speakSequence: Muted.");
+        return;
+    }
+
+    console.log(`speakSequence called. Keys: ${JSON.stringify(keys)}`);
+    console.log(`AudioContext: ${audioCtx ? audioCtx.state : 'null'}`);
+    console.log(`SpriteBuffer: ${spriteBuffer ? 'Loaded' : 'Null'}`);
+    console.log(`SpriteMap: ${spriteMap ? 'Loaded' : 'Null'}`);
 
     // Check if we have sprite support
     if (audioCtx && spriteBuffer && spriteMap) {
-        let validKeys = keys.filter(k => spriteMap[k]);
+        let validKeys = keys.filter(k => {
+            const hasKey = !!spriteMap[k];
+            if (!hasKey) console.warn(`Missing key in spriteMap: ${k}`);
+            return hasKey;
+        });
 
         if (validKeys.length > 0) {
+            console.log(`Playing sequence: ${JSON.stringify(validKeys)}`);
             playSpriteSequence(validKeys);
             return;
+        } else {
+            console.error("No valid keys found in sequence.");
         }
     } else if (window.rawSpriteBuffer && audioCtx) {
+        console.log("Trying to decode sprites on-the-fly...");
         // Try to decode on the fly if not yet decoded
         decodeSprites().then(() => {
              speakSequence(keys, fallbackText);
         });
         return;
+    } else {
+        console.error("Audio system not ready (Ctx, Buffer, or Map missing).");
     }
 
     // Fallback if no valid keys or no audio support
-    fallbackTTS(fallbackText);
+    console.log("Fallback TTS triggered (but DISABLED).");
+    // fallbackTTS(fallbackText);
 }
 
 function playSpriteSequence(keys) {
+    if (!audioCtx) return;
     let now = audioCtx.currentTime;
     // Add a small delay to start
     let startTime = now + 0.1;
@@ -125,23 +147,9 @@ function playSpriteSequence(keys) {
 }
 
 function fallbackTTS(text, throttle = false) {
-    if (isMuted || !('speechSynthesis' in window)) return;
-
-    const now = Date.now();
-    if (throttle && text === lastSpokenText && (now - lastSpokenTime) < 1500) {
-        return;
-    }
-
-    lastSpokenText = text;
-    lastSpokenTime = now;
-
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    // Joyful tweaks
-    utterance.rate = 1.1;
-    utterance.pitch = 1.2;
-    if (selectedVoice) utterance.voice = selectedVoice;
-    window.speechSynthesis.speak(utterance);
+    // DISABLED
+    console.log("fallbackTTS: DISABLED");
+    return;
 }
 
 // --- Audio Context ---
@@ -151,6 +159,7 @@ export function resumeAudioContext() {
     if (!AudioContext) return;
 
     if (!audioCtx) {
+        console.log("Creating new AudioContext...");
         audioCtx = new AudioContext();
     }
 
@@ -161,7 +170,9 @@ export function resumeAudioContext() {
     }
 
     if (audioCtx.state === 'suspended') {
+        console.log("Resuming AudioContext...");
         audioCtx.resume().then(() => {
+            console.log("AudioContext Resumed.");
             decodeSprites();
         });
     } else {
@@ -170,11 +181,23 @@ export function resumeAudioContext() {
 }
 
 async function decodeSprites() {
-    if (spriteBuffer || !window.rawSpriteBuffer || !audioCtx) return;
+    if (spriteBuffer) {
+        console.log("Sprites already decoded.");
+        return;
+    }
+    if (!window.rawSpriteBuffer) {
+        console.log("No rawSpriteBuffer to decode.");
+        return;
+    }
+    if (!audioCtx) {
+        console.log("No AudioContext to decode with.");
+        return;
+    }
     try {
+        console.log("Decoding audio data...");
         spriteBuffer = await audioCtx.decodeAudioData(window.rawSpriteBuffer);
         window.rawSpriteBuffer = null; // Free memory
-        console.log("Audio Sprites Decoded!");
+        console.log("Audio Sprites Decoded Successfully!");
     } catch(e) {
         console.error("Sprite decode error", e);
     }
