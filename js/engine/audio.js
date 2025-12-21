@@ -189,19 +189,19 @@ function scheduleMusicLoop() {
     if (isMuted || !audioCtx) return;
     isBgmPlaying = true;
 
-    // Simple Bouncy Bass
+    // Simple Bouncy Bass - Smoother & Quieter
     // Tempo 120 BPM = 0.5s per beat
     const beat = 0.5;
 
     const bass = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
-    bass.type = 'square';
-    bass.frequency.value = 130.81; // C3
+    bass.type = 'sine'; // Smoother than square
+    bass.frequency.value = 65.41; // C2 (Lower pitch)
 
     // Low pass filter
     const filter = audioCtx.createBiquadFilter();
     filter.type = 'lowpass';
-    filter.frequency.value = 800;
+    filter.frequency.value = 400; // Warmer
 
     bass.connect(filter);
     filter.connect(gain);
@@ -209,13 +209,13 @@ function scheduleMusicLoop() {
 
     // LFO for volume to make it "pulse"
     const lfo = audioCtx.createOscillator();
-    lfo.frequency.value = 2; // 2Hz = 120BPM
+    lfo.frequency.value = 2; // 2Hz
     const lfoGain = audioCtx.createGain();
-    lfoGain.gain.value = 0.05; // Amplitude of pulse
+    lfoGain.gain.value = 0.02; // Reduced LFO depth
     lfo.connect(lfoGain);
     lfoGain.connect(gain.gain);
 
-    gain.gain.value = 0.05;
+    gain.gain.value = 0.02; // Very quiet background (down from 0.05)
 
     bass.start();
     lfo.start();
