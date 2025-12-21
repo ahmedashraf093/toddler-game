@@ -6,6 +6,7 @@ import { initMathGame } from './games/math.js';
 import { initPuzzleGame } from './games/puzzle.js';
 import { initMemoryGame } from './games/memory.js';
 import { initChallenges, toggleChallengeMenu } from './challenges/manager.js';
+import { ParentalGate } from './engine/parental-gate.js';
 
 const GAME_VERSION = 'v2.0';
 
@@ -79,6 +80,9 @@ window.addEventListener('load', () => {
     // Populate Menu
     populateGamesMenu(gameModes, setMode);
 
+    // Init Parental Gate (binds events)
+    ParentalGate.init();
+
     // Default Mode
     // setMode('shadow'); // Wait for start game
 });
@@ -86,6 +90,10 @@ window.addEventListener('load', () => {
 function startGame() {
     document.getElementById('start-screen').style.display = 'none';
     resumeAudioContext(); // Ensure audio context is ready
+
+    // Start/Resume Parental Session
+    ParentalGate.startSession();
+
     setMode('shadow');
 }
 
