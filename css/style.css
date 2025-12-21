@@ -1333,3 +1333,36 @@ body {
         font-size: 30px;
     }
 }
+
+/* WhatsApp Icon and Update Button Styles */
+.wa-icon {
+    width: 24px;
+    height: 24px;
+    fill: currentColor;
+    flex-shrink: 0;
+}
+
+#update-btn {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 24px;
+    opacity: 0.6;
+    transition: transform 0.3s, opacity 0.3s;
+    padding: 5px;
+    border-radius: 50%;
+    z-index: 10;
+}
+
+#update-btn:hover {
+    transform: rotate(180deg);
+    opacity: 1;
+    background-color: rgba(0,0,0,0.05);
+}
+
+#update-btn:active {
+    transform: scale(0.9);
+}
