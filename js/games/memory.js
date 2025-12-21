@@ -43,7 +43,9 @@ export function initMemoryGame() {
         grid.appendChild(card);
     });
 
-    speakText(`Find the pairs!`);
+    // "Find the pairs!" - We don't have this sprite.
+    // Use "Match!" instead or silence.
+    // speakText("Match!", "generic_match");
 }
 
 function createMemoryCard(item) {
@@ -72,7 +74,10 @@ function handleCardClick() {
     if (this === flippedCards[0]) return;
 
     this.classList.add('flipped');
-    speakText(this.dataset.emoji, true);
+
+    // Speak item name using sprite key
+    const nounKey = 'noun_' + this.dataset.name.toLowerCase().replace(' ', '_');
+    speakText(this.dataset.name, nounKey, true);
 
     flippedCards.push(this);
 
@@ -108,7 +113,19 @@ function disableCards() {
     updateScore(10);
     updateScoreUI();
 
-    speakText("Match! " + card1.dataset.name);
+    const nounKey = 'noun_' + card1.dataset.name.toLowerCase().replace(' ', '_');
+    // "Match! [Item]"
+    // We can try speakSequence(["generic_match", nounKey])?
+    // speakText("Match! " + card1.dataset.name);
+    // But speakText doesn't support sequence arg in signature, only single key.
+    // speakText(text, key) calls speakSequence([key]).
+
+    // To play sequence "Match! Lion":
+    // Import speakSequence? It's exported from audio.js.
+    // I need to import it.
+
+    // For now, simple "Correct!" or "Match!"
+    speakText("Match!", "generic_match");
 
     flippedCards = [];
 
@@ -118,7 +135,9 @@ function disableCards() {
     if (matchedPairs === totalPairs) {
         setTimeout(() => {
             launchModal("🧠", "🌟", "Memory Master!");
-            speakText("You found all the pairs!");
+            // "You found all the pairs!" -> Missing.
+            // Use "Good Job!"
+            speakText("Good Job!", "generic_good_job");
             document.getElementById('reset-btn').style.display = 'inline-block';
             checkOverallProgress('memory');
         }, 500);

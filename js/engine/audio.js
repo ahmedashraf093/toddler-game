@@ -143,7 +143,7 @@ function playSpriteSequence(keys) {
         source.start(startTime, data.start, data.duration);
 
         // Schedule next
-        startTime += data.duration + 0.05; // 50ms pause between words for natural flow
+        startTime += data.duration + 0.0; // Minimal pause for faster flow
     });
 }
 

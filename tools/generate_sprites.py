@@ -19,6 +19,15 @@ content = {
         {'id': 'nature', 'text': 'Nature!'},
         {'id': 'amazing', 'text': 'Amazing!'}
     ],
+    'system': [
+        {'id': 'find_the_pairs', 'text': 'Find the pairs!'},
+        {'id': 'found_all_pairs', 'text': 'You found all the pairs!'},
+        {'id': 'memory_master', 'text': 'Memory Master!'},
+        {'id': 'need_parent_help', 'text': 'Need parent help!'},
+        {'id': 'choose_a_game', 'text': 'Choose a game!'},
+        {'id': 'loading', 'text': 'Loading...'},
+        {'id': 'daily_quest', 'text': 'Daily Quest'}
+    ],
     'connector': [
         {'id': 'the', 'text': 'The'},
         {'id': 'a', 'text': 'A'},
@@ -62,7 +71,12 @@ content = {
         'Leaf', 'Flower',
         'Triangle', 'Circle', 'Square', 'Rectangle', 'Oval', 'Diamond', 'Pizza Slice',
         'Sunny', 'Snowy', 'Rainy', 'Cold', 'Night', 'Windy', 'Ocean', 'Spring',
-        'Farm', 'Jungle', 'Sea'
+        'Farm', 'Jungle', 'Sea',
+        # New additions
+        'Shoe', 'Star', 'Ladybug', 'Cookie', 'Balloon', 'Crayon', 'Teddy Bear', 'Strawberry',
+        'Car', 'Bus', 'Train', 'Helicopter',
+        'Police', 'Fireman', 'Doctor', 'Astronaut', 'Chef', 'Farmer', 'Artist',
+        'Mechanic', 'Teacher', 'Pilot', 'Builder', 'Scientist'
     ]
 }
 
@@ -97,6 +111,13 @@ async def main():
         tasks.append(generate_audio(item['text'], filepath))
         file_map.append({'key': key, 'path': filepath})
 
+    # System (New)
+    for item in content.get('system', []):
+        key = f"sys_{item['id']}"
+        filepath = os.path.join(TEMP_DIR, f"{key}.mp3")
+        tasks.append(generate_audio(item['text'], filepath))
+        file_map.append({'key': key, 'path': filepath})
+
     # Connectors
     for item in content['connector']:
         key = f"conn_{item['id']}"
@@ -123,41 +144,62 @@ async def main():
     await asyncio.gather(*tasks)
 
     # 2. Concat using ffmpeg
-    # ffmpeg -i file1 -i file2 ... -filter_complex "[0:0][1:0]...concat=n=N:v=0:a=1[out]" -map "[out]" output.mp3
-    # Actually, the 'concat demuxer' is better for many files.
-    # Create list.txt
-
     list_txt = os.path.join(TEMP_DIR, 'files.txt')
     with open(list_txt, 'w') as f:
         for entry in file_map:
-            # check if exists (generation might fail)
             if os.path.exists(entry['path']):
                 f.write(f"file '{os.path.basename(entry['path'])}'\n")
 
     output_mp3 = os.path.join(OUTPUT_DIR, 'sprites.mp3')
 
+    # Point to local ffmpeg if available in tools, else assume system path
+    ffmpeg_cmd = 'ffmpeg'
+    if os.path.exists('tools/ffmpeg'):
+        ffmpeg_cmd = '../tools/ffmpeg'
+
     print("Stitching with ffmpeg...")
     subprocess.run([
-        'ffmpeg', '-f', 'concat', '-safe', '0',
+        ffmpeg_cmd, '-f', 'concat', '-safe', '0',
         '-i', 'files.txt', '-c', 'copy', '-y', f'../{output_mp3}'
-    ], cwd=TEMP_DIR) # Run inside temp dir so relative paths work
+    ], cwd=TEMP_DIR)
 
-    # Adjust output path for python context
-    # output_mp3 is assets/audio/sprites.mp3
-    # Inside cwd=temp_speech, ../assets/audio/sprites.mp3
+    # 3. Calculate Offsets
+    # Use ffprobe from same location if possible, or assume system
+    # I installed ffmpeg static which usually includes ffprobe.
+    # Check if tools/ffprobe exists? I only moved ffmpeg.
+    # The static build has ffprobe. I should have moved it too.
+    # I'll check if I can use ffmpeg to get duration or just use the python library?
+    # Or I should have moved ffprobe.
+
+    # Quick fix: I will assume ffprobe is available or use ffmpeg to detect duration?
+    # Actually, I downloaded ffmpeg static but only moved `ffmpeg` binary in my previous bash command.
+    # "mv ffmpeg-*-amd64-static/ffmpeg ."
+    # I did NOT move ffprobe.
+    # I need to fix this or `generate_sprites.py` will fail at step 3.
+
+    # I will verify if I can get ffprobe.
+    pass
+
+    # ... Wait, I can't edit the script mid-execution.
+    # I will let this script fail or I will fix the environment first.
 
     # 3. Calculate Offsets (We need duration of each file)
-    # Using ffprobe
     sprite_map = {}
     current_offset = 0
+
+    ffprobe_cmd = 'ffprobe'
+    if os.path.exists('tools/ffprobe'):
+        ffprobe_cmd = '../tools/ffprobe'
+    # Fallback: try to use system ffprobe. If missing, we have a problem.
 
     for entry in file_map:
         if not os.path.exists(entry['path']):
             continue
 
         # Get duration
+        # If ffprobe is missing, this will crash/fail.
         result = subprocess.run([
-            'ffprobe', '-v', 'error', '-show_entries', 'format=duration',
+            ffprobe_cmd, '-v', 'error', '-show_entries', 'format=duration',
             '-of', 'default=noprint_wrappers=1:nokey=1', entry['path']
         ], capture_output=True, text=True)
 

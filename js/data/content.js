@@ -106,9 +106,10 @@ export const puzzleConfig = [
 ];
 
 export const objectPool = [
-    { e: '☀️', n: 'Suns' }, { e: '👟', n: 'Shoes' }, { e: '🍎', n: 'Apples' },
-    // { e: '🚗', n: 'Cars' }, // Missing
-    { e: '⭐️', n: 'Stars' }, { e: '🦋', n: 'Butterflies' },
-    { e: '🐞', n: 'Ladybugs' }, { e: '🍪', n: 'Cookies' }, { e: '🎈', n: 'Balloons' },
-    { e: '⚽', n: 'Balls' }, { e: '🐶', n: 'Dogs' }, { e: '🍦', n: 'Ice Cream' }
+    { e: '☀️', n: 'Sun' }, { e: '🍎', n: 'Apple' },
+    { e: '🦋', n: 'Butterfly' }, { e: '⚽', n: 'Ball' },
+    { e: '🐶', n: 'Dog' }, { e: '🍦', n: 'Ice Cream' },
+    { e: '🐝', n: 'Bee' }, { e: '🐟', n: 'Fish' },
+    { e: '🦁', n: 'Lion' }, { e: '🐵', n: 'Monkey' },
+    { e: '🐮', n: 'Cow' }, { e: '🍕', n: 'Pizza' }
 ];
