@@ -52,7 +52,7 @@
             <span>Join our parents circle for updates! 🌟</span>
         </a>
 
-        <button id="update-btn" onclick="checkForUpdates()" title="Check for Updates">🔄</button>
+        <button id="update-btn" onclick="checkForUpdates()" title="Check for Updates" aria-label="Check for updates">🔄</button>
         <span id="version-display" style="position: absolute; bottom: 10px; right: 10px; font-size: 14px; opacity: 0.6; color: #555;"></span>
     </div>
 
@@ -122,7 +122,7 @@
     <div id="games-menu-overlay" class="overlay-full hidden">
         <div class="menu-header">
             <h2>Choose a Game! 🎮</h2>
-            <button class="close-menu-btn">❌</button>
+            <button class="close-menu-btn" aria-label="Close menu">❌</button>
         </div>
         <div class="games-grid">
             <!-- Buttons will be injected by JS -->
@@ -133,7 +133,7 @@
     <div id="challenges-overlay" class="overlay-full hidden">
         <div class="menu-header">
             <h2>Daily Quest 🏆</h2>
-            <button class="close-menu-btn">❌</button>
+            <button class="close-menu-btn" aria-label="Close menu">❌</button>
         </div>
         <div id="challenges-list"></div>
     </div>
