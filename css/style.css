@@ -1101,3 +1101,149 @@ body {
         opacity: 1;
     }
 }
+/* --- Memory Game --- */
+#memory-stage {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 800px;
+    flex-grow: 1;
+    padding-top: 20px;
+    padding-bottom: 80px;
+}
+
+#memory-stage.active {
+    display: flex;
+}
+
+.memory-grid {
+    display: grid;
+    gap: 15px;
+    padding: 10px;
+    perspective: 1000px;
+}
+
+/* Grid presets based on difficulty */
+.memory-grid.easy {
+    grid-template-columns: repeat(3, 1fr);
+    /* 2x3 */
+}
+
+.memory-grid.medium {
+    grid-template-columns: repeat(4, 1fr);
+    /* 3x4 */
+}
+
+.memory-grid.hard {
+    grid-template-columns: repeat(4, 1fr);
+    /* 4x4 */
+}
+
+.memory-card {
+    width: 100px;
+    height: 100px;
+    position: relative;
+    cursor: pointer;
+    transform-style: preserve-3d;
+    transition: transform 0.6s;
+    /* Disable tap highlight on mobile */
+    -webkit-tap-highlight-color: transparent;
+}
+
+.memory-card.flipped {
+    transform: rotateY(180deg);
+}
+
+.memory-card.matched {
+    cursor: default;
+    animation: matchPulse 0.5s ease-out forwards;
+}
+
+/* Container for front and back faces */
+.flipper {
+    /* Not strictly needed if transform is on .memory-card, but good for structure */
+    width: 100%;
+    height: 100%;
+}
+
+.front,
+.back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    font-size: 50px;
+    border: 3px solid white;
+}
+
+/* Front Face (The Content/Emoji) - starts hidden */
+.front {
+    background: white;
+    transform: rotateY(180deg);
+}
+
+/* Back Face ( The pattern) - starts visible */
+.back {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    transform: rotateY(0deg);
+}
+
+/* Decoration on the back */
+.back::after {
+    content: '★';
+    font-size: 40px;
+    opacity: 0.8;
+    color: #ffd700;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes matchPulse {
+    0% {
+        transform: rotateY(180deg) scale(1);
+    }
+    50% {
+        transform: rotateY(180deg) scale(1.2);
+        box-shadow: 0 0 20px #ffd700;
+    }
+    100% {
+        transform: rotateY(180deg) scale(1);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .memory-card {
+        width: 80px;
+        height: 80px;
+    }
+
+    .front, .back {
+        font-size: 40px;
+    }
+
+    .back::after {
+        font-size: 30px;
+    }
+
+    /* Adjust hard mode to fit mobile screens better */
+    .memory-grid.hard {
+        gap: 8px;
+    }
+
+    .memory-grid.hard .memory-card {
+        width: 65px;
+        height: 65px;
+    }
+
+    .memory-grid.hard .front,
+    .memory-grid.hard .back {
+        font-size: 30px;
+    }
+}

@@ -24,7 +24,8 @@ const themes = {
     weather: { primary: '#00cec9', bg: '#e0fbfb', dots: '#b2ebf2' },
     nature: { primary: '#00b894', bg: '#e6fffa', dots: '#b3f5e1' },
     habitat: { primary: '#fdcb6e', bg: '#fff7d1', dots: '#ffeaa7' },
-    puzzle: { primary: '#ff7675', bg: '#fff5f5', dots: '#ffe3e3' }
+    puzzle: { primary: '#ff7675', bg: '#fff5f5', dots: '#ffe3e3' },
+    memory: { primary: '#764ba2', bg: '#f3e8ff', dots: '#e9d5ff' }
 };
 
 const shadowLibrary = [
@@ -160,14 +161,19 @@ let currentMathIndex = 0;
 let currentPuzzle = null;
 let puzzlePiecesPlaced = 0;
 let consecutiveCompletions = 0;
+// Memory Game State
+let memoryCards = [];
+let flippedCards = [];
+let matchedPairs = 0;
+let lockBoard = false;
 
-const history = { shadow: [], letter: [], job: [], number: [], feed: [], shape: [], weather: [], nature: [], habitat: [], puzzle: [] };
+const history = { shadow: [], letter: [], job: [], number: [], feed: [], shape: [], weather: [], nature: [], habitat: [], puzzle: [], memory: [] };
 
 function setDifficulty(level, btn) {
     mathDifficulty = level;
     document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    if (currentMode === 'math') initRound();
+    if (currentMode === 'math' || currentMode === 'memory') initRound();
 }
 
 
@@ -182,16 +188,21 @@ function setMode(mode) {
     const standardBoard = document.getElementById('game-board');
     const mathStage = document.getElementById('math-stage');
     const puzzleStage = document.getElementById('puzzle-stage');
+    const memoryStage = document.getElementById('memory-stage');
 
     // Reset visibility for all stages
     standardBoard.style.display = 'none';
     mathStage.classList.remove('active');
     puzzleStage.classList.add('hidden');
+    memoryStage.classList.remove('active');
     diffBar.style.display = 'none'; // Hide difficulty bar by default
 
     if (mode === 'math') {
         mathStage.classList.add('active');
         diffBar.style.display = 'flex'; // Show difficulty bar for math
+    } else if (mode === 'memory') {
+        memoryStage.classList.add('active');
+        diffBar.style.display = 'flex'; // Show difficulty bar for memory
     } else if (mode === 'puzzle') {
         puzzleStage.classList.remove('hidden');
     } else { // Standard modes (shadow, letter, job, number, feed, shape, weather, nature, habitat)
@@ -224,7 +235,7 @@ function smartSelect(fullArray, modeKey) {
 function shuffle(array) { return array.sort(() => Math.random() - 0.5); }
 
 function initRound() {
-    const activeStage = document.querySelector('.game-board:not([style*="display: none"]), #math-stage.active, #puzzle-stage:not(.hidden)');
+    const activeStage = document.querySelector('.game-board:not([style*="display: none"]), #math-stage.active, #puzzle-stage:not(.hidden), #memory-stage.active');
     if (activeStage) {
         activeStage.classList.add('fade-out');
         setTimeout(() => {
@@ -243,6 +254,7 @@ function executeInitRound() {
     correctCount = 0;
     if (currentMode === 'math') initMathGame();
     else if (currentMode === 'puzzle') initPuzzleGame();
+    else if (currentMode === 'memory') initMemoryGame();
     else initStandardGame();
 }
 
@@ -980,6 +992,7 @@ const gameModes = [
     { id: 'nature', name: 'Nature', icon: '🍃' },
     { id: 'habitat', name: 'Homes', icon: '🏠' },
     { id: 'puzzle', name: 'Puzzle', icon: '🧩' },
+    { id: 'memory', name: 'Memory', icon: '🧠' },
     { id: 'math', name: 'Math', icon: '➕' }
 ];
 
@@ -1024,4 +1037,146 @@ function resumeAudioContext() {
             audioCtxUnlocked = true;
         }
     }
+}
+
+/* --- Memory Game Logic --- */
+
+function initMemoryGame() {
+    const grid = document.getElementById('memory-grid');
+    grid.innerHTML = '';
+
+    // Clear state
+    flippedCards = [];
+    matchedPairs = 0;
+    lockBoard = false;
+
+    // Determine grid size based on difficulty
+    // Easy: 2x3 = 6 cards (3 pairs)
+    // Medium: 3x4 = 12 cards (6 pairs)
+    // Hard: 4x4 = 16 cards (8 pairs)
+
+    let numPairs;
+    grid.className = 'memory-grid'; // Reset class
+
+    if (mathDifficulty === 'easy') {
+        numPairs = 3;
+        grid.classList.add('easy');
+    } else if (mathDifficulty === 'medium') {
+        numPairs = 6;
+        grid.classList.add('medium');
+    } else {
+        numPairs = 8;
+        grid.classList.add('hard');
+    }
+
+    // Select items
+    // We can use the objectPool for variety
+    const items = shuffle([...objectPool]).slice(0, numPairs);
+
+    // Duplicate for pairs
+    let deck = [...items, ...items];
+    deck = shuffle(deck);
+
+    // Generate HTML
+    deck.forEach(item => {
+        const card = createMemoryCard(item);
+        grid.appendChild(card);
+    });
+
+    speakText(`Find the pairs!`);
+}
+
+function createMemoryCard(item) {
+    const card = document.createElement('div');
+    card.classList.add('memory-card');
+    card.dataset.name = item.n;
+    card.dataset.emoji = item.e;
+
+    // Front Face (Emoji)
+    const front = document.createElement('div');
+    front.classList.add('front');
+    front.textContent = item.e;
+
+    // Back Face (Pattern)
+    const back = document.createElement('div');
+    back.classList.add('back');
+    // back content handled by CSS ::after
+
+    card.appendChild(front);
+    card.appendChild(back);
+
+    card.addEventListener('click', handleCardClick);
+
+    return card;
+}
+
+function handleCardClick() {
+    if (lockBoard) return;
+    if (this === flippedCards[0]) return; // Double click on same card
+
+    this.classList.add('flipped');
+    speakText(this.dataset.emoji, true); // Speak the emoji name/sound
+
+    flippedCards.push(this);
+
+    if (flippedCards.length === 2) {
+        checkForMatch();
+    }
+}
+
+function checkForMatch() {
+    let card1 = flippedCards[0];
+    let card2 = flippedCards[1];
+
+    let isMatch = card1.dataset.name === card2.dataset.name;
+
+    if (isMatch) {
+        disableCards();
+    } else {
+        unflipCards();
+    }
+}
+
+function disableCards() {
+    let card1 = flippedCards[0];
+    let card2 = flippedCards[1];
+
+    card1.removeEventListener('click', handleCardClick);
+    card2.removeEventListener('click', handleCardClick);
+
+    card1.classList.add('matched');
+    card2.classList.add('matched');
+
+    matchedPairs++;
+    totalScore += 10;
+    updateScoreUI();
+
+    speakText("Match! " + card1.dataset.name);
+
+    flippedCards = []; // Reset current flip
+
+    // Check Win
+    const grid = document.getElementById('memory-grid');
+    const totalPairs = grid.childElementCount / 2;
+
+    if (matchedPairs === totalPairs) {
+        setTimeout(() => {
+            launchModal("🧠", "🌟", "Memory Master!");
+            speakText("You found all the pairs!");
+            document.getElementById('reset-btn').style.display = 'inline-block';
+            checkOverallProgress();
+        }, 500);
+    }
+}
+
+function unflipCards() {
+    lockBoard = true;
+
+    setTimeout(() => {
+        flippedCards[0].classList.remove('flipped');
+        flippedCards[1].classList.remove('flipped');
+
+        flippedCards = [];
+        lockBoard = false;
+    }, 1000);
 }
