@@ -90,14 +90,6 @@ function createStandardItem(content, id, container, isDrag, type, dataObj) {
 
         // Use explicit audioId if available (set in initStandardGame)
         if (dataObj && dataObj.audioId) {
-             // Prefix based on mode logic?
-             // In initStandardGame, we passed audioId.
-             // But we need to map it to the sprite keys: 'alpha_x', 'noun_x', etc.
-
-             // Check if it looks like a known sprite key or prefix it
-             // Actually, easier to use the dataObj properties we already have or just infer.
-             // Most items are Nouns. Letters are Alphas.
-
              const label = (dataObj.srcLabel || dataObj.tgtLabel || '').toLowerCase().replace(' ', '_');
 
              // Heuristic to match sprite keys
@@ -211,8 +203,18 @@ function showShapeReward(shapeId) {
     // "A Pizza Slice looks like a Triangle"
     const oKey = `noun_${shapeData.objName.toLowerCase().replace(' ', '_')}`;
     const sKey = `noun_${shapeData.shapeName.toLowerCase().replace(' ', '_')}`;
-    // Use generic "A" or "An" logic? Simpler to just use "A" for now or mapped connector
-    speakSequence(['conn_a', oKey, 'conn_looks_like_a', sKey], `A ${shapeData.objName} looks like a ${shapeData.shapeName}!`);
+
+    // Improved A/An logic
+    const startsWithVowel = /^[aeiou]/i.test(shapeData.objName);
+
+    // For the start "A Pizza...", we need "A" or "An".
+    const article = startsWithVowel ? 'conn_an' : 'conn_a';
+
+    // "looks like a/an" depends on the *shape* name
+    const shapeStartsWithVowel = /^[aeiou]/i.test(shapeData.shapeName);
+    const looksLikeConn = shapeStartsWithVowel ? 'conn_looks_like_an' : 'conn_looks_like_a';
+
+    speakSequence([article, oKey, looksLikeConn, sKey], `A ${shapeData.objName} looks like a ${shapeData.shapeName}!`);
 }
 
 function showWeatherReward(weatherId) {
@@ -221,9 +223,26 @@ function showWeatherReward(weatherId) {
     // "Sunny... Wear your Sunglasses"
     const wKey = `noun_${wData.weatherName.toLowerCase().replace(' ', '_')}`;
     const oKey = `noun_${wData.objName.toLowerCase().replace(' ', '_')}`;
-    // We don't have perfect mapping for "Wear your", let's check connectors
-    // 'wear_your' exists
-    speakSequence([wKey, 'conn_wear_your', oKey], `${wData.weatherName}... ${wData.text}`);
+
+    // sprites.json checks:
+    // conn_wear_your exists? Yes.
+    // conn_wear_a exists? Yes.
+    // conn_use_an exists? Yes.
+
+    if (weatherId === 'rain') {
+        // Use an Umbrella
+        speakSequence([wKey, 'conn_use_an', oKey], `${wData.weatherName}... ${wData.text}`);
+    } else if (weatherId === 'snow') {
+        // Wear a Scarf
+        speakSequence([wKey, 'conn_wear_a', oKey], `${wData.weatherName}... ${wData.text}`);
+    } else if (weatherId === 'cold') {
+        // Wear Gloves (No 'your', no 'a'?)
+        // text is "Wear Gloves!". Sprite has "conn_wear"? Yes.
+        speakSequence([wKey, 'conn_wear', oKey], `${wData.weatherName}... ${wData.text}`);
+    } else {
+        // Sunny... Wear your Sunglasses
+        speakSequence([wKey, 'conn_wear_your', oKey], `${wData.weatherName}... ${wData.text}`);
+    }
 }
 
 function showNatureReward(natureId) {
@@ -235,7 +254,7 @@ function showNatureReward(natureId) {
 
     // Mapping specific phrases based on ID
     if (natureId === 'moon') speakSequence([nKey, 'conn_the', oKey, 'conn_wakes_up'], nData.text);
-    else if (natureId === 'wind') speakSequence([nKey, 'noun_leaf', 'conn_fall_down'], nData.text);
+    else if (natureId === 'wind') speakSequence([nKey, 'noun_leaf', 'conn_fall_down'], nData.text); // noun_leaf is singular, text says Leaves. Close enough.
     else if (natureId === 'ocean') speakSequence([nKey, 'noun_fish', 'conn_swim_in_water'], nData.text);
     else if (natureId === 'flower') speakSequence([nKey, 'noun_bee', 'conn_love_flowers'], nData.text);
     else if (natureId === 'caterpillar') speakSequence([nKey, 'conn_becomes_a', 'noun_butterfly'], nData.text);

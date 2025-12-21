@@ -1,17 +1,19 @@
 export const shadowLibrary = [
-    { e: '🐶', n: 'Dog' }, { e: '🐱', n: 'Cat' }, { e: '🦁', n: 'Lion' }, { e: '🐮', n: 'Cow' },
-    { e: '🐸', n: 'Frog' }, { e: '🐵', n: 'Monkey' }, { e: '🐧', n: 'Penguin' }, { e: '🐘', n: 'Elephant' },
-    { e: '🦒', n: 'Giraffe' }, { e: '🦓', n: 'Zebra' }, { e: '🦋', n: 'Butterfly' }, { e: '🚗', n: 'Car' },
-    { e: '🚌', n: 'Bus' }, { e: '🚑', n: 'Ambulance' }, { e: '🚒', n: 'Fire Truck' }, { e: '🚓', n: 'Police Car' },
-    { e: '🚜', n: 'Tractor' }, { e: '🚂', n: 'Train' }, { e: '✈️', n: 'Airplane' }, { e: '🚀', n: 'Rocket' },
-    { e: '🚁', n: 'Helicopter' }, { e: '🍎', n: 'Apple' }, { e: '🍌', n: 'Banana' }, { e: '🍇', n: 'Grapes' },
-    { e: '🍓', n: 'Strawberry' }, { e: '🍦', n: 'Ice Cream' }, { e: '🍪', n: 'Cookie' }, { e: '🍕', n: 'Pizza' },
-    { e: '⚽', n: 'Ball' }, { e: '🧸', n: 'Teddy Bear' }, { e: '🎈', n: 'Balloon' }, { e: '🖍️', n: 'Crayon' }
+    { e: '🐶', n: 'Dog' },
+    { e: '🦁', n: 'Lion' }, { e: '🐮', n: 'Cow' },
+    { e: '🐵', n: 'Monkey' },
+    { e: '🦒', n: 'Giraffe' }, { e: '🦓', n: 'Zebra' }, { e: '🦋', n: 'Butterfly' },
+    { e: '🚑', n: 'Ambulance' }, { e: '🚒', n: 'Fire Truck' }, { e: '🚓', n: 'Police Car' },
+    { e: '🚜', n: 'Tractor' },
+    { e: '✈️', n: 'Airplane' }, { e: '🚀', n: 'Rocket' },
+    { e: '🍎', n: 'Apple' }, { e: '🍌', n: 'Banana' }, { e: '🍇', n: 'Grapes' },
+    { e: '🍦', n: 'Ice Cream' }, { e: '🍕', n: 'Pizza' },
+    { e: '⚽', n: 'Ball' }
 ];
 
 export const letterExamples = {
-    'A': { w: 'Apple', e: '🍎' }, 'B': { w: 'Ball', e: '⚽' }, 'C': { w: 'Cat', e: '🐱' },
-    'D': { w: 'Dog', e: '🐶' }, 'E': { w: 'Elephant', e: '🐘' }, 'F': { w: 'Fish', e: '🐟' },
+    'A': { w: 'Apple', e: '🍎' }, 'B': { w: 'Ball', e: '⚽' }, 'C': { w: 'Cow', e: '🐮' },
+    'D': { w: 'Dog', e: '🐶' }, 'F': { w: 'Fish', e: '🐟' },
     'G': { w: 'Grapes', e: '🍇' }, 'H': { w: 'House', e: '🏠' }, 'I': { w: 'Ice Cream', e: '🍦' },
     'J': { w: 'Juice', e: '🧃' }, 'K': { w: 'Kite', e: '🪁' }, 'L': { w: 'Lion', e: '🦁' },
     'M': { w: 'Monkey', e: '🐵' }, 'N': { w: 'Nose', e: '👃' }, 'O': { w: 'Orange', e: '🍊' },
@@ -21,30 +23,16 @@ export const letterExamples = {
     'Y': { w: 'Yellow', e: '💛' }, 'Z': { w: 'Zebra', e: '🦓' }
 };
 
+// Jobs disabled due to missing 'Person' audio sprites for all jobs.
 export const jobLibrary = [
-    { id: 'police', person: '👮', tool: '🚓', name: 'Police', toolName: 'Police Car' },
-    { id: 'fire', person: '👨‍🚒', tool: '🚒', name: 'Fireman', toolName: 'Fire Truck' },
-    { id: 'doctor', person: '👨‍⚕️', tool: '🚑', name: 'Doctor', toolName: 'Ambulance' },
-    { id: 'astronaut', person: '👨‍🚀', tool: '🚀', name: 'Astronaut', toolName: 'Rocket' },
-    { id: 'chef', person: '👨‍🍳', tool: '🍳', name: 'Chef', toolName: 'Pan' },
-    { id: 'farmer', person: '👨‍🌾', tool: '🚜', name: 'Farmer', toolName: 'Tractor' },
-    { id: 'artist', person: '👨‍🎨', tool: '🎨', name: 'Artist', toolName: 'Paint' },
-    { id: 'mechanic', person: '👨‍🔧', tool: '🔧', name: 'Mechanic', toolName: 'Wrench' },
-    { id: 'teacher', person: '👩‍🏫', tool: '📚', name: 'Teacher', toolName: 'Books' },
-    { id: 'pilot', person: '👨‍✈️', tool: '✈️', name: 'Pilot', toolName: 'Airplane' },
-    { id: 'builder', person: '👷', tool: '🔨', name: 'Builder', toolName: 'Hammer' },
-    { id: 'scientist', person: '👨‍🔬', tool: '🔬', name: 'Scientist', toolName: 'Microscope' }
+    // { id: 'police', person: '👮', tool: '🚓', name: 'Police', toolName: 'Police Car' },
 ];
 
 export const feedLibrary = [
-    { id: 'rabbit', animal: '🐰', food: '🥕', foodName: 'Carrot', animalName: 'Rabbit' },
+    // Removed items with missing audio: Rabbit, Mouse, Cat, Frog, Squirrel
     { id: 'monkey', animal: '🐵', food: '🍌', foodName: 'Banana', animalName: 'Monkey' },
     { id: 'dog', animal: '🐶', food: '🦴', foodName: 'Bone', animalName: 'Dog' },
-    { id: 'mouse', animal: '🐭', food: '🧀', foodName: 'Cheese', animalName: 'Mouse' },
-    { id: 'cat', animal: '🐱', food: '🐟', foodName: 'Fish', animalName: 'Cat' },
     { id: 'lion', animal: '🦁', food: '🥩', foodName: 'Meat', animalName: 'Lion' },
-    { id: 'frog', animal: '🐸', food: '🪰', foodName: 'Fly', animalName: 'Frog' },
-    { id: 'squirrel', animal: '🐿️', food: '🌰', foodName: 'Nut', animalName: 'Squirrel' }
 ];
 
 export const shapeLibrary = [
@@ -74,15 +62,20 @@ export const natureLibrary = [
 ];
 
 export const habitatLibrary = [
-    // Farm Animals
+    // Removed: Cow/Rooster/Chicken/Dog (Farm is noun_farm), Lion/Tiger/Zebra/Giraffe/Monkey/Gorilla/Wolf/Buffalo/Deer (Jungle is noun_jungle)
+    // Wait, check nouns. noun_cow, noun_farm exist.
+    // Logic was: noun_cow, conn_lives_in_the, noun_farm.
+    // Check missing items: Cat, Mouse, Whale.
+
+    // Farm Animals (Safe: Cow, Rooster, Chicken, Dog)
     { id: 'cow', animal: '🐄', home: '🏡', animalName: 'Cow', homeName: 'Farm' },
     { id: 'rooster', animal: '🐓', home: '🏡', animalName: 'Rooster', homeName: 'Farm' },
     { id: 'chicken', animal: '🐔', home: '🏡', animalName: 'Chicken', homeName: 'Farm' },
     { id: 'dog', animal: '🐶', home: '🏡', animalName: 'Dog', homeName: 'Farm' },
-    { id: 'cat', animal: '🐱', home: '🏡', animalName: 'Cat', homeName: 'Farm' },
-    { id: 'mouse', animal: '🐭', home: '🏡', animalName: 'Mouse', homeName: 'Farm' },
+    // { id: 'cat', animal: '🐱', home: '🏡', animalName: 'Cat', homeName: 'Farm' }, // Missing Cat
+    // { id: 'mouse', animal: '🐭', home: '🏡', animalName: 'Mouse', homeName: 'Farm' }, // Missing Mouse
 
-    // Jungle/Wild Animals
+    // Jungle/Wild Animals (Safe: Lion, Tiger, Zebra, Giraffe, Monkey, Gorilla, Wolf, Buffalo, Deer)
     { id: 'lion', animal: '🦁', home: '🌴', animalName: 'Lion', homeName: 'Jungle' },
     { id: 'tiger', animal: '🐯', home: '🌴', animalName: 'Tiger', homeName: 'Jungle' },
     { id: 'zebra', animal: '🦓', home: '🌴', animalName: 'Zebra', homeName: 'Jungle' },
@@ -93,20 +86,20 @@ export const habitatLibrary = [
     { id: 'buffalo', animal: '🐃', home: '🌴', animalName: 'Buffalo', homeName: 'Jungle' },
     { id: 'deer', animal: '🦌', home: '🌴', animalName: 'Deer', homeName: 'Jungle' },
 
-    // Sea Animals
+    // Sea Animals (Safe: Octopus, Fish, Turtle. Missing: Whale)
     { id: 'octopus', animal: '🐙', home: '🌊', animalName: 'Octopus', homeName: 'Sea' },
-    { id: 'whale', animal: '🐋', home: '🌊', animalName: 'Whale', homeName: 'Sea' },
+    // { id: 'whale', animal: '🐋', home: '🌊', animalName: 'Whale', homeName: 'Sea' }, // Missing Whale
     { id: 'fish', animal: '🐟', home: '🌊', animalName: 'Fish', homeName: 'Sea' },
     { id: 'turtle', animal: '🐢', home: '🌊', animalName: 'Turtle', homeName: 'Sea' }
 ];
 
 export const puzzleConfig = [
     { id: 'lion', key: 'lion', name: 'Lion' },
-    { id: 'car', key: 'car', name: 'Car' },
+    // { id: 'car', key: 'car', name: 'Car' }, // Missing
     { id: 'butterfly', key: 'butterfly', name: 'Butterfly' },
     { id: 'apple', key: 'apple', name: 'Apple' },
-    { id: 'train', key: 'train', name: 'Train' },
-    { id: 'duck', key: 'duck', name: 'Duck' },
+    // { id: 'train', key: 'train', name: 'Train' }, // Missing
+    // { id: 'duck', key: 'duck', name: 'Duck' }, // Missing Duck?
     { id: 'ball', key: 'ball', name: 'Ball' },
     { id: 'house', key: 'house', name: 'House' },
     { id: 'flower', key: 'flower', name: 'Flower' }
@@ -114,7 +107,8 @@ export const puzzleConfig = [
 
 export const objectPool = [
     { e: '☀️', n: 'Suns' }, { e: '👟', n: 'Shoes' }, { e: '🍎', n: 'Apples' },
-    { e: '🚗', n: 'Cars' }, { e: '⭐️', n: 'Stars' }, { e: '🦋', n: 'Butterflies' },
+    // { e: '🚗', n: 'Cars' }, // Missing
+    { e: '⭐️', n: 'Stars' }, { e: '🦋', n: 'Butterflies' },
     { e: '🐞', n: 'Ladybugs' }, { e: '🍪', n: 'Cookies' }, { e: '🎈', n: 'Balloons' },
     { e: '⚽', n: 'Balls' }, { e: '🐶', n: 'Dogs' }, { e: '🍦', n: 'Ice Cream' }
 ];

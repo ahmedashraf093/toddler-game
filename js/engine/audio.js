@@ -2,7 +2,11 @@ let selectedVoice = null;
 let lastSpokenText = '';
 let lastSpokenTime = 0;
 let audioCtx = null;
-let bgmOscillators = [];
+// Removed Oscillator BGM variables
+let bgmAudio = new Audio('background_happy.mp3');
+bgmAudio.loop = true;
+bgmAudio.volume = 0.2; // Keep it background level
+
 let isMuted = false;
 let isBgmPlaying = false;
 
@@ -32,9 +36,6 @@ async function loadSprites() {
 
         // Decode logic requires AudioContext.
         // We defer decoding until audioCtx is initialized (first user click)
-        // OR we try to init a dummy context now if allowed?
-        // Browsers block AudioContext until interaction.
-        // We will store the ArrayBuffer and decode later.
         window.rawSpriteBuffer = arrayBuffer;
 
     } catch (e) {
@@ -153,14 +154,18 @@ export function resumeAudioContext() {
         audioCtx = new AudioContext();
     }
 
+    // Try to play BGM on interaction if not playing
+    if (!isMuted && bgmAudio.paused) {
+        bgmAudio.play().catch(e => console.log("BGM play failed", e));
+        isBgmPlaying = true;
+    }
+
     if (audioCtx.state === 'suspended') {
         audioCtx.resume().then(() => {
-            if (!isMuted) playBackgroundMusic();
             decodeSprites();
         });
     } else {
         decodeSprites();
-        if (!isMuted && !isBgmPlaying) playBackgroundMusic();
     }
 }
 
@@ -178,55 +183,19 @@ async function decodeSprites() {
 // --- Music ---
 
 export function playBackgroundMusic() {
-    if (isMuted || isBgmPlaying || !audioCtx) return;
+    if (isMuted) return;
 
-    // Playful Loop (Simple)
-    // We will schedule a simple loop using Oscillator
-    scheduleMusicLoop();
-}
-
-function scheduleMusicLoop() {
-    if (isMuted || !audioCtx) return;
-    isBgmPlaying = true;
-
-    // Simple Bouncy Bass
-    // Tempo 120 BPM = 0.5s per beat
-    const beat = 0.5;
-
-    const bass = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    bass.type = 'square';
-    bass.frequency.value = 130.81; // C3
-
-    // Low pass filter
-    const filter = audioCtx.createBiquadFilter();
-    filter.type = 'lowpass';
-    filter.frequency.value = 800;
-
-    bass.connect(filter);
-    filter.connect(gain);
-    gain.connect(audioCtx.destination);
-
-    // LFO for volume to make it "pulse"
-    const lfo = audioCtx.createOscillator();
-    lfo.frequency.value = 2; // 2Hz = 120BPM
-    const lfoGain = audioCtx.createGain();
-    lfoGain.gain.value = 0.05; // Amplitude of pulse
-    lfo.connect(lfoGain);
-    lfoGain.connect(gain.gain);
-
-    gain.gain.value = 0.05;
-
-    bass.start();
-    lfo.start();
-
-    bgmOscillators.push(bass, lfo);
+    // Using HTML5 Audio for new mp3 file
+    bgmAudio.play().then(() => {
+        isBgmPlaying = true;
+    }).catch(e => {
+        console.warn("BGM Auto-play blocked, waiting for interaction", e);
+    });
 }
 
 export function stopBackgroundMusic() {
+    bgmAudio.pause();
     isBgmPlaying = false;
-    bgmOscillators.forEach(o => { try{o.stop()}catch(e){} });
-    bgmOscillators = [];
 }
 
 export function playVictoryMusic() {
