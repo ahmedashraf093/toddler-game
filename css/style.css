@@ -202,28 +202,30 @@ body {
     padding: 15px;
     text-align: center;
     cursor: pointer;
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: transform 0.1s;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 5px;
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 6px 0 #ccc;
+    margin-bottom: 6px; /* Space for shadow */
 }
 
 .game-select-card:hover {
-    transform: scale(1.05) translateY(-5px);
-    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 0 #ccc;
     z-index: 10;
 }
 
 .game-select-card:active {
-    transform: scale(0.95);
+    transform: translateY(4px);
+    box-shadow: 0 2px 0 #ccc;
 }
 
 .game-select-card.active {
     border-color: var(--primary-color);
-    background: #fff; /* Override inline style if needed, but usually color is nice */
-    box-shadow: 0 0 0 4px rgba(79, 172, 254, 0.4);
+    background: #fff;
+    box-shadow: 0 6px 0 rgba(79, 172, 254, 0.6);
 }
 
 .game-icon {
