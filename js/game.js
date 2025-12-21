@@ -1061,6 +1061,12 @@ function populateGamesMenu() {
         card.className = `game-select-card ${game.id === currentMode ? 'active' : ''}`;
         card.onclick = () => setMode(game.id);
 
+        // Assign Theme Color
+        if (themes[game.id]) {
+            card.style.backgroundColor = themes[game.id].bg;
+            card.style.borderColor = themes[game.id].primary;
+        }
+
         const icon = document.createElement('div');
         icon.className = 'game-icon';
         icon.textContent = game.icon;
@@ -1069,8 +1075,16 @@ function populateGamesMenu() {
         name.className = 'game-name';
         name.textContent = game.name;
 
+        // Add Mini Play Icon
+        const playIcon = document.createElement('div');
+        playIcon.className = 'mini-play-icon';
+        playIcon.textContent = '▶️';
+        playIcon.style.fontSize = '20px';
+        playIcon.style.marginTop = '5px';
+
         card.appendChild(icon);
         card.appendChild(name);
+        card.appendChild(playIcon);
         grid.appendChild(card);
     });
 }
