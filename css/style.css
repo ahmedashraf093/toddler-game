@@ -195,12 +195,18 @@ body {
     padding: 15px;
     text-align: center;
     cursor: pointer;
-    transition: transform 0.2s;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    gap: 5px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.game-select-card:hover {
+    transform: scale(1.05) translateY(-5px);
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.15);
+    z-index: 10;
 }
 
 .game-select-card:active {
@@ -209,7 +215,8 @@ body {
 
 .game-select-card.active {
     border-color: var(--primary-color);
-    background: #f0f9ff;
+    background: #fff; /* Override inline style if needed, but usually color is nice */
+    box-shadow: 0 0 0 4px rgba(79, 172, 254, 0.4);
 }
 
 .game-icon {
@@ -670,13 +677,22 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(255, 255, 255, 0.9);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(230, 247, 255, 0.9) 100%);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 5000;
     backdrop-filter: blur(5px);
     flex-direction: column;
+    gap: 20px;
+}
+
+.start-logo {
+    width: 150px;
+    height: 150px;
+    margin-bottom: 10px;
+    animation: float 3s ease-in-out infinite;
+    filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.1));
 }
 
 #start-btn {
@@ -690,13 +706,68 @@ body {
     cursor: pointer;
     font-family: inherit;
     font-weight: 900;
-    animation: pulse 1.5s infinite;
+    animation: pulse 2s infinite;
+    transition: transform 0.1s;
 }
 
 #start-btn:active {
     transform: translateY(5px);
     box-shadow: 0 5px 0 #2E7D32;
     animation: none;
+}
+
+.whatsapp-btn {
+    margin-top: 30px;
+    background: rgba(255, 255, 255, 0.8);
+    border: 2px solid #25D366;
+    color: #075E54;
+    padding: 10px 20px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.whatsapp-btn:hover {
+    background: #25D366;
+    color: white;
+    transform: scale(1.05);
+}
+
+/* Background Decorations */
+.bg-decoration {
+    position: fixed;
+    font-size: 60px;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+.cloud-1 { top: 10%; left: 10%; animation: drift 20s linear infinite; }
+.cloud-2 { top: 20%; right: 15%; animation: drift 25s linear infinite reverse; }
+.star-1 { bottom: 15%; left: 20%; font-size: 40px; animation: float 4s ease-in-out infinite 1s; }
+.star-2 { bottom: 25%; right: 10%; font-size: 50px; animation: float 5s ease-in-out infinite; }
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+}
+
+@keyframes drift {
+    0% { transform: translateX(0); }
+    50% { transform: translateX(20px); }
+    100% { transform: translateX(0); }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
 }
 
 @keyframes popIn {
@@ -761,6 +832,21 @@ body {
         opacity: 0;
     }
 }
+
+/* General Illustrations / Corner Decorations */
+.corner-illustration {
+    position: fixed;
+    z-index: -1;
+    font-size: 80px;
+    opacity: 0.15;
+    pointer-events: none;
+    transition: all 0.5s ease;
+}
+
+.corner-top-left { top: 20px; left: 20px; transform: rotate(-15deg); }
+.corner-top-right { top: 20px; right: 20px; transform: rotate(15deg); }
+.corner-bottom-left { bottom: 20px; left: 20px; transform: rotate(15deg); }
+.corner-bottom-right { bottom: 20px; right: 20px; transform: rotate(-15deg); }
 
 /* 3. Bouncing Emojis */
 .emoji-bounce {
