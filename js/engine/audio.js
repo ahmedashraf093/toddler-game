@@ -2,7 +2,11 @@ let selectedVoice = null;
 let lastSpokenText = '';
 let lastSpokenTime = 0;
 let audioCtx = null;
-let bgmOscillators = [];
+// Removed Oscillator BGM variables
+let bgmAudio = new Audio('background_happy.mp3');
+bgmAudio.loop = true;
+bgmAudio.volume = 0.2; // Keep it background level
+
 let isMuted = false;
 let isBgmPlaying = false;
 
@@ -32,9 +36,6 @@ async function loadSprites() {
 
         // Decode logic requires AudioContext.
         // We defer decoding until audioCtx is initialized (first user click)
-        // OR we try to init a dummy context now if allowed?
-        // Browsers block AudioContext until interaction.
-        // We will store the ArrayBuffer and decode later.
         window.rawSpriteBuffer = arrayBuffer;
 
     } catch (e) {
@@ -157,14 +158,18 @@ export function resumeAudioContext() {
         audioCtx = new AudioContext();
     }
 
+    // Try to play BGM on interaction if not playing
+    if (!isMuted && bgmAudio.paused) {
+        bgmAudio.play().catch(e => console.log("BGM play failed", e));
+        isBgmPlaying = true;
+    }
+
     if (audioCtx.state === 'suspended') {
         audioCtx.resume().then(() => {
-            if (!isMuted) playBackgroundMusic();
             decodeSprites();
         });
     } else {
         decodeSprites();
-        if (!isMuted && !isBgmPlaying) playBackgroundMusic();
     }
 }
 
@@ -182,72 +187,19 @@ async function decodeSprites() {
 // --- Music ---
 
 export function playBackgroundMusic() {
-    if (isMuted || isBgmPlaying || !audioCtx) return;
+    if (isMuted) return;
 
-    // Playful Loop (Simple)
-    // We will schedule a simple loop using Oscillator
-    scheduleMusicLoop();
-}
-
-function scheduleMusicLoop() {
-    if (isMuted || !audioCtx) return;
-    isBgmPlaying = true;
-
-    // Simple Playful Tune (Lullaby-ish / Chiptune)
-    // C Major: C4 - E4 - G4 - E4
-    const notes = [
-        { f: 261.63, d: 0.4 }, // C4
-        { f: 329.63, d: 0.4 }, // E4
-        { f: 392.00, d: 0.4 }, // G4
-        { f: 329.63, d: 0.4 }  // E4
-    ];
-
-    let noteIndex = 0;
-
-    // Recursive loop function
-    function playNextNote() {
-        if (!isBgmPlaying || isMuted) return;
-
-        const note = notes[noteIndex];
-        noteIndex = (noteIndex + 1) % notes.length;
-
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-
-        osc.type = 'triangle'; // Soft chiptune sound
-        osc.frequency.value = note.f;
-
-        // Envelope ADSR
-        const now = audioCtx.currentTime;
-        gain.gain.setValueAtTime(0, now);
-        gain.gain.linearRampToValueAtTime(0.03, now + 0.05); // Attack (Soft volume)
-        gain.gain.linearRampToValueAtTime(0.01, now + note.d - 0.05); // Sustain
-        gain.gain.linearRampToValueAtTime(0, now + note.d); // Release
-
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-
-        osc.start(now);
-        osc.stop(now + note.d + 0.1);
-
-        // Schedule next note
-        // Store timeout ID to clear later if needed (though isBgmPlaying flag handles it mostly)
-        // We can attach it to bgmOscillators for cleanup if we want, or just rely on state.
-        // For simplicity with closure:
-        setTimeout(playNextNote, note.d * 1000);
-    }
-
-    playNextNote();
-
-    // We can't push individual oscillators to bgmOscillators array in this recursive setup efficiently for stop(),
-    // but the `if (!isBgmPlaying) return` check in the loop handles "stopping" effectively.
-    // The only lingering sound is the <0.4s tail of the current note, which is acceptable.
+    // Using HTML5 Audio for new mp3 file
+    bgmAudio.play().then(() => {
+        isBgmPlaying = true;
+    }).catch(e => {
+        console.warn("BGM Auto-play blocked, waiting for interaction", e);
+    });
 }
 
 export function stopBackgroundMusic() {
+    bgmAudio.pause();
     isBgmPlaying = false;
-    bgmOscillators.forEach(o => { try{o.stop()}catch(e){} });
-    bgmOscillators = [];
 }
 
 export function playVictoryMusic() {
