@@ -1,4 +1,4 @@
-import { initAudio, resumeAudioContext } from './engine/audio.js';
+import { initAudio, resumeAudioContext, toggleMute, getMuteState } from './engine/audio.js';
 import { gameState } from './engine/state.js';
 import { showLoader, toggleMenu, setTheme, populateGamesMenu } from './engine/ui.js';
 import { initStandardGame } from './games/standard.js';
@@ -38,6 +38,16 @@ window.addEventListener('load', () => {
     // Bind global buttons
     const startBtn = document.getElementById('start-btn');
     if (startBtn) startBtn.onclick = startGame;
+
+    const muteBtn = document.getElementById('mute-btn');
+    if (muteBtn) {
+        muteBtn.onclick = () => {
+            const muted = toggleMute();
+            muteBtn.textContent = muted ? '🔇' : '🔊';
+        };
+        // Set initial state
+        if (getMuteState()) muteBtn.textContent = '🔇';
+    }
 
     const menuBtn = document.getElementById('menu-btn');
     if (menuBtn) menuBtn.onclick = () => toggleMenu();

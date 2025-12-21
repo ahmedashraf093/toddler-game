@@ -1,103 +1,265 @@
 let selectedVoice = null;
 let lastSpokenText = '';
 let lastSpokenTime = 0;
-let audioCtxUnlocked = false;
+let audioCtx = null;
+let bgmOscillators = [];
+let isMuted = false;
+let isBgmPlaying = false;
+
+// Audio Sprites
+let spriteBuffer = null;
+let spriteMap = null;
 
 export function initAudio() {
+    isMuted = localStorage.getItem('isMuted') === 'true';
+
     if ('speechSynthesis' in window) {
         window.speechSynthesis.onvoiceschanged = loadVoices;
         loadVoices();
+    }
+
+    // Load Sprites
+    loadSprites();
+}
+
+async function loadSprites() {
+    try {
+        const mapResp = await fetch('assets/audio/sprites.json');
+        spriteMap = await mapResp.json();
+
+        const audioResp = await fetch('assets/audio/sprites.mp3');
+        const arrayBuffer = await audioResp.arrayBuffer();
+
+        // Decode logic requires AudioContext.
+        // We defer decoding until audioCtx is initialized (first user click)
+        // OR we try to init a dummy context now if allowed?
+        // Browsers block AudioContext until interaction.
+        // We will store the ArrayBuffer and decode later.
+        window.rawSpriteBuffer = arrayBuffer;
+
+    } catch (e) {
+        console.warn("Failed to load audio sprites:", e);
     }
 }
 
 function loadVoices() {
     if (!('speechSynthesis' in window)) return;
     const voiceList = window.speechSynthesis.getVoices().filter(v => v.lang.startsWith('en'));
-
-    // Smart Select: Prioritize UK English
     selectedVoice = voiceList.find(v => v.name.includes('Great Britain') || v.name.includes('UK') || v.name.includes('United Kingdom'))
         || voiceList.find(v => v.name.includes('Google UK English'))
         || voiceList.find(v => v.name.includes('Female'))
         || voiceList[0];
 }
 
-export function speakText(text, throttle = false) {
-    if (!('speechSynthesis' in window)) return;
+export function toggleMute() {
+    isMuted = !isMuted;
+    localStorage.setItem('isMuted', isMuted);
+
+    if (isMuted) {
+        stopBackgroundMusic();
+        window.speechSynthesis.cancel();
+    } else {
+        playBackgroundMusic();
+    }
+    return isMuted;
+}
+
+export function getMuteState() {
+    return isMuted;
+}
+
+// --- Speaking Logic ---
+
+export function speakText(text, key = null, throttle = false) {
+    // Legacy support for single key (though we now prefer sequences)
+    if (key) {
+        speakSequence([key], text);
+    } else {
+        fallbackTTS(text, throttle);
+    }
+}
+
+export function speakSequence(keys, fallbackText) {
+    if (isMuted) return;
+
+    // Check if we have sprite support
+    if (audioCtx && spriteBuffer && spriteMap) {
+        let validKeys = keys.filter(k => spriteMap[k]);
+
+        if (validKeys.length > 0) {
+            playSpriteSequence(validKeys);
+            return;
+        }
+    } else if (window.rawSpriteBuffer && audioCtx) {
+        // Try to decode on the fly if not yet decoded
+        decodeSprites().then(() => {
+             speakSequence(keys, fallbackText);
+        });
+        return;
+    }
+
+    // Fallback if no valid keys or no audio support
+    fallbackTTS(fallbackText);
+}
+
+function playSpriteSequence(keys) {
+    let now = audioCtx.currentTime;
+    // Add a small delay to start
+    let startTime = now + 0.1;
+
+    keys.forEach(key => {
+        const data = spriteMap[key];
+        if (!data) return;
+
+        const source = audioCtx.createBufferSource();
+        source.buffer = spriteBuffer;
+        source.connect(audioCtx.destination);
+
+        // Start playing segment
+        source.start(startTime, data.start, data.duration);
+
+        // Schedule next
+        startTime += data.duration + 0.05; // 50ms pause between words for natural flow
+    });
+}
+
+function fallbackTTS(text, throttle = false) {
+    if (isMuted || !('speechSynthesis' in window)) return;
 
     const now = Date.now();
-    // If throttled, don't repeat the same text within 1.5 seconds
     if (throttle && text === lastSpokenText && (now - lastSpokenTime) < 1500) {
         return;
     }
 
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.rate = 0.9;
-    utterance.pitch = 1.0;
-    if (selectedVoice) utterance.voice = selectedVoice;
-
     lastSpokenText = text;
     lastSpokenTime = now;
 
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    // Joyful tweaks
+    utterance.rate = 1.1;
+    utterance.pitch = 1.2;
+    if (selectedVoice) utterance.voice = selectedVoice;
     window.speechSynthesis.speak(utterance);
 }
 
+// --- Audio Context ---
+
 export function resumeAudioContext() {
-    if (audioCtxUnlocked) return;
     const AudioContext = window.AudioContext || window.webkitAudioContext;
-    if (AudioContext) {
-        const ctx = new AudioContext(); // Just creating it or accessing global
-        if (ctx.state === 'suspended') {
-            ctx.resume().then(() => {
-                console.log("Audio Context Resumed");
-                audioCtxUnlocked = true;
-            });
-        } else {
-            audioCtxUnlocked = true;
-        }
+    if (!AudioContext) return;
+
+    if (!audioCtx) {
+        audioCtx = new AudioContext();
+    }
+
+    if (audioCtx.state === 'suspended') {
+        audioCtx.resume().then(() => {
+            if (!isMuted) playBackgroundMusic();
+            decodeSprites();
+        });
+    } else {
+        decodeSprites();
+        if (!isMuted && !isBgmPlaying) playBackgroundMusic();
     }
 }
 
+async function decodeSprites() {
+    if (spriteBuffer || !window.rawSpriteBuffer || !audioCtx) return;
+    try {
+        spriteBuffer = await audioCtx.decodeAudioData(window.rawSpriteBuffer);
+        window.rawSpriteBuffer = null; // Free memory
+        console.log("Audio Sprites Decoded!");
+    } catch(e) {
+        console.error("Sprite decode error", e);
+    }
+}
+
+// --- Music ---
+
+export function playBackgroundMusic() {
+    if (isMuted || isBgmPlaying || !audioCtx) return;
+
+    // Playful Loop (Simple)
+    // We will schedule a simple loop using Oscillator
+    scheduleMusicLoop();
+}
+
+function scheduleMusicLoop() {
+    if (isMuted || !audioCtx) return;
+    isBgmPlaying = true;
+
+    // Simple Bouncy Bass
+    // Tempo 120 BPM = 0.5s per beat
+    const beat = 0.5;
+
+    const bass = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    bass.type = 'square';
+    bass.frequency.value = 130.81; // C3
+
+    // Low pass filter
+    const filter = audioCtx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.value = 800;
+
+    bass.connect(filter);
+    filter.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    // LFO for volume to make it "pulse"
+    const lfo = audioCtx.createOscillator();
+    lfo.frequency.value = 2; // 2Hz = 120BPM
+    const lfoGain = audioCtx.createGain();
+    lfoGain.gain.value = 0.05; // Amplitude of pulse
+    lfo.connect(lfoGain);
+    lfoGain.connect(gain.gain);
+
+    gain.gain.value = 0.05;
+
+    bass.start();
+    lfo.start();
+
+    bgmOscillators.push(bass, lfo);
+}
+
+export function stopBackgroundMusic() {
+    isBgmPlaying = false;
+    bgmOscillators.forEach(o => { try{o.stop()}catch(e){} });
+    bgmOscillators = [];
+}
+
 export function playVictoryMusic() {
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    if (!AudioContext) return;
-    const ctx = new AudioContext();
+    if (isMuted) return;
+    resumeAudioContext();
+    if (!audioCtx) return;
 
-    // Fanfare Melody: C5, E5, G5, C6 (staccato) ... then C6 Major Chord held
-    const sequence = [
-        { f: 523.25, t: 0, d: 0.1 },    // C5
-        { f: 659.25, t: 0.1, d: 0.1 },  // E5
-        { f: 783.99, t: 0.2, d: 0.1 },  // G5
-        { f: 1046.50, t: 0.3, d: 0.4 }, // C6 (Longer)
+    // Amazing Fanfare!
+    const now = audioCtx.currentTime;
+
+    // High Energy Arpeggio
+    const notes = [
+        523.25, 659.25, 783.99, 1046.50, // C E G C
+        523.25, 659.25, 783.99, 1046.50,
+        1318.51, 1567.98, 2093.00
     ];
 
-    // Final Chord (C6 Major) at t=0.3
-    const chord = [
-        { f: 523.25, t: 0.3, d: 0.6 },  // C5 (Low root)
-        { f: 1046.50, t: 0.3, d: 0.6 }, // C6
-        { f: 1318.51, t: 0.3, d: 0.6 }, // E6
-        { f: 1567.98, t: 0.3, d: 0.6 }  // G6
-    ];
+    notes.forEach((freq, i) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.value = freq;
 
-    const masterGain = ctx.createGain();
-    masterGain.gain.value = 0.3; // Global Volume
-    masterGain.connect(ctx.destination);
+        const t = now + (i * 0.08);
 
-    [...sequence, ...chord].forEach(note => {
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-
-        osc.type = 'triangle'; // Brighter sound
-        osc.frequency.setValueAtTime(note.f, ctx.currentTime + note.t);
-
-        gain.gain.setValueAtTime(0, ctx.currentTime + note.t);
-        gain.gain.linearRampToValueAtTime(0.3, ctx.currentTime + note.t + 0.05); // Attack
-        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + note.t + note.d); // Decay
+        gain.gain.setValueAtTime(0, t);
+        gain.gain.linearRampToValueAtTime(0.2, t + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.01, t + 0.3);
 
         osc.connect(gain);
-        gain.connect(masterGain);
+        gain.connect(audioCtx.destination);
 
-        osc.start(ctx.currentTime + note.t);
-        osc.stop(ctx.currentTime + note.t + note.d + 0.1);
+        osc.start(t);
+        osc.stop(t + 0.4);
     });
 }
