@@ -50,37 +50,54 @@ content = {
         {'id': 'y', 'text': 'Y'}, {'id': 'z', 'text': 'Z'}
     ],
     'noun': [
+        # Animals
         'Lion', 'Tiger', 'Zebra', 'Giraffe', 'Monkey', 'Gorilla', 'Wolf', 'Buffalo', 'Deer',
         'Cow', 'Rooster', 'Chicken', 'Dog', 'Cat', 'Mouse', 'Rabbit', 'Frog', 'Squirrel',
-        'Octopus', 'Whale', 'Fish', 'Turtle', 'Owl', 'Bee', 'Caterpillar', 'Butterfly',
+        'Octopus', 'Whale', 'Fish', 'Turtle', 'Owl', 'Bee', 'Caterpillar', 'Butterfly', 'Penguin',
+        # Foods
         'Carrot', 'Banana', 'Bone', 'Cheese', 'Meat', 'Fly', 'Nut', 'Apple', 'Grapes',
-        'Ice Cream', 'Juice', 'Orange', 'Pizza', 'Water', 'Avocado',
+        'Ice Cream', 'Juice', 'Orange', 'Pizza', 'Water', 'Avocado', 'Strawberry', 'Cookie',
+        # Objects/Tools
         'Police Car', 'Fire Truck', 'Ambulance', 'Rocket', 'Pan', 'Tractor', 'Paint',
         'Wrench', 'Books', 'Airplane', 'Hammer', 'Microscope',
         'Ball', 'House', 'Kite', 'Nose', 'Queen', 'Sun', 'Tree', 'Umbrella', 'Violin',
         'Xylophone', 'Yellow', 'Clock', 'Gift', 'Door', 'Sunglasses', 'Scarf', 'Gloves',
-        'Leaf', 'Flower',
+        'Leaf', 'Flower', 'Bus', 'Train', 'Helicopter', 'Crayon', 'Teddy Bear', 'Balloon',
+        # Shapes
         'Triangle', 'Circle', 'Square', 'Rectangle', 'Oval', 'Diamond', 'Pizza Slice',
-        'Sunny', 'Snowy', 'Rainy', 'Cold', 'Night', 'Windy', 'Ocean', 'Spring',
-        'Farm', 'Jungle', 'Sea'
+        # Weather/Nature
+        'Sunny', 'Snowy', 'Rainy', 'Cold', 'Night', 'Windy', 'Ocean', 'Spring', 'Moon',
+        # Habitats
+        'Farm', 'Jungle', 'Sea',
+        # Jobs / People
+        'Police', 'Fireman', 'Doctor', 'Astronaut', 'Chef', 'Farmer', 'Artist', 'Mechanic', 'Teacher', 'Pilot', 'Builder', 'Scientist',
+        # Extras from objectPool
+        'Suns', 'Shoes', 'Apples', 'Cars', 'Stars', 'Butterflies', 'Ladybugs', 'Cookies', 'Balloons', 'Balls', 'Dogs'
     ]
 }
 
 TEMP_DIR = "temp_speech"
 OUTPUT_DIR = "assets/audio"
 VOICE = "en-US-AnaNeural"
-MAX_CONCURRENT = 5
+MAX_CONCURRENT = 3 # Reduced concurrency to prevent timeouts
 semaphore = asyncio.Semaphore(MAX_CONCURRENT)
+RETRIES = 3
 
 async def generate_audio(text, filepath):
     if os.path.exists(filepath):
         return
+
     async with semaphore:
-        try:
-            communicate = edge_tts.Communicate(text, VOICE)
-            await communicate.save(filepath)
-        except Exception as e:
-            print(f"Error generating {filepath}: {e}")
+        for attempt in range(RETRIES):
+            try:
+                communicate = edge_tts.Communicate(text, VOICE)
+                await communicate.save(filepath)
+                return # Success
+            except Exception as e:
+                print(f"Error generating {filepath} (Attempt {attempt+1}/{RETRIES}): {e}")
+                await asyncio.sleep(2 * (attempt + 1)) # Backoff
+
+        print(f"FAILED to generate {filepath} after {RETRIES} attempts.")
 
 async def main():
     if not os.path.exists(TEMP_DIR):
@@ -123,16 +140,16 @@ async def main():
     await asyncio.gather(*tasks)
 
     # 2. Concat using ffmpeg
-    # ffmpeg -i file1 -i file2 ... -filter_complex "[0:0][1:0]...concat=n=N:v=0:a=1[out]" -map "[out]" output.mp3
-    # Actually, the 'concat demuxer' is better for many files.
-    # Create list.txt
-
     list_txt = os.path.join(TEMP_DIR, 'files.txt')
+    valid_entries = []
     with open(list_txt, 'w') as f:
         for entry in file_map:
             # check if exists (generation might fail)
             if os.path.exists(entry['path']):
                 f.write(f"file '{os.path.basename(entry['path'])}'\n")
+                valid_entries.append(entry)
+            else:
+                print(f"WARNING: Skipping missing file {entry['path']}")
 
     output_mp3 = os.path.join(OUTPUT_DIR, 'sprites.mp3')
 
@@ -140,21 +157,13 @@ async def main():
     subprocess.run([
         'ffmpeg', '-f', 'concat', '-safe', '0',
         '-i', 'files.txt', '-c', 'copy', '-y', f'../{output_mp3}'
-    ], cwd=TEMP_DIR) # Run inside temp dir so relative paths work
+    ], cwd=TEMP_DIR)
 
-    # Adjust output path for python context
-    # output_mp3 is assets/audio/sprites.mp3
-    # Inside cwd=temp_speech, ../assets/audio/sprites.mp3
-
-    # 3. Calculate Offsets (We need duration of each file)
-    # Using ffprobe
+    # 3. Calculate Offsets
     sprite_map = {}
     current_offset = 0
 
-    for entry in file_map:
-        if not os.path.exists(entry['path']):
-            continue
-
+    for entry in valid_entries:
         # Get duration
         result = subprocess.run([
             'ffprobe', '-v', 'error', '-show_entries', 'format=duration',

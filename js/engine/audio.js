@@ -84,11 +84,15 @@ export function speakSequence(keys, fallbackText) {
 
     // Check if we have sprite support
     if (audioCtx && spriteBuffer && spriteMap) {
-        let validKeys = keys.filter(k => spriteMap[k]);
+        // Only play if ALL keys are present to avoid broken sentences
+        // If a word is missing, fallback to TTS for the whole sentence.
+        const allKeysExist = keys.every(k => spriteMap[k]);
 
-        if (validKeys.length > 0) {
-            playSpriteSequence(validKeys);
+        if (allKeysExist) {
+            playSpriteSequence(keys);
             return;
+        } else {
+            console.warn("Missing audio keys for:", keys.filter(k => !spriteMap[k]), "Falling back to TTS.");
         }
     } else if (window.rawSpriteBuffer && audioCtx) {
         // Try to decode on the fly if not yet decoded
@@ -189,38 +193,55 @@ function scheduleMusicLoop() {
     if (isMuted || !audioCtx) return;
     isBgmPlaying = true;
 
-    // Simple Bouncy Bass - Smoother & Quieter
-    // Tempo 120 BPM = 0.5s per beat
-    const beat = 0.5;
+    // Simple Playful Tune (Lullaby-ish / Chiptune)
+    // C Major: C4 - E4 - G4 - E4
+    const notes = [
+        { f: 261.63, d: 0.4 }, // C4
+        { f: 329.63, d: 0.4 }, // E4
+        { f: 392.00, d: 0.4 }, // G4
+        { f: 329.63, d: 0.4 }  // E4
+    ];
 
-    const bass = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    bass.type = 'sine'; // Smoother than square
-    bass.frequency.value = 65.41; // C2 (Lower pitch)
+    let noteIndex = 0;
 
-    // Low pass filter
-    const filter = audioCtx.createBiquadFilter();
-    filter.type = 'lowpass';
-    filter.frequency.value = 400; // Warmer
+    // Recursive loop function
+    function playNextNote() {
+        if (!isBgmPlaying || isMuted) return;
 
-    bass.connect(filter);
-    filter.connect(gain);
-    gain.connect(audioCtx.destination);
+        const note = notes[noteIndex];
+        noteIndex = (noteIndex + 1) % notes.length;
 
-    // LFO for volume to make it "pulse"
-    const lfo = audioCtx.createOscillator();
-    lfo.frequency.value = 2; // 2Hz
-    const lfoGain = audioCtx.createGain();
-    lfoGain.gain.value = 0.02; // Reduced LFO depth
-    lfo.connect(lfoGain);
-    lfoGain.connect(gain.gain);
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
 
-    gain.gain.value = 0.02; // Very quiet background (down from 0.05)
+        osc.type = 'triangle'; // Soft chiptune sound
+        osc.frequency.value = note.f;
 
-    bass.start();
-    lfo.start();
+        // Envelope ADSR
+        const now = audioCtx.currentTime;
+        gain.gain.setValueAtTime(0, now);
+        gain.gain.linearRampToValueAtTime(0.03, now + 0.05); // Attack (Soft volume)
+        gain.gain.linearRampToValueAtTime(0.01, now + note.d - 0.05); // Sustain
+        gain.gain.linearRampToValueAtTime(0, now + note.d); // Release
 
-    bgmOscillators.push(bass, lfo);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start(now);
+        osc.stop(now + note.d + 0.1);
+
+        // Schedule next note
+        // Store timeout ID to clear later if needed (though isBgmPlaying flag handles it mostly)
+        // We can attach it to bgmOscillators for cleanup if we want, or just rely on state.
+        // For simplicity with closure:
+        setTimeout(playNextNote, note.d * 1000);
+    }
+
+    playNextNote();
+
+    // We can't push individual oscillators to bgmOscillators array in this recursive setup efficiently for stop(),
+    // but the `if (!isBgmPlaying) return` check in the loop handles "stopping" effectively.
+    // The only lingering sound is the <0.4s tail of the current note, which is acceptable.
 }
 
 export function stopBackgroundMusic() {
