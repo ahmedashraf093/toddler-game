@@ -59,16 +59,20 @@ content = {
         {'id': 'y', 'text': 'Y'}, {'id': 'z', 'text': 'Z'}
     ],
     'noun': [
+        # Animals
         'Lion', 'Tiger', 'Zebra', 'Giraffe', 'Monkey', 'Gorilla', 'Wolf', 'Buffalo', 'Deer',
         'Cow', 'Rooster', 'Chicken', 'Dog', 'Cat', 'Mouse', 'Rabbit', 'Frog', 'Squirrel',
-        'Octopus', 'Whale', 'Fish', 'Turtle', 'Owl', 'Bee', 'Caterpillar', 'Butterfly',
+        'Octopus', 'Whale', 'Fish', 'Turtle', 'Owl', 'Bee', 'Caterpillar', 'Butterfly', 'Penguin',
+        # Foods
         'Carrot', 'Banana', 'Bone', 'Cheese', 'Meat', 'Fly', 'Nut', 'Apple', 'Grapes',
-        'Ice Cream', 'Juice', 'Orange', 'Pizza', 'Water', 'Avocado',
+        'Ice Cream', 'Juice', 'Orange', 'Pizza', 'Water', 'Avocado', 'Strawberry', 'Cookie',
+        # Objects/Tools
         'Police Car', 'Fire Truck', 'Ambulance', 'Rocket', 'Pan', 'Tractor', 'Paint',
         'Wrench', 'Books', 'Airplane', 'Hammer', 'Microscope',
         'Ball', 'House', 'Kite', 'Nose', 'Queen', 'Sun', 'Tree', 'Umbrella', 'Violin',
         'Xylophone', 'Yellow', 'Clock', 'Gift', 'Door', 'Sunglasses', 'Scarf', 'Gloves',
-        'Leaf', 'Flower',
+        'Leaf', 'Flower', 'Bus', 'Train', 'Helicopter', 'Crayon', 'Teddy Bear', 'Balloon',
+        # Shapes
         'Triangle', 'Circle', 'Square', 'Rectangle', 'Oval', 'Diamond', 'Pizza Slice',
         'Sunny', 'Snowy', 'Rainy', 'Cold', 'Night', 'Windy', 'Ocean', 'Spring',
         'Farm', 'Jungle', 'Sea',
@@ -83,18 +87,25 @@ content = {
 TEMP_DIR = "temp_speech"
 OUTPUT_DIR = "assets/audio"
 VOICE = "en-US-AnaNeural"
-MAX_CONCURRENT = 5
+MAX_CONCURRENT = 3 # Reduced concurrency to prevent timeouts
 semaphore = asyncio.Semaphore(MAX_CONCURRENT)
+RETRIES = 3
 
 async def generate_audio(text, filepath):
     if os.path.exists(filepath):
         return
+
     async with semaphore:
-        try:
-            communicate = edge_tts.Communicate(text, VOICE)
-            await communicate.save(filepath)
-        except Exception as e:
-            print(f"Error generating {filepath}: {e}")
+        for attempt in range(RETRIES):
+            try:
+                communicate = edge_tts.Communicate(text, VOICE)
+                await communicate.save(filepath)
+                return # Success
+            except Exception as e:
+                print(f"Error generating {filepath} (Attempt {attempt+1}/{RETRIES}): {e}")
+                await asyncio.sleep(2 * (attempt + 1)) # Backoff
+
+        print(f"FAILED to generate {filepath} after {RETRIES} attempts.")
 
 async def main():
     if not os.path.exists(TEMP_DIR):
@@ -145,10 +156,14 @@ async def main():
 
     # 2. Concat using ffmpeg
     list_txt = os.path.join(TEMP_DIR, 'files.txt')
+    valid_entries = []
     with open(list_txt, 'w') as f:
         for entry in file_map:
             if os.path.exists(entry['path']):
                 f.write(f"file '{os.path.basename(entry['path'])}'\n")
+                valid_entries.append(entry)
+            else:
+                print(f"WARNING: Skipping missing file {entry['path']}")
 
     output_mp3 = os.path.join(OUTPUT_DIR, 'sprites.mp3')
 

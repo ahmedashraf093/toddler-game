@@ -1521,3 +1521,117 @@ body {
     border-radius: 8px;
     flex-wrap: wrap;
 }
+
+/* --- Parental Gate --- */
+#parental-gate-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(10px);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#parental-gate-overlay.hidden {
+    display: none;
+}
+
+.pg-content {
+    background: #fff;
+    padding: 30px;
+    border-radius: 20px;
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.pg-content h2 {
+    color: #444;
+    margin-top: 0;
+}
+
+#pg-question {
+    font-size: 40px;
+    font-weight: bold;
+    color: #333;
+    margin: 20px 0;
+}
+
+#pg-input-container {
+    background: #f0f0f0;
+    border: 3px solid #ccc;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 20px;
+    min-height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#pg-input {
+    font-size: 36px;
+    font-weight: bold;
+    letter-spacing: 5px;
+}
+
+#pg-input.shake {
+    animation: shake 0.5s;
+    color: red;
+}
+
+.pg-keypad {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.pg-key {
+    background: #e6f7ff;
+    border: 2px solid #b3d9ff;
+    border-radius: 10px;
+    font-size: 24px;
+    padding: 15px 0;
+    cursor: pointer;
+    font-weight: bold;
+    color: #0066cc;
+    transition: background 0.2s;
+}
+
+.pg-key:active {
+    background: #b3d9ff;
+    transform: scale(0.95);
+}
+
+.pg-key.action-key {
+    background: #ffd6cc;
+    border-color: #ffad99;
+    color: #cc3300;
+}
+
+.pg-key[data-val="enter"] {
+    background: #ccffcc;
+    border-color: #99ff99;
+    color: #006600;
+}
+
+@keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    50% { transform: translateX(10px); }
+    75% { transform: translateX(-10px); }
+    100% { transform: translateX(0); }
+}
+
+.error-text {
+    color: red;
+    font-weight: bold;
+    margin-bottom: 10px;
+    display: block;
+}

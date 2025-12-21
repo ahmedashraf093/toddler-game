@@ -8,10 +8,16 @@ import { checkOverallProgress } from '../challenges/manager.js';
 let flippedCards = [];
 let matchedPairs = 0;
 let lockBoard = false;
+let previewTimeout = null;
 
 export function initMemoryGame() {
     const grid = document.getElementById('memory-grid');
     grid.innerHTML = '';
+
+    if (previewTimeout) {
+        clearTimeout(previewTimeout);
+        previewTimeout = null;
+    }
 
     flippedCards = [];
     matchedPairs = 0;
@@ -38,9 +44,11 @@ export function initMemoryGame() {
     let deck = [...items, ...items];
     deck = shuffle(deck);
 
+    const cardElements = [];
     deck.forEach(item => {
         const card = createMemoryCard(item);
         grid.appendChild(card);
+        cardElements.push(card);
     });
 
     // "Find the pairs!" - We don't have this sprite.
