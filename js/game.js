@@ -1,9 +1,14 @@
 // Hide loader when page is fully loaded
+const GAME_VERSION = 'v1.3';
+
 window.addEventListener('load', () => {
     const loader = document.getElementById('loading-screen');
     if (loader) {
         loader.classList.add('hidden');
     }
+    const verDisplay = document.getElementById('version-display');
+    if (verDisplay) verDisplay.textContent = GAME_VERSION;
+    console.log("Toddler Game Version:", GAME_VERSION);
 });
 
 // --- Start Game Logic ---

@@ -22,9 +22,8 @@ body {
     transition: background-color 0.5s ease;
     touch-action: none;
     overscroll-behavior: none;
-    height: 100vh;
     width: 100vw;
-    overflow: hidden;
+    overflow-y: auto;
 }
 
 /* --- Loading Screen --- */
@@ -305,7 +304,7 @@ body {
     width: 100%;
     max-width: 900px;
     flex-grow: 1;
-    padding-bottom: 80px;
+    padding-bottom: 120px;
     /* Fix scrolling for standard game */
     /* height: 100%; <- Removed, caused clipping */
     min-height: 0;
@@ -356,7 +355,6 @@ body {
     flex-grow: 1;
     justify-content: flex-start;
     /* Was center, caused clipping when scrolling */
-    gap: 20px;
     gap: 20px;
     padding-bottom: 120px;
     /* Fix scrolling for math game */
@@ -846,7 +844,9 @@ body {
     }
 
     .math-question-box {
-        flex-direction: column;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
         gap: 15px;
         padding: 15px;
     }
@@ -944,7 +944,7 @@ body {
     /* Fix scrolling for puzzle game */
     min-height: 0;
     overflow-y: auto;
-    padding-bottom: 80px;
+    padding-bottom: 120px;
 }
 
 #puzzle-stage.hidden {
@@ -1110,7 +1110,7 @@ body {
     max-width: 800px;
     flex-grow: 1;
     padding-top: 20px;
-    padding-bottom: 80px;
+    padding-bottom: 120px;
 }
 
 #memory-stage.active {
