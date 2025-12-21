@@ -13,6 +13,7 @@ let isBgmPlaying = false;
 // Audio Sprites
 let spriteBuffer = null;
 let spriteMap = null;
+let decodingPromise = null;
 
 export function initAudio() {
     isMuted = localStorage.getItem('isMuted') === 'true';
@@ -185,21 +186,29 @@ async function decodeSprites() {
         console.log("Sprites already decoded.");
         return;
     }
-    if (!window.rawSpriteBuffer) {
-        console.log("No rawSpriteBuffer to decode.");
+    if (!window.rawSpriteBuffer || window.rawSpriteBuffer.byteLength === 0) {
+        console.log("No rawSpriteBuffer to decode (or detached).");
         return;
     }
     if (!audioCtx) {
         console.log("No AudioContext to decode with.");
         return;
     }
+    if (decodingPromise) {
+        console.log("Decoding already in progress...");
+        return decodingPromise;
+    }
+
     try {
         console.log("Decoding audio data...");
-        spriteBuffer = await audioCtx.decodeAudioData(window.rawSpriteBuffer);
+        decodingPromise = audioCtx.decodeAudioData(window.rawSpriteBuffer);
+        spriteBuffer = await decodingPromise;
         window.rawSpriteBuffer = null; // Free memory
+        decodingPromise = null;
         console.log("Audio Sprites Decoded Successfully!");
     } catch(e) {
         console.error("Sprite decode error", e);
+        decodingPromise = null;
     }
 }
 
