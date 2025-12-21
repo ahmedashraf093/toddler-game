@@ -85,11 +85,15 @@ export function speakSequence(keys, fallbackText) {
 
     // Check if we have sprite support
     if (audioCtx && spriteBuffer && spriteMap) {
-        let validKeys = keys.filter(k => spriteMap[k]);
+        // Only play if ALL keys are present to avoid broken sentences
+        // If a word is missing, fallback to TTS for the whole sentence.
+        const allKeysExist = keys.every(k => spriteMap[k]);
 
-        if (validKeys.length > 0) {
-            playSpriteSequence(validKeys);
+        if (allKeysExist) {
+            playSpriteSequence(keys);
             return;
+        } else {
+            console.warn("Missing audio keys for:", keys.filter(k => !spriteMap[k]), "Falling back to TTS.");
         }
     } else if (window.rawSpriteBuffer && audioCtx) {
         // Try to decode on the fly if not yet decoded
