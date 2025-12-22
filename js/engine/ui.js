@@ -49,7 +49,7 @@ export function showCelebration() {
     const container = overlay.querySelector('.confetti-container');
     overlay.classList.remove('hidden');
     playVictoryMusic();
-    speakText("Amazing! Three in a row!");
+    speakText("Amazing! Three in a row!", "generic_amazing");
 
     container.innerHTML = '';
 
