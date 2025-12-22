@@ -1,7 +1,7 @@
 import { gameState } from '../engine/state.js';
 import { puzzleConfig } from '../data/content.js';
 import { makeDraggable, setDropCallback, setDragStartCallback } from '../engine/input.js';
-import { speakText } from '../engine/audio.js';
+import { speakText, speakSequence } from '../engine/audio.js';
 import { launchModal, showLoader } from '../engine/ui.js';
 import { smartSelect, shuffle } from '../engine/utils.js';
 import { checkOverallProgress } from '../challenges/manager.js';
@@ -33,7 +33,17 @@ export async function initPuzzleGame() {
     const puzzle = smartSelect([...puzzleImages], 'puzzle', 1)[0];
     currentPuzzle = puzzle;
 
-    speakText(`Let's build a ${puzzle.name}!`);
+    // Speak "Let's build a..." if possible, or just the noun
+    // Assuming we don't have "Let's build a" sprite, we might just skip or say the object name
+    // e.g., "Lion"
+    // speakText(puzzle.name, "noun_" + puzzle.name.toLowerCase());
+    // Or check if we have "lets_build_a" key? No.
+    // We can say "Find the [Name]" if we had "find_the". We do have "find_the".
+    // speakSequence(['find_the', 'noun_' + puzzle.name.toLowerCase()]);
+
+    // Using generic nature or just the noun for now to avoid silence error
+    const nounKey = "noun_" + puzzle.name.toLowerCase();
+    speakText(puzzle.name, nounKey);
 
     // Set preview
     const targetImg = document.getElementById('puzzle-target-img');
@@ -138,7 +148,11 @@ function checkPuzzleCompletion() {
 
     if (correct === 4) {
         launchModal("🧩", "🌟", "Great Job!");
-        speakText(`You built the ${currentPuzzle.name}!`);
+        const nounKey = "noun_" + currentPuzzle.name.toLowerCase();
+        // speakText(`You built the ${currentPuzzle.name}!`);
+        // Use sequence: "Good Job" + [Noun]
+        speakSequence(['generic_good_job', nounKey]);
+
         checkOverallProgress('puzzle');
         setTimeout(() => {
             initPuzzleGame();
