@@ -26,6 +26,18 @@ body {
     overflow-y: auto;
 }
 
+/* 🎨 Palette: Global Focus Ring */
+:focus-visible {
+    outline: 4px dashed var(--primary-color);
+    outline-offset: 4px;
+    border-radius: 4px;
+}
+
+#start-btn:focus-visible {
+    outline: 4px dashed #2E7D32; /* Darker green for contrast */
+    outline-offset: 4px;
+}
+
 /* --- Loading Screen --- */
 #loading-screen {
     position: fixed;
@@ -214,6 +226,14 @@ body {
 .game-select-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 0 #ccc;
+    z-index: 10;
+}
+
+/* 🎨 Palette: Custom focus for game cards */
+.game-select-card:focus-visible {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 0 #ccc, 0 0 0 4px var(--primary-color);
+    outline: none; /* Replaces default dashed outline with shadow */
     z-index: 10;
 }
 
@@ -1634,4 +1654,65 @@ body {
     font-weight: bold;
     margin-bottom: 10px;
     display: block;
+}
+
+/* --- Odd One Out Game --- */
+#odd-one-stage {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 600px;
+    flex-grow: 1;
+    padding-bottom: 120px;
+    min-height: 0;
+    overflow-y: auto;
+    padding-top: 20px;
+}
+
+#odd-one-stage.active {
+    display: flex;
+}
+
+.odd-one-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    padding: 10px;
+    width: 100%;
+    max-width: 500px;
+}
+
+.odd-one-card {
+    background: white;
+    border: 5px solid white;
+    border-radius: 20px;
+    aspect-ratio: 1; /* Square */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 60px;
+    box-shadow: 0 8px 0 rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+
+.odd-one-card:active {
+    transform: scale(0.95);
+    box-shadow: 0 4px 0 rgba(0,0,0,0.1);
+}
+
+.odd-one-card.shake {
+    animation: shake 0.5s;
+    border-color: #ff4444;
+}
+
+@media (max-width: 600px) {
+    .odd-one-grid {
+        gap: 15px;
+    }
+    .odd-one-card {
+        font-size: 50px;
+        border-width: 3px;
+    }
 }
