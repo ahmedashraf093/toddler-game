@@ -1,7 +1,7 @@
 import { gameState, updateScore } from '../engine/state.js';
 import { objectPool } from '../data/content.js';
 import { makeDraggable, makeDroppable, setDropCallback } from '../engine/input.js';
-import { speakText } from '../engine/audio.js';
+import { speakText, speakSequence } from '../engine/audio.js';
 import { launchModal, updateScoreUI } from '../engine/ui.js';
 import { shuffle } from '../engine/utils.js';
 import { checkOverallProgress } from '../challenges/manager.js';
@@ -28,7 +28,7 @@ export function initMathGame() {
                 ans = Math.floor(Math.random() * 8) + 2; A = Math.floor(Math.random() * (ans - 1)) + 1; B = ans - A; op = '+';
             } else {
                 ans = Math.floor(Math.random() * 9) + 1; A = Math.floor(Math.random() * (9 - ans)) + ans;
-                if (A === ans) A = ans + 1; if (A > 9) A = 9; B = A - ans; op = '-';
+                if (A === ans) A = ans + 1; if (A > 10) A = 10; B = A - ans; op = '-';
             }
         }
         mathQuestions.push({ A, B, op, ans });
@@ -41,7 +41,7 @@ export function initMathGame() {
 function loadMathQuestion() {
     if (currentMathIndex >= mathQuestions.length) {
         document.getElementById('reset-btn').style.display = 'inline-block';
-        speakText("All done! Good job!");
+        speakText("All done! Good job!", "good_job");
         return;
     }
     const q = mathQuestions[currentMathIndex];
@@ -72,6 +72,11 @@ function loadMathQuestion() {
 
     const opWord = q.op === '+' ? 'plus' : 'minus';
     target.dataset.tts = `${q.A} ${opWord} ${q.B} equals ${q.ans}`;
+
+    // Store keys sequence for TTS
+    const keys = [q.A.toString(), opWord, q.B.toString(), 'equals', q.ans.toString()];
+    target.dataset.keys = JSON.stringify(keys);
+
     target.dataset.emoji = emoji;
 
     let opts = [q.ans];
@@ -97,7 +102,18 @@ function dropMath(targetBox, draggedVal) {
         updateScore(10);
         updateScoreUI();
 
-        speakText("Correct! " + targetBox.dataset.tts);
+        if (targetBox.dataset.keys) {
+            try {
+                const keys = JSON.parse(targetBox.dataset.keys);
+                speakSequence(['correct', ...keys]);
+            } catch (e) {
+                console.warn("Error parsing TTS keys", e);
+                speakText("Correct!", "correct");
+            }
+        } else {
+            speakText("Correct!", "correct");
+        }
+
         launchModal(draggedVal, targetBox.dataset.emoji, "Correct!");
 
         // Notify challenge manager
