@@ -5,7 +5,7 @@ let audioCtx = null;
 // Removed Oscillator BGM variables
 let bgmAudio = new Audio('background_happy.mp3');
 bgmAudio.loop = true;
-bgmAudio.volume = 0.2; // Keep it background level
+bgmAudio.volume = 0.1; // Keep it background level
 
 let isMuted = false;
 let isBgmPlaying = false;
