@@ -6,6 +6,7 @@ import { initMathGame } from './games/math.js';
 import { initPuzzleGame } from './games/puzzle.js';
 import { initMemoryGame } from './games/memory.js';
 import { initPatternGame } from './games/pattern.js';
+import { initSortingGame } from './games/sorting.js';
 import { initOddOneOutGame } from './games/odd-one-out.js';
 import { initChallenges, toggleChallengeMenu } from './challenges/manager.js';
 import { ParentalGate } from './engine/parental-gate.js';
@@ -14,6 +15,7 @@ const GAME_VERSION = 'v2.0';
 
 // Configuration for Game Modes
 const gameModes = [
+    { id: 'sorting', name: 'Sorting', icon: '📂' },
     { id: 'shadow', name: 'Shadows', icon: '🐶' },
     { id: 'letter', name: 'Letters', icon: '🅰️' },
     { id: 'pattern', name: 'Pattern', icon: '❓' },
@@ -131,6 +133,7 @@ function initRound() {
     else if (mode === 'puzzle') initPuzzleGame();
     else if (mode === 'memory') initMemoryGame();
     else if (mode === 'pattern') initPatternGame();
+    else if (mode === 'sorting') initSortingGame();
     else if (mode === 'oddoneout') initOddOneOutGame();
     else initStandardGame();
 }
