@@ -19,6 +19,39 @@ export function initPatternGame() {
 
     setDropCallback(handleDrop);
 
+    // Inject styles for mobile layout
+    if (!document.getElementById('pattern-styles')) {
+        const style = document.createElement('style');
+        style.id = 'pattern-styles';
+        style.innerHTML = `
+            .pattern-row {
+                flex-wrap: wrap; /* Allow wrapping if absolutely needed, but prefer scaling */
+                gap: 5px;
+            }
+            .pattern-row .item {
+                width: 80px;
+                height: 80px;
+                font-size: 40px;
+                margin: 2px !important;
+            }
+            @media (max-width: 600px) {
+                .pattern-row .item {
+                    width: 55px !important;
+                    height: 55px !important;
+                    font-size: 28px !important;
+                    border-width: 2px !important;
+                }
+                .pattern-row {
+                    padding: 5px !important;
+                    margin-bottom: 10px !important;
+                    width: 100%;
+                    box-sizing: border-box;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
     // Generate 3 patterns
     for (let i = 0; i < roundSize; i++) {
         createPatternRow(targetCol, sourceCol, i);

@@ -14,9 +14,10 @@ const GAME_VERSION = 'v2.0';
 
 // Configuration for Game Modes
 const gameModes = [
-    { id: 'pattern', name: 'Pattern', icon: '❓' },
+    { id: 'sorting', name: 'Sorting', icon: '📂' },
     { id: 'shadow', name: 'Shadows', icon: '🐶' },
     { id: 'letter', name: 'Letters', icon: '🅰️' },
+    { id: 'pattern', name: 'Pattern', icon: '❓' },
     { id: 'job', name: 'Jobs', icon: '👮' },
     { id: 'feed', name: 'Feed', icon: '🥕' },
     { id: 'number', name: 'Numbers', icon: '1️⃣' },

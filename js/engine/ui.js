@@ -49,7 +49,7 @@ export function showCelebration() {
     const container = overlay.querySelector('.confetti-container');
     overlay.classList.remove('hidden');
     playVictoryMusic();
-    speakText("Amazing! Three in a row!");
+    speakText("Amazing! Three in a row!", "generic_amazing");
 
     container.innerHTML = '';
 
@@ -183,6 +183,17 @@ export function populateGamesMenu(gameModes, setModeCallback) {
         const card = document.createElement('div');
         card.className = `game-select-card ${game.id === gameState.currentMode ? 'active' : ''}`;
         card.onclick = () => setModeCallback(game.id);
+
+        // 🎨 Palette: Accessibility improvements
+        card.setAttribute('role', 'button');
+        card.setAttribute('tabindex', '0');
+        card.setAttribute('aria-label', `Play ${game.name}`);
+        card.onkeydown = (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                setModeCallback(game.id);
+            }
+        };
 
         if (themes[game.id]) {
             card.style.backgroundColor = themes[game.id].bg;

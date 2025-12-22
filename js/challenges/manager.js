@@ -71,7 +71,7 @@ function updateChallengeProgress(type) {
         // Notify user
         const left = task.count - challengeState.progress[type];
         if (left === 0) {
-            speakText(`Task complete!`);
+            speakText("Task complete!", "generic_good_job");
         } else {
             // Optional: Speak "1 more math game to go!"
         }
@@ -95,7 +95,7 @@ function checkDayCompletion(config) {
 
         setTimeout(() => {
             launchModal("🏆", "🌟", "Day Complete!");
-            speakText("Challenge Complete! You unlocked the next day!");
+            speakText("Challenge Complete! You unlocked the next day!", "generic_amazing");
             showCelebration();
             updateChallengeUI();
         }, 1500);
