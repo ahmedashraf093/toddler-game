@@ -146,12 +146,14 @@ export function setTheme(mode) {
     const mathStage = document.getElementById('math-stage');
     const puzzleStage = document.getElementById('puzzle-stage');
     const memoryStage = document.getElementById('memory-stage');
+    const oddOneStage = document.getElementById('odd-one-stage');
 
     // Reset visibility
     if(standardBoard) standardBoard.style.display = 'none';
     if(mathStage) mathStage.classList.remove('active');
     if(puzzleStage) puzzleStage.classList.add('hidden');
     if(memoryStage) memoryStage.classList.remove('active');
+    if(oddOneStage) oddOneStage.classList.remove('active');
     if(diffBar) diffBar.style.display = 'none';
 
     if (mode === 'math') {
@@ -162,6 +164,8 @@ export function setTheme(mode) {
         if(diffBar) diffBar.style.display = 'flex';
     } else if (mode === 'puzzle') {
         if(puzzleStage) puzzleStage.classList.remove('hidden');
+    } else if (mode === 'oddoneout') {
+        if(oddOneStage) oddOneStage.classList.add('active');
     } else {
         if(standardBoard) {
             standardBoard.style.display = 'flex';
