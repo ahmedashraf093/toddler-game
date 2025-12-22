@@ -11,5 +11,6 @@ export const themes = {
     habitat: { primary: '#fdcb6e', bg: '#fff7d1', dots: '#ffeaa7' },
     puzzle: { primary: '#ff7675', bg: '#fff5f5', dots: '#ffe3e3' },
     memory: { primary: '#764ba2', bg: '#f3e8ff', dots: '#e9d5ff' },
-    pattern: { primary: '#e056fd', bg: '#fae3ff', dots: '#f4c4ff' }
+    pattern: { primary: '#e056fd', bg: '#fae3ff', dots: '#f4c4ff' },
+    sorting: { primary: '#ff9f43', bg: '#fff2e6', dots: '#ffe0b3' }
 };
