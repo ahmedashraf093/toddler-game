@@ -184,6 +184,17 @@ export function populateGamesMenu(gameModes, setModeCallback) {
         card.className = `game-select-card ${game.id === gameState.currentMode ? 'active' : ''}`;
         card.onclick = () => setModeCallback(game.id);
 
+        // 🎨 Palette: Accessibility improvements
+        card.setAttribute('role', 'button');
+        card.setAttribute('tabindex', '0');
+        card.setAttribute('aria-label', `Play ${game.name}`);
+        card.onkeydown = (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                setModeCallback(game.id);
+            }
+        };
+
         if (themes[game.id]) {
             card.style.backgroundColor = themes[game.id].bg;
             card.style.borderColor = themes[game.id].primary;

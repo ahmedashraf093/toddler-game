@@ -26,6 +26,18 @@ body {
     overflow-y: auto;
 }
 
+/* 🎨 Palette: Global Focus Ring */
+:focus-visible {
+    outline: 4px dashed var(--primary-color);
+    outline-offset: 4px;
+    border-radius: 4px;
+}
+
+#start-btn:focus-visible {
+    outline: 4px dashed #2E7D32; /* Darker green for contrast */
+    outline-offset: 4px;
+}
+
 /* --- Loading Screen --- */
 #loading-screen {
     position: fixed;
@@ -214,6 +226,14 @@ body {
 .game-select-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 0 #ccc;
+    z-index: 10;
+}
+
+/* 🎨 Palette: Custom focus for game cards */
+.game-select-card:focus-visible {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 0 #ccc, 0 0 0 4px var(--primary-color);
+    outline: none; /* Replaces default dashed outline with shadow */
     z-index: 10;
 }
 
