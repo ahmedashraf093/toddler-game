@@ -6,6 +6,7 @@ import { initMathGame } from './games/math.js';
 import { initPuzzleGame } from './games/puzzle.js';
 import { initMemoryGame } from './games/memory.js';
 import { initPatternGame } from './games/pattern.js';
+import { initOddOneOutGame } from './games/odd-one-out.js';
 import { initChallenges, toggleChallengeMenu } from './challenges/manager.js';
 import { ParentalGate } from './engine/parental-gate.js';
 
@@ -25,7 +26,8 @@ const gameModes = [
     { id: 'habitat', name: 'Homes', icon: '🏠' },
     { id: 'puzzle', name: 'Puzzle', icon: '🧩' },
     { id: 'memory', name: 'Memory', icon: '🧠' },
-    { id: 'math', name: 'Math', icon: '➕' }
+    { id: 'math', name: 'Math', icon: '➕' },
+    { id: 'oddoneout', name: 'Odd One', icon: '🧐' }
 ];
 
 window.addEventListener('load', () => {
@@ -129,6 +131,7 @@ function initRound() {
     else if (mode === 'puzzle') initPuzzleGame();
     else if (mode === 'memory') initMemoryGame();
     else if (mode === 'pattern') initPatternGame();
+    else if (mode === 'oddoneout') initOddOneOutGame();
     else initStandardGame();
 }
 
