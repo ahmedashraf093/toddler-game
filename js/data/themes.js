@@ -10,5 +10,6 @@ export const themes = {
     nature: { primary: '#00b894', bg: '#e6fffa', dots: '#b3f5e1' },
     habitat: { primary: '#fdcb6e', bg: '#fff7d1', dots: '#ffeaa7' },
     puzzle: { primary: '#ff7675', bg: '#fff5f5', dots: '#ffe3e3' },
-    memory: { primary: '#764ba2', bg: '#f3e8ff', dots: '#e9d5ff' }
+    memory: { primary: '#764ba2', bg: '#f3e8ff', dots: '#e9d5ff' },
+    pattern: { primary: '#e056fd', bg: '#fae3ff', dots: '#f4c4ff' }
 };

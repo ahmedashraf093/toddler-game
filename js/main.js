@@ -5,6 +5,7 @@ import { initStandardGame } from './games/standard.js';
 import { initMathGame } from './games/math.js';
 import { initPuzzleGame } from './games/puzzle.js';
 import { initMemoryGame } from './games/memory.js';
+import { initPatternGame } from './games/pattern.js';
 import { initChallenges, toggleChallengeMenu } from './challenges/manager.js';
 import { ParentalGate } from './engine/parental-gate.js';
 
@@ -12,6 +13,7 @@ const GAME_VERSION = 'v2.0';
 
 // Configuration for Game Modes
 const gameModes = [
+    { id: 'pattern', name: 'Pattern', icon: '❓' },
     { id: 'shadow', name: 'Shadows', icon: '🐶' },
     { id: 'letter', name: 'Letters', icon: '🅰️' },
     { id: 'job', name: 'Jobs', icon: '👮' },
@@ -126,6 +128,7 @@ function initRound() {
     if (mode === 'math') initMathGame();
     else if (mode === 'puzzle') initPuzzleGame();
     else if (mode === 'memory') initMemoryGame();
+    else if (mode === 'pattern') initPatternGame();
     else initStandardGame();
 }
 
