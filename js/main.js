@@ -6,6 +6,7 @@ import { initMathGame } from './games/math.js';
 import { initPuzzleGame } from './games/puzzle.js';
 import { initMemoryGame } from './games/memory.js';
 import { initPatternGame } from './games/pattern.js';
+import { initSortingGame } from './games/sorting.js';
 import { initOddOneOutGame } from './games/odd-one-out.js';
 import { initFeedLionGame } from './games/feed-lion.js';
 import { initChallenges, toggleChallengeMenu, isContentUnlocked } from './challenges/manager.js';
@@ -146,6 +147,7 @@ function initRound() {
     else if (mode === 'puzzle') initPuzzleGame();
     else if (mode === 'memory') initMemoryGame();
     else if (mode === 'pattern') initPatternGame();
+    else if (mode === 'sorting') initSortingGame();
     else if (mode === 'oddoneout') initOddOneOutGame();
     else if (mode === 'feedlion') initFeedLionGame();
     else initStandardGame();
