@@ -47,9 +47,23 @@ export function initMemoryGame() {
     const cardElements = [];
     deck.forEach(item => {
         const card = createMemoryCard(item);
+        // Start flipped for preview
+        card.classList.add('flipped');
         grid.appendChild(card);
         cardElements.push(card);
     });
+
+    // Preview phase: show cards for 2 seconds then hide
+    lockBoard = true;
+    previewTimeout = setTimeout(() => {
+        cardElements.forEach(card => {
+            card.classList.remove('flipped');
+            // Reset ARIA label to hidden after preview
+            card.setAttribute('aria-label', 'Hidden card');
+        });
+        lockBoard = false;
+        previewTimeout = null;
+    }, 2000);
 
     // "Find the pairs!" - We don't have this sprite.
     // Use "Match!" instead or silence.
