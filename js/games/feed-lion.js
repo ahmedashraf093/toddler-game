@@ -315,7 +315,8 @@ function spawnFoods() {
 
         const el = document.createElement('div');
         el.className = 'food-item draggable';
-        el.textContent = item.e; // USE EMOJI
+        // Wrap emoji in span for independent animation
+        el.innerHTML = `<span class="food-emoji food-wiggle">${item.e}</span>`;
         el.style.fontSize = '4.5rem'; // Make them big
 
         el.dataset.label = item.n;
