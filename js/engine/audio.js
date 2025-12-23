@@ -143,7 +143,8 @@ function playSpriteSequence(keys) {
         source.start(startTime, data.start, data.duration);
 
         // Schedule next
-        startTime += data.duration + 0.0; // Minimal pause for faster flow
+        // Reduce the gap to speed up flow (some sprites have trailing silence)
+        startTime += data.duration - 0.15;
     });
 }
 
