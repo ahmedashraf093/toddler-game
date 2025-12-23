@@ -144,7 +144,8 @@ function playSpriteSequence(keys) {
 
         // Schedule next
         // Reduce the gap to speed up flow (some sprites have trailing silence)
-        startTime += data.duration - 0.15;
+        // User requested significantly faster pronunciation
+        startTime += data.duration - 0.35;
     });
 }
 

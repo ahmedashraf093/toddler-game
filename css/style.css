@@ -1821,3 +1821,16 @@ body {
         height: 60px;
     }
 }
+
+/* Food Wiggle Animation */
+.food-wiggle {
+    display: inline-block;
+    animation: gentle-wiggle 3s ease-in-out infinite;
+    transform-origin: center bottom;
+}
+
+@keyframes gentle-wiggle {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-5deg); }
+    75% { transform: rotate(5deg); }
+}
