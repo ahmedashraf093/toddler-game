@@ -1,6 +1,7 @@
 import { gameState } from './state.js';
 import { themes } from '../data/themes.js';
 import { speakText, playVictoryMusic } from './audio.js';
+import { isContentUnlocked } from '../challenges/manager.js';
 
 let modalTimeout = null;
 
@@ -180,18 +181,37 @@ export function populateGamesMenu(gameModes, setModeCallback) {
     grid.innerHTML = '';
 
     gameModes.forEach(game => {
+        let isLocked = false;
+        if (game.id === 'feedlion' && !isContentUnlocked()) {
+            isLocked = true;
+        }
+
         const card = document.createElement('div');
-        card.className = `game-select-card ${game.id === gameState.currentMode ? 'active' : ''}`;
-        card.onclick = () => setModeCallback(game.id);
+        card.className = `game-select-card ${game.id === gameState.currentMode ? 'active' : ''} ${isLocked ? 'locked' : ''}`;
+
+        if (isLocked) {
+            card.onclick = () => {
+                launchModal("Locked!", "🔒", "Complete a Challenge!");
+                speakText("Complete a daily challenge to unlock!", "generic_try_again");
+            };
+            card.setAttribute('aria-label', `Game Locked: ${game.name}`);
+        } else {
+            card.onclick = () => setModeCallback(game.id);
+            card.setAttribute('aria-label', `Play ${game.name}`);
+        }
 
         // 🎨 Palette: Accessibility improvements
         card.setAttribute('role', 'button');
         card.setAttribute('tabindex', '0');
-        card.setAttribute('aria-label', `Play ${game.name}`);
         card.onkeydown = (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
-                setModeCallback(game.id);
+                if (isLocked) {
+                    launchModal("Locked!", "🔒", "Complete a Challenge!");
+                    speakText("Complete a daily challenge to unlock!", "generic_try_again");
+                } else {
+                    setModeCallback(game.id);
+                }
             }
         };
 
@@ -202,7 +222,7 @@ export function populateGamesMenu(gameModes, setModeCallback) {
 
         const icon = document.createElement('div');
         icon.className = 'game-icon';
-        icon.textContent = game.icon;
+        icon.textContent = isLocked ? '🔒' : game.icon;
 
         const name = document.createElement('div');
         name.className = 'game-name';
@@ -210,7 +230,7 @@ export function populateGamesMenu(gameModes, setModeCallback) {
 
         const playIcon = document.createElement('div');
         playIcon.className = 'mini-play-icon';
-        playIcon.textContent = '▶️';
+        playIcon.textContent = isLocked ? '🚫' : '▶️';
         playIcon.style.fontSize = '20px';
         playIcon.style.marginTop = '5px';
 

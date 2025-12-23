@@ -17,6 +17,10 @@ export function initChallenges() {
     updateChallengeUI();
 }
 
+export function isContentUnlocked() {
+    return challengeState.completedDays && challengeState.completedDays.length > 0;
+}
+
 function loadState() {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {

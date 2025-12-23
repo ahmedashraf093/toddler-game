@@ -1716,3 +1716,50 @@ body {
         border-width: 3px;
     }
 }
+
+/* Feed the Lion Game & Locked States */
+.lion-container {
+    width: 250px;
+    height: 250px;
+    margin-top: 20px;
+    transition: transform 0.3s ease;
+}
+
+.feed-tray {
+    width: 100%;
+    height: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(255,255,255,0.2);
+    border-radius: 20px;
+    margin-bottom: 20px;
+}
+
+.food-item {
+    font-size: 80px;
+    cursor: grab;
+    transition: transform 0.2s;
+}
+
+.food-item:active {
+    cursor: grabbing;
+    transform: scale(1.1);
+}
+
+.lion-container.droppable.drag-over {
+    transform: scale(1.1);
+}
+
+.game-select-card.locked {
+    background-color: #ddd !important;
+    border-color: #999 !important;
+    opacity: 0.8;
+    cursor: not-allowed;
+    filter: grayscale(100%);
+}
+
+.game-select-card.locked .game-icon {
+    font-size: 40px;
+    opacity: 0.6;
+}

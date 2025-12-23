@@ -8,6 +8,7 @@ import { initMemoryGame } from './games/memory.js';
 import { initPatternGame } from './games/pattern.js';
 import { initSortingGame } from './games/sorting.js';
 import { initOddOneOutGame } from './games/odd-one-out.js';
+import { initFeedLionGame } from './games/feed-lion.js';
 import { initChallenges, toggleChallengeMenu } from './challenges/manager.js';
 import { ParentalGate } from './engine/parental-gate.js';
 
@@ -15,6 +16,7 @@ const GAME_VERSION = 'v2.0';
 
 // Configuration for Game Modes
 const gameModes = [
+    { id: 'feedlion', name: 'Feed Lion', icon: '🦁' },
     { id: 'sorting', name: 'Sorting', icon: '📂' },
     { id: 'shadow', name: 'Shadows', icon: '🐶' },
     { id: 'letter', name: 'Letters', icon: '🅰️' },
@@ -135,6 +137,7 @@ function initRound() {
     else if (mode === 'pattern') initPatternGame();
     else if (mode === 'sorting') initSortingGame();
     else if (mode === 'oddoneout') initOddOneOutGame();
+    else if (mode === 'feedlion') initFeedLionGame();
     else initStandardGame();
 }
 
