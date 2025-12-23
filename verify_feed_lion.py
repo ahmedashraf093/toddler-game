@@ -20,7 +20,7 @@ def verify_feed_lion():
             }));
         """)
 
-        # Disable Animations & Hide Loader Aggressively
+        # Disable Animations Globally
         page.add_style_tag(content="""
             *, *::before, *::after {
                 transition: none !important;
@@ -30,38 +30,34 @@ def verify_feed_lion():
         """)
 
         page.goto("http://localhost:8080")
+        page.wait_for_timeout(1000)
 
-        # Click Start and Ensure Start Screen Gone
-        page.eval_on_selector("#start-btn", "el => el.click()")
+        # JS Click Start
+        page.evaluate("document.getElementById('start-btn').click()")
         page.wait_for_timeout(500)
+
+        # Ensure Start Screen is Hidden
         page.evaluate("document.getElementById('start-screen').style.display = 'none'")
 
-        # Open Menu
-        page.eval_on_selector("#menu-btn", "el => el.click()")
-        page.wait_for_timeout(500)
+        # Click Menu
+        page.evaluate("document.getElementById('menu-btn').click()")
+        page.wait_for_timeout(1000)
 
-        # Click Feed Lion
-        # Use eval to click to bypass any overlay issues
-        feed_btn = page.locator(".game-select-card").filter(has_text="Feed Lion")
-        if feed_btn.count() > 0:
-            is_locked = page.evaluate("el => el.classList.contains('locked')", feed_btn.element_handle())
-            if is_locked:
-                print("FAIL: Game is locked")
-            else:
-                print("SUCCESS: Game is unlocked")
-                # Force click via JS to be safe
-                feed_btn.evaluate("el => el.click()")
-                page.wait_for_timeout(1000)
+        # Click Feed Lion Card (by finding it in DOM)
+        page.evaluate("""
+            const cards = Array.from(document.querySelectorAll('.game-select-card'));
+            const lionCard = cards.find(c => c.textContent.includes('Feed Lion'));
+            if(lionCard) lionCard.click();
+        """)
 
-                # Check for Lion
-                lion = page.locator(".lion-container")
-                if lion.count() > 0:
-                     print("SUCCESS: Lion container found")
-                     page.screenshot(path="verification_feed_lion.png")
-                else:
-                     print("FAIL: Lion container not found")
+        page.wait_for_timeout(2000)
+
+        # Screenshot
+        if page.locator(".lion-container").is_visible():
+            print("SUCCESS: Lion found")
+            page.screenshot(path="verification_feed_lion_enhanced.png")
         else:
-            print("FAIL: Feed Lion card not found")
+            print("FAIL: Lion not visible")
 
         browser.close()
 

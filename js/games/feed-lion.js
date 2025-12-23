@@ -4,38 +4,179 @@ import { speakText, speakSequence } from '../engine/audio.js';
 import { updateScoreUI, showCelebration } from '../engine/ui.js';
 import { checkOverallProgress } from '../challenges/manager.js';
 
+// High-Fidelity SVG Lion
+// Features: Fluffy mane gradient, detailed ears, cute eyes, whiskers, animated mouth states
 const LION_SVGS = {
-    normal: `<svg viewBox="0 0 200 200" width="200" height="200">
-        <!-- Mane -->
-        <circle cx="100" cy="100" r="90" fill="#8B4513" />
-        <!-- Face -->
-        <circle cx="100" cy="100" r="70" fill="#FFD700" />
-        <!-- Eyes -->
-        <circle cx="75" cy="85" r="8" fill="#000" />
-        <circle cx="125" cy="85" r="8" fill="#000" />
+    normal: `<svg viewBox="0 0 300 300" width="100%" height="100%">
+        <defs>
+            <linearGradient id="maneGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#D2691E;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#8B4513;stop-opacity:1" />
+            </linearGradient>
+            <radialGradient id="faceGrad" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+                <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#DAA520;stop-opacity:1" />
+            </radialGradient>
+            <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.3"/>
+            </filter>
+        </defs>
+
+        <!-- Mane (Fluffy) -->
+        <g filter="url(#shadow)">
+            <path d="M150,20 Q180,20 200,50 Q230,40 250,70 Q270,90 260,120 Q290,140 280,170 Q290,210 260,240 Q240,270 200,280 Q180,300 150,280 Q120,300 100,280 Q60,270 40,240 Q10,210 20,170 Q10,140 40,120 Q30,90 50,70 Q70,40 100,50 Q120,20 150,20 Z"
+                  fill="url(#maneGrad)" />
+        </g>
+
+        <!-- Ears -->
+        <circle cx="80" cy="80" r="25" fill="#DAA520" />
+        <circle cx="80" cy="80" r="15" fill="#8B4513" />
+        <circle cx="220" cy="80" r="25" fill="#DAA520" />
+        <circle cx="220" cy="80" r="15" fill="#8B4513" />
+
+        <!-- Face Base -->
+        <circle cx="150" cy="160" r="90" fill="url(#faceGrad)" />
+
+        <!-- Muzzle -->
+        <ellipse cx="150" cy="190" rx="45" ry="35" fill="#FFF8DC" />
+
+        <!-- Eyes (Normal) -->
+        <g id="eyes-normal">
+            <circle cx="115" cy="140" r="12" fill="white" />
+            <circle cx="115" cy="140" r="6" fill="black" />
+            <circle cx="118" cy="137" r="2" fill="white" /> <!-- Highlight -->
+
+            <circle cx="185" cy="140" r="12" fill="white" />
+            <circle cx="185" cy="140" r="6" fill="black" />
+            <circle cx="188" cy="137" r="2" fill="white" />
+        </g>
+
         <!-- Nose -->
-        <polygon points="90,110 110,110 100,125" fill="#000" />
-        <!-- Mouth (Neutral) -->
-        <path d="M 80 135 Q 100 145 120 135" stroke="#000" stroke-width="3" fill="none" />
+        <path d="M135,175 Q150,165 165,175 L150,195 Z" fill="#3E2723" />
+
+        <!-- Whiskers -->
+        <g stroke="#3E2723" stroke-width="2" opacity="0.6">
+            <line x1="80" y1="180" x2="110" y2="185" />
+            <line x1="80" y1="190" x2="110" y2="190" />
+            <line x1="80" y1="200" x2="110" y2="195" />
+
+            <line x1="220" y1="180" x2="190" y2="185" />
+            <line x1="220" y1="190" x2="190" y2="190" />
+            <line x1="220" y1="200" x2="190" y2="195" />
+        </g>
+
+        <!-- Mouth (Normal) -->
+        <path d="M150,195 L150,205 M135,205 Q150,215 165,205" stroke="#3E2723" stroke-width="3" fill="none" />
     </svg>`,
-    open: `<svg viewBox="0 0 200 200" width="200" height="200">
-        <circle cx="100" cy="100" r="90" fill="#8B4513" />
-        <circle cx="100" cy="100" r="70" fill="#FFD700" />
-        <circle cx="75" cy="85" r="8" fill="#000" />
-        <circle cx="125" cy="85" r="8" fill="#000" />
-        <polygon points="90,110 110,110 100,125" fill="#000" />
-        <!-- Mouth (Open) -->
-        <circle cx="100" cy="145" r="20" fill="#521d1d" />
+
+    open: `<svg viewBox="0 0 300 300" width="100%" height="100%">
+        <defs>
+            <linearGradient id="maneGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#D2691E;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#8B4513;stop-opacity:1" />
+            </linearGradient>
+            <radialGradient id="faceGrad2" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+                <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#DAA520;stop-opacity:1" />
+            </radialGradient>
+            <filter id="shadow2" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.3"/>
+            </filter>
+        </defs>
+
+        <g filter="url(#shadow2)">
+            <path d="M150,20 Q180,20 200,50 Q230,40 250,70 Q270,90 260,120 Q290,140 280,170 Q290,210 260,240 Q240,270 200,280 Q180,300 150,280 Q120,300 100,280 Q60,270 40,240 Q10,210 20,170 Q10,140 40,120 Q30,90 50,70 Q70,40 100,50 Q120,20 150,20 Z"
+                  fill="url(#maneGrad2)" />
+        </g>
+
+        <circle cx="80" cy="80" r="25" fill="#DAA520" />
+        <circle cx="80" cy="80" r="15" fill="#8B4513" />
+        <circle cx="220" cy="80" r="25" fill="#DAA520" />
+        <circle cx="220" cy="80" r="15" fill="#8B4513" />
+
+        <circle cx="150" cy="160" r="90" fill="url(#faceGrad2)" />
+        <ellipse cx="150" cy="190" rx="45" ry="35" fill="#FFF8DC" />
+
+        <g id="eyes-open">
+             <!-- Slightly wider eyes for excitement -->
+            <circle cx="115" cy="140" r="13" fill="white" />
+            <circle cx="115" cy="140" r="7" fill="black" />
+            <circle cx="118" cy="137" r="2" fill="white" />
+
+            <circle cx="185" cy="140" r="13" fill="white" />
+            <circle cx="185" cy="140" r="7" fill="black" />
+            <circle cx="188" cy="137" r="2" fill="white" />
+        </g>
+
+        <path d="M135,175 Q150,165 165,175 L150,195 Z" fill="#3E2723" />
+
+        <g stroke="#3E2723" stroke-width="2" opacity="0.6">
+            <line x1="80" y1="180" x2="110" y2="185" />
+            <line x1="80" y1="190" x2="110" y2="190" />
+            <line x1="80" y1="200" x2="110" y2="195" />
+
+            <line x1="220" y1="180" x2="190" y2="185" />
+            <line x1="220" y1="190" x2="190" y2="190" />
+            <line x1="220" y1="200" x2="190" y2="195" />
+        </g>
+
+        <!-- Mouth (Open Wide) -->
+        <circle cx="150" cy="210" r="15" fill="#5D4037" />
+        <path d="M140,218 Q150,225 160,218" stroke="#E57373" stroke-width="2" fill="none" /> <!-- Tongue hint -->
     </svg>`,
-    happy: `<svg viewBox="0 0 200 200" width="200" height="200">
-        <circle cx="100" cy="100" r="90" fill="#8B4513" />
-        <circle cx="100" cy="100" r="70" fill="#FFD700" />
-        <!-- Happy Eyes -->
-        <path d="M 65 85 Q 75 75 85 85" stroke="#000" stroke-width="3" fill="none" />
-        <path d="M 115 85 Q 125 75 135 85" stroke="#000" stroke-width="3" fill="none" />
-        <polygon points="90,110 110,110 100,125" fill="#000" />
-        <!-- Smile -->
-        <path d="M 70 130 Q 100 160 130 130" stroke="#000" stroke-width="3" fill="none" />
+
+    happy: `<svg viewBox="0 0 300 300" width="100%" height="100%">
+        <defs>
+            <linearGradient id="maneGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#D2691E;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#8B4513;stop-opacity:1" />
+            </linearGradient>
+            <radialGradient id="faceGrad3" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+                <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#DAA520;stop-opacity:1" />
+            </radialGradient>
+            <filter id="shadow3" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.3"/>
+            </filter>
+        </defs>
+
+        <g filter="url(#shadow3)">
+            <path d="M150,20 Q180,20 200,50 Q230,40 250,70 Q270,90 260,120 Q290,140 280,170 Q290,210 260,240 Q240,270 200,280 Q180,300 150,280 Q120,300 100,280 Q60,270 40,240 Q10,210 20,170 Q10,140 40,120 Q30,90 50,70 Q70,40 100,50 Q120,20 150,20 Z"
+                  fill="url(#maneGrad3)" />
+        </g>
+
+        <circle cx="80" cy="80" r="25" fill="#DAA520" />
+        <circle cx="80" cy="80" r="15" fill="#8B4513" />
+        <circle cx="220" cy="80" r="25" fill="#DAA520" />
+        <circle cx="220" cy="80" r="15" fill="#8B4513" />
+
+        <circle cx="150" cy="160" r="90" fill="url(#faceGrad3)" />
+        <ellipse cx="150" cy="190" rx="45" ry="35" fill="#FFF8DC" />
+
+        <!-- Happy Eyes (Closed Curves) -->
+        <g stroke="#3E2723" stroke-width="4" fill="none" stroke-linecap="round">
+            <path d="M100,140 Q115,130 130,140" />
+            <path d="M170,140 Q185,130 200,140" />
+        </g>
+
+        <path d="M135,175 Q150,165 165,175 L150,195 Z" fill="#3E2723" />
+
+        <g stroke="#3E2723" stroke-width="2" opacity="0.6">
+            <line x1="80" y1="180" x2="110" y2="185" />
+            <line x1="80" y1="190" x2="110" y2="190" />
+            <line x1="80" y1="200" x2="110" y2="195" />
+
+            <line x1="220" y1="180" x2="190" y2="185" />
+            <line x1="220" y1="190" x2="190" y2="190" />
+            <line x1="220" y1="200" x2="190" y2="195" />
+        </g>
+
+        <!-- Mouth (Big Smile) -->
+        <path d="M130,205 Q150,225 170,205" stroke="#3E2723" stroke-width="3" fill="none" />
+
+        <!-- Cheeks -->
+        <circle cx="100" cy="170" r="10" fill="#FFAB91" opacity="0.6" />
+        <circle cx="200" cy="170" r="10" fill="#FFAB91" opacity="0.6" />
     </svg>`
 };
 
@@ -53,58 +194,12 @@ let currentFood = null;
 export function initFeedLionGame() {
     resetRoundState();
 
-    // Inject CSS for this game if not present
-    if (!document.getElementById('feed-lion-style')) {
-        const style = document.createElement('style');
-        style.id = 'feed-lion-style';
-        style.innerHTML = `
-            #feed-lion-stage {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: space-between;
-                height: 100%;
-                padding: 20px;
-            }
-            .lion-container {
-                width: 250px;
-                height: 250px;
-                margin-top: 20px;
-                transition: transform 0.3s ease;
-            }
-            .feed-tray {
-                width: 100%;
-                height: 150px;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                background: rgba(255,255,255,0.2);
-                border-radius: 20px;
-                margin-bottom: 20px;
-            }
-            .food-item {
-                font-size: 80px;
-                cursor: grab;
-                transition: transform 0.2s;
-            }
-            .food-item:active {
-                cursor: grabbing;
-                transform: scale(1.1);
-            }
-            .lion-container.droppable.drag-over {
-                transform: scale(1.1);
-            }
-        `;
-        document.head.appendChild(style);
-    }
-
     // Create Stage Structure
     const board = document.getElementById('game-board');
     if (!board) return;
 
-    // Clear existing
-    const existingStage = document.getElementById('feed-lion-stage');
-    if (existingStage) existingStage.remove();
+    // Clear existing board content
+    board.innerHTML = '';
 
     const stage = document.createElement('div');
     stage.id = 'feed-lion-stage';
