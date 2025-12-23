@@ -17,7 +17,12 @@ body {
     min-height: 100vh;
     margin: 0;
     /* Disable text selection to prevent accidental highlighting during drag/touch */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
     user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
     overflow-x: hidden;
     transition: background-color 0.5s ease;
     touch-action: none;
