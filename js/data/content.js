@@ -23,9 +23,19 @@ export const letterExamples = {
     'Y': { w: 'Yellow', e: '💛' }, 'Z': { w: 'Zebra', e: '🦓' }
 };
 
-// Jobs disabled due to missing 'Person' audio sprites for all jobs.
 export const jobLibrary = [
-    // { id: 'police', person: '👮', tool: '🚓', name: 'Police', toolName: 'Police Car' },
+    { id: 'police', person: '👮', tool: '🚓', name: 'Police', toolName: 'Police Car' },
+    { id: 'fireman', person: '👨‍🚒', tool: '🚒', name: 'Fireman', toolName: 'Fire Truck' },
+    { id: 'doctor', person: '👨‍⚕️', tool: '🚑', name: 'Doctor', toolName: 'Ambulance' },
+    { id: 'astronaut', person: '👨‍🚀', tool: '🚀', name: 'Astronaut', toolName: 'Rocket' },
+    { id: 'chef', person: '👨‍🍳', tool: '🍳', name: 'Chef', toolName: 'Pan' },
+    { id: 'farmer', person: '👨‍🌾', tool: '🚜', name: 'Farmer', toolName: 'Tractor' },
+    { id: 'artist', person: '👩‍🎨', tool: '🖌️', name: 'Artist', toolName: 'Paint' },
+    { id: 'mechanic', person: '👨‍🔧', tool: '🔧', name: 'Mechanic', toolName: 'Wrench' },
+    { id: 'teacher', person: '🧑‍🏫', tool: '📚', name: 'Teacher', toolName: 'Books' },
+    { id: 'pilot', person: '👨‍✈️', tool: '✈️', name: 'Pilot', toolName: 'Airplane' },
+    { id: 'builder', person: '👷', tool: '🔨', name: 'Builder', toolName: 'Hammer' },
+    { id: 'scientist', person: '👩‍🔬', tool: '🔬', name: 'Scientist', toolName: 'Microscope' }
 ];
 
 export const feedLibrary = [
