@@ -349,12 +349,8 @@ function handleDrop(targetBox, draggedVal, draggedElId) {
 
     const foodEl = document.getElementById(draggedElId);
 
-    // Play specific item sound if available
-    if (foodEl && foodEl.dataset.key) {
-        speakSequence(['noun_lion', 'conn_eats_the', foodEl.dataset.key]);
-    } else {
-        speakText("Yummy!", "generic_good_job");
-    }
+    // Play simple feedback sound (User requested removing long sentences)
+    speakText("Yummy!", "generic_good_job");
 
     if (foodEl) foodEl.remove();
 
