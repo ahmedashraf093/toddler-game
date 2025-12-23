@@ -4,7 +4,7 @@ export const themes = {
     job: { primary: '#f6d365', bg: '#fffbe6', dots: '#fff0b3' },
     number: { primary: '#c084fc', bg: '#f3e8ff', dots: '#e9d5ff' },
     math: { primary: '#84fab0', bg: '#f0fff4', dots: '#d1fae5' },
-    feed: { primary: '#ffc107', bg: '#fffde7', dots: '#fff9c4' },
+    feedlion: { primary: '#ffc107', bg: '#fffde7', dots: '#fff9c4' },
     shape: { primary: '#6c5ce7', bg: '#a29bfe', dots: '#dfe6e9' },
     weather: { primary: '#00cec9', bg: '#e0fbfb', dots: '#b2ebf2' },
     nature: { primary: '#00b894', bg: '#e6fffa', dots: '#b3f5e1' },

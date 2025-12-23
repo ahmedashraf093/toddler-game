@@ -9,7 +9,7 @@ import { initPatternGame } from './games/pattern.js';
 import { initSortingGame } from './games/sorting.js';
 import { initOddOneOutGame } from './games/odd-one-out.js';
 import { initFeedLionGame } from './games/feed-lion.js';
-import { initChallenges, toggleChallengeMenu } from './challenges/manager.js';
+import { initChallenges, toggleChallengeMenu, isContentUnlocked } from './challenges/manager.js';
 import { ParentalGate } from './engine/parental-gate.js';
 
 const GAME_VERSION = 'v2.0';
@@ -22,7 +22,6 @@ const gameModes = [
     { id: 'letter', name: 'Letters', icon: '🅰️' },
     { id: 'pattern', name: 'Pattern', icon: '❓' },
     { id: 'job', name: 'Jobs', icon: '👮' },
-    { id: 'feed', name: 'Feed', icon: '🥕' },
     { id: 'number', name: 'Numbers', icon: '1️⃣' },
     { id: 'shape', name: 'Shapes', icon: '🔷' },
     { id: 'weather', name: 'Weather', icon: '🌤️' },
@@ -87,6 +86,19 @@ window.addEventListener('load', () => {
 
     // Populate Menu
     populateGamesMenu(gameModes, setMode);
+
+    // Hint for locked game
+    if (!isContentUnlocked()) {
+        const startScreen = document.getElementById('start-screen');
+        const startBtn = document.getElementById('start-btn');
+        if (startScreen && startBtn) {
+            const hint = document.createElement('div');
+            hint.className = 'locked-game-hint';
+            hint.innerHTML = '✨ Complete Daily Challenges<br>to unlock a <b>Bonus Game!</b> 🦁';
+            hint.style.cssText = "margin-top: 20px; font-size: 1.1rem; color: #d35400; background: #fff3cd; padding: 10px 20px; border-radius: 15px; border: 2px solid #ffeeba; box-shadow: 0 4px 0 rgba(0,0,0,0.1); animation: pulse 2s infinite; text-align: center; max-width: 80%;";
+            startBtn.parentNode.insertBefore(hint, startBtn.nextSibling);
+        }
+    }
 
     // Init Parental Gate (binds events)
     ParentalGate.init();

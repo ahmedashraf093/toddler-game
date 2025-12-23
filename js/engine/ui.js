@@ -195,6 +195,25 @@ export function populateGamesMenu(gameModes, setModeCallback) {
                 speakText("Complete a daily challenge to unlock!", "generic_try_again");
             };
             card.setAttribute('aria-label', `Game Locked: ${game.name}`);
+
+            // Add visible reward banner
+            const banner = document.createElement('div');
+            banner.textContent = 'Reward Game 🎁';
+            banner.style.cssText = `
+                position: absolute;
+                bottom: 10px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: #ff5252;
+                color: white;
+                font-size: 12px;
+                padding: 4px 8px;
+                border-radius: 10px;
+                white-space: nowrap;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+                font-weight: bold;
+            `;
+            card.appendChild(banner);
         } else {
             card.onclick = () => setModeCallback(game.id);
             card.setAttribute('aria-label', `Play ${game.name}`);
