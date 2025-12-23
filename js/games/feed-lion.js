@@ -1,5 +1,5 @@
 import { gameState, incrementCorrect, updateScore, resetRoundState } from '../engine/state.js';
-import { makeDraggable, makeDroppable, setDropCallback } from '../engine/input.js';
+import { makeDraggable, makeDroppable, setDropCallback, setDragStartCallback } from '../engine/input.js';
 import { speakText, speakSequence } from '../engine/audio.js';
 import { updateScoreUI, showCelebration } from '../engine/ui.js';
 import { checkOverallProgress } from '../challenges/manager.js';
@@ -247,48 +247,28 @@ const LION_SVGS = {
     </svg>`
 };
 
-const FOOD_SVGS = {
-    apple: `<svg viewBox="0 0 100 100" width="100%" height="100%">
-        <path d="M50,25 Q70,5 85,25 Q95,45 80,75 Q65,95 50,90 Q35,95 20,75 Q5,45 15,25 Q30,5 50,25 Z" fill="#FF5252" stroke="#B71C1C" stroke-width="3"/>
-        <path d="M50,25 Q50,10 55,5" stroke="#5D4037" stroke-width="3" fill="none"/>
-        <path d="M50,25 Q30,15 35,5 Q40,15 50,25" fill="#4CAF50"/>
-    </svg>`,
-    banana: `<svg viewBox="0 0 100 100" width="100%" height="100%">
-        <path d="M20,80 Q50,95 80,40 Q85,30 80,25 Q75,20 70,30 Q50,70 25,65 Q15,60 10,70 Q5,80 20,80 Z" fill="#FFEB3B" stroke="#FBC02D" stroke-width="3"/>
-        <path d="M20,80 Q50,95 80,40" stroke="rgba(0,0,0,0.1)" stroke-width="2" fill="none"/>
-    </svg>`,
-    meat: `<svg viewBox="0 0 100 100" width="100%" height="100%">
-        <path d="M20,40 Q10,60 30,80 Q50,95 70,80 Q90,60 80,40 Q70,20 50,30 Q30,20 20,40 Z" fill="#E57373" stroke="#C62828" stroke-width="3"/>
-        <path d="M40,50 Q50,60 60,50 M35,60 Q45,70 55,60" stroke="#FFCDD2" stroke-width="3" stroke-linecap="round"/>
-        <circle cx="50" cy="40" r="8" fill="#FFF" opacity="0.8"/>
-    </svg>`,
-    drumstick: `<svg viewBox="0 0 100 100" width="100%" height="100%">
-        <path d="M30,70 Q40,80 50,70 L70,50 Q85,35 75,25 Q65,15 50,30 L30,50 Q20,60 30,70" fill="#D84315" stroke="#BF360C" stroke-width="3"/>
-        <path d="M20,80 Q10,90 20,95 Q30,100 40,90 L30,80 Z" fill="#FFF" stroke="#DDD" stroke-width="2"/>
-    </svg>`,
-    fish: `<svg viewBox="0 0 100 100" width="100%" height="100%">
-        <path d="M80,50 Q70,30 50,30 Q30,30 10,50 Q30,70 50,70 Q70,70 80,50 L95,20 L95,80 L80,50 Z" fill="#29B6F6" stroke="#0277BD" stroke-width="3"/>
-        <circle cx="30" cy="45" r="3" fill="black"/>
-        <path d="M50,40 Q60,50 50,60" stroke="#0277BD" stroke-width="2" fill="none"/>
-    </svg>`,
-    cookie: `<svg viewBox="0 0 100 100" width="100%" height="100%">
-        <circle cx="50" cy="50" r="35" fill="#D7CCC8" stroke="#8D6E63" stroke-width="3"/>
-        <circle cx="40" cy="40" r="4" fill="#5D4037"/>
-        <circle cx="60" cy="45" r="4" fill="#5D4037"/>
-        <circle cx="50" cy="65" r="4" fill="#5D4037"/>
-        <circle cx="35" cy="55" r="4" fill="#5D4037"/>
-        <circle cx="65" cy="55" r="4" fill="#5D4037"/>
-    </svg>`
-};
-
 const FOOD_ITEMS = [
-    { svg: FOOD_SVGS.apple, n: 'Apple', k: 'noun_apple' },
-    { svg: FOOD_SVGS.banana, n: 'Banana', k: 'noun_banana' },
-    { svg: FOOD_SVGS.meat, n: 'Steak', k: 'noun_meat' },
-    { svg: FOOD_SVGS.drumstick, n: 'Chicken', k: 'noun_meat' },
-    { svg: FOOD_SVGS.fish, n: 'Fish', k: 'noun_fish' },
-    { svg: FOOD_SVGS.cookie, n: 'Cookie', k: 'noun_cookie' }
+    { e: '🍎', n: 'Apple', k: 'noun_apple' },
+    { e: '🍌', n: 'Banana', k: 'noun_banana' },
+    { e: '🥩', n: 'Steak', k: 'noun_meat' },
+    { e: '🍗', n: 'Chicken', k: 'noun_meat' },
+    { e: '🐟', n: 'Fish', k: 'noun_fish' },
+    { e: '🍪', n: 'Cookie', k: 'noun_cookie' }
 ];
+
+function openMouth() {
+    const lionDiv = document.querySelector('.lion-container');
+    if (lionDiv && !lionDiv.classList.contains('chewing')) {
+        lionDiv.innerHTML = LION_SVGS.open;
+    }
+}
+
+function closeMouth() {
+    const lionDiv = document.querySelector('.lion-container');
+    if (lionDiv && !lionDiv.classList.contains('chewing')) {
+        lionDiv.innerHTML = LION_SVGS.normal;
+    }
+}
 
 export function initFeedLionGame() {
     resetRoundState();
@@ -309,18 +289,6 @@ export function initFeedLionGame() {
     lionDiv.innerHTML = LION_SVGS.normal;
     makeDroppable(lionDiv, 'lion');
 
-    // Listen for drag over to open mouth
-    lionDiv.addEventListener('dragenter', () => {
-        if (!lionDiv.classList.contains('chewing')) {
-            lionDiv.innerHTML = LION_SVGS.open;
-        }
-    });
-    lionDiv.addEventListener('dragleave', () => {
-        if (!lionDiv.classList.contains('chewing')) {
-            lionDiv.innerHTML = LION_SVGS.normal;
-        }
-    });
-
     // Tray
     const tray = document.createElement('div');
     tray.className = 'feed-tray';
@@ -331,6 +299,7 @@ export function initFeedLionGame() {
     board.appendChild(stage);
 
     setDropCallback(handleDrop);
+    setDragStartCallback(openMouth);
 
     spawnFoods();
 }
@@ -346,8 +315,8 @@ function spawnFoods() {
 
         const el = document.createElement('div');
         el.className = 'food-item draggable';
-        // USE SVG CONTENT INSTEAD OF TEXT
-        el.innerHTML = item.svg;
+        el.textContent = item.e; // USE EMOJI
+        el.style.fontSize = '4.5rem'; // Make them big
 
         el.dataset.label = item.n;
         el.dataset.key = item.k; // Store key for specific audio
@@ -357,6 +326,11 @@ function spawnFoods() {
         el.style.transform = `rotate(${Math.random() * 20 - 10}deg)`;
 
         makeDraggable(el, 'lion', el.id); // Matches 'lion' droppable
+
+        // Ensure mouth closes if drag ends without drop
+        el.addEventListener('dragend', () => closeMouth());
+        el.addEventListener('touchend', () => setTimeout(closeMouth, 100));
+
         tray.appendChild(el);
     }
 
@@ -364,14 +338,21 @@ function spawnFoods() {
 }
 
 function handleDrop(targetBox, draggedVal, draggedElId) {
-    if (!targetBox || !targetBox.classList.contains('lion-container')) return;
+    const lionDiv = document.querySelector('.lion-container');
 
-    const lionDiv = targetBox;
+    if (!targetBox || !targetBox.classList.contains('lion-container')) {
+        // Drag failed / dropped elsewhere
+        closeMouth();
+        return;
+    }
+
     const foodEl = document.getElementById(draggedElId);
 
     // Play specific item sound if available
     if (foodEl && foodEl.dataset.key) {
         speakSequence(['noun_lion', 'conn_eats_the', foodEl.dataset.key]);
+    } else {
+        speakText("Yummy!", "generic_good_job");
     }
 
     if (foodEl) foodEl.remove();
@@ -386,14 +367,22 @@ function handleDrop(targetBox, draggedVal, draggedElId) {
     updateScore(10);
     updateScoreUI();
     incrementCorrect();
-    checkOverallProgress('feedlion');
+    // Do NOT call checkOverallProgress here every time, only at end of round
 
     setTimeout(() => {
         lionDiv.classList.remove('chewing');
         lionDiv.innerHTML = LION_SVGS.normal;
 
         if (remaining.length === 0) {
-            showCelebration();
+            // End of round
+            checkOverallProgress('feedlion'); // This triggers "Amazing" every 3 rounds
+
+            // Standard praise if not a big celebration
+            // checkOverallProgress handles celebration, but if it didn't fire, we might want a small one.
+            // But we don't know easily if it fired.
+            // Generally "Good Job" is safe.
+            // speakText("Good job!", "generic_good_job"); // Optional, but speakSequence might be playing
+
             setTimeout(spawnFoods, 2000);
         }
     }, 2000);
