@@ -4,8 +4,8 @@ import { speakText, speakSequence } from '../engine/audio.js';
 import { updateScoreUI, showCelebration } from '../engine/ui.js';
 import { checkOverallProgress } from '../challenges/manager.js';
 
-// High-Fidelity SVG Lion
-// Features: Fluffy mane gradient, detailed ears, cute eyes, whiskers, animated mouth states
+// Extremely High-Fidelity SVG Lion
+// Features: Multi-layered hair strands for mane, deep gradients, detailed eyes, 3D snout
 const LION_SVGS = {
     normal: `<svg viewBox="0 0 300 300" width="100%" height="100%">
         <defs>
@@ -17,60 +17,76 @@ const LION_SVGS = {
                 <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
                 <stop offset="100%" style="stop-color:#DAA520;stop-opacity:1" />
             </radialGradient>
+            <filter id="fur" x="0%" y="0%" width="100%" height="100%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" />
+                <feColorMatrix type="saturate" values="0" />
+                <feBlend mode="multiply" in2="SourceGraphic" />
+            </filter>
             <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
                 <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.3"/>
             </filter>
         </defs>
 
-        <!-- Mane (Fluffy) -->
+        <!-- Mane (Detailed Strands) -->
         <g filter="url(#shadow)">
+            <!-- Base Mane -->
             <path d="M150,20 Q180,20 200,50 Q230,40 250,70 Q270,90 260,120 Q290,140 280,170 Q290,210 260,240 Q240,270 200,280 Q180,300 150,280 Q120,300 100,280 Q60,270 40,240 Q10,210 20,170 Q10,140 40,120 Q30,90 50,70 Q70,40 100,50 Q120,20 150,20 Z"
                   fill="url(#maneGrad)" />
+
+            <!-- Hair Strands (Simulated with lighter paths) -->
+            <path d="M150,30 Q170,30 180,50 M200,60 Q220,70 230,90 M250,130 Q260,150 250,170 M240,220 Q220,240 190,250 M110,250 Q80,240 60,220 M50,170 Q40,150 50,130 M70,90 Q80,70 100,60 M120,50 Q130,30 150,30"
+                  stroke="rgba(255,255,255,0.15)" stroke-width="2" fill="none" stroke-linecap="round" />
+            <path d="M160,25 Q180,25 190,45 M210,65 Q230,75 240,95 M260,135 Q270,155 260,175"
+                  stroke="rgba(0,0,0,0.1)" stroke-width="2" fill="none" stroke-linecap="round" />
         </g>
 
         <!-- Ears -->
         <circle cx="80" cy="80" r="25" fill="#DAA520" />
-        <circle cx="80" cy="80" r="15" fill="#8B4513" />
+        <circle cx="80" cy="80" r="15" fill="#6D4C41" /> <!-- Darker inner ear -->
         <circle cx="220" cy="80" r="25" fill="#DAA520" />
-        <circle cx="220" cy="80" r="15" fill="#8B4513" />
+        <circle cx="220" cy="80" r="15" fill="#6D4C41" />
 
         <!-- Face Base -->
         <circle cx="150" cy="160" r="90" fill="url(#faceGrad)" />
 
-        <!-- Muzzle -->
+        <!-- Muzzle (3D effect) -->
         <ellipse cx="150" cy="190" rx="45" ry="35" fill="#FFF8DC" />
+        <path d="M105,190 Q150,175 195,190 Q150,235 105,190" fill="rgba(0,0,0,0.05)" /> <!-- Shadow -->
 
-        <!-- Eyes (Normal) -->
+        <!-- Eyes (Detailed) -->
         <g id="eyes-normal">
-            <circle cx="115" cy="140" r="12" fill="white" />
-            <circle cx="115" cy="140" r="6" fill="black" />
-            <circle cx="118" cy="137" r="2" fill="white" /> <!-- Highlight -->
+            <circle cx="115" cy="140" r="14" fill="white" stroke="#3E2723" stroke-width="2"/>
+            <circle cx="115" cy="140" r="7" fill="black" />
+            <circle cx="118" cy="137" r="3" fill="white" opacity="0.9" /> <!-- Highlight -->
+            <path d="M100,130 Q115,120 130,130" stroke="#3E2723" stroke-width="3" fill="none" /> <!-- Eyebrow -->
 
-            <circle cx="185" cy="140" r="12" fill="white" />
-            <circle cx="185" cy="140" r="6" fill="black" />
-            <circle cx="188" cy="137" r="2" fill="white" />
+            <circle cx="185" cy="140" r="14" fill="white" stroke="#3E2723" stroke-width="2"/>
+            <circle cx="185" cy="140" r="7" fill="black" />
+            <circle cx="188" cy="137" r="3" fill="white" opacity="0.9" />
+            <path d="M170,130 Q185,120 200,130" stroke="#3E2723" stroke-width="3" fill="none" />
         </g>
 
         <!-- Nose -->
-        <path d="M135,175 Q150,165 165,175 L150,195 Z" fill="#3E2723" />
+        <path d="M135,175 Q150,165 165,175 L158,188 Q150,195 142,188 Z" fill="#3E2723" />
+        <ellipse cx="150" cy="172" rx="10" ry="3" fill="rgba(255,255,255,0.2)" /> <!-- Highlight -->
 
-        <!-- Whiskers -->
-        <g stroke="#3E2723" stroke-width="2" opacity="0.6">
-            <line x1="80" y1="180" x2="110" y2="185" />
-            <line x1="80" y1="190" x2="110" y2="190" />
-            <line x1="80" y1="200" x2="110" y2="195" />
+        <!-- Whiskers (More prominent) -->
+        <g stroke="#3E2723" stroke-width="2" opacity="0.4">
+            <path d="M90,185 Q70,182 50,175" fill="none" />
+            <path d="M90,195 Q70,195 50,195" fill="none" />
+            <path d="M90,205 Q70,208 50,215" fill="none" />
 
-            <line x1="220" y1="180" x2="190" y2="185" />
-            <line x1="220" y1="190" x2="190" y2="190" />
-            <line x1="220" y1="200" x2="190" y2="195" />
+            <path d="M210,185 Q230,182 250,175" fill="none" />
+            <path d="M210,195 Q230,195 250,195" fill="none" />
+            <path d="M210,205 Q230,208 250,215" fill="none" />
         </g>
 
         <!-- Mouth (Normal) -->
-        <path d="M150,195 L150,205 M135,205 Q150,215 165,205" stroke="#3E2723" stroke-width="3" fill="none" />
+        <path d="M150,195 L150,205 M135,205 Q150,215 165,205" stroke="#3E2723" stroke-width="3" fill="none" stroke-linecap="round" />
     </svg>`,
 
     open: `<svg viewBox="0 0 300 300" width="100%" height="100%">
-        <defs>
+         <defs>
             <linearGradient id="maneGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
                 <stop offset="0%" style="stop-color:#D2691E;stop-opacity:1" />
                 <stop offset="100%" style="stop-color:#8B4513;stop-opacity:1" />
@@ -85,44 +101,40 @@ const LION_SVGS = {
         </defs>
 
         <g filter="url(#shadow2)">
-            <path d="M150,20 Q180,20 200,50 Q230,40 250,70 Q270,90 260,120 Q290,140 280,170 Q290,210 260,240 Q240,270 200,280 Q180,300 150,280 Q120,300 100,280 Q60,270 40,240 Q10,210 20,170 Q10,140 40,120 Q30,90 50,70 Q70,40 100,50 Q120,20 150,20 Z"
+             <path d="M150,20 Q180,20 200,50 Q230,40 250,70 Q270,90 260,120 Q290,140 280,170 Q290,210 260,240 Q240,270 200,280 Q180,300 150,280 Q120,300 100,280 Q60,270 40,240 Q10,210 20,170 Q10,140 40,120 Q30,90 50,70 Q70,40 100,50 Q120,20 150,20 Z"
                   fill="url(#maneGrad2)" />
+             <path d="M150,30 Q170,30 180,50 M200,60 Q220,70 230,90 M250,130 Q260,150 250,170"
+                  stroke="rgba(255,255,255,0.15)" stroke-width="2" fill="none" stroke-linecap="round" />
         </g>
 
         <circle cx="80" cy="80" r="25" fill="#DAA520" />
-        <circle cx="80" cy="80" r="15" fill="#8B4513" />
+        <circle cx="80" cy="80" r="15" fill="#6D4C41" />
         <circle cx="220" cy="80" r="25" fill="#DAA520" />
-        <circle cx="220" cy="80" r="15" fill="#8B4513" />
+        <circle cx="220" cy="80" r="15" fill="#6D4C41" />
 
         <circle cx="150" cy="160" r="90" fill="url(#faceGrad2)" />
         <ellipse cx="150" cy="190" rx="45" ry="35" fill="#FFF8DC" />
 
         <g id="eyes-open">
-             <!-- Slightly wider eyes for excitement -->
-            <circle cx="115" cy="140" r="13" fill="white" />
+            <circle cx="115" cy="140" r="15" fill="white" stroke="#3E2723" stroke-width="2"/>
             <circle cx="115" cy="140" r="7" fill="black" />
-            <circle cx="118" cy="137" r="2" fill="white" />
+            <circle cx="118" cy="137" r="3" fill="white" opacity="0.9" />
 
-            <circle cx="185" cy="140" r="13" fill="white" />
+            <circle cx="185" cy="140" r="15" fill="white" stroke="#3E2723" stroke-width="2"/>
             <circle cx="185" cy="140" r="7" fill="black" />
-            <circle cx="188" cy="137" r="2" fill="white" />
+            <circle cx="188" cy="137" r="3" fill="white" opacity="0.9" />
         </g>
 
-        <path d="M135,175 Q150,165 165,175 L150,195 Z" fill="#3E2723" />
+        <path d="M135,175 Q150,165 165,175 L158,188 Q150,195 142,188 Z" fill="#3E2723" />
 
-        <g stroke="#3E2723" stroke-width="2" opacity="0.6">
-            <line x1="80" y1="180" x2="110" y2="185" />
-            <line x1="80" y1="190" x2="110" y2="190" />
-            <line x1="80" y1="200" x2="110" y2="195" />
-
-            <line x1="220" y1="180" x2="190" y2="185" />
-            <line x1="220" y1="190" x2="190" y2="190" />
-            <line x1="220" y1="200" x2="190" y2="195" />
+        <g stroke="#3E2723" stroke-width="2" opacity="0.4">
+             <path d="M90,185 Q70,182 50,175" fill="none" />
+             <path d="M210,185 Q230,182 250,175" fill="none" />
         </g>
 
         <!-- Mouth (Open Wide) -->
-        <circle cx="150" cy="210" r="15" fill="#5D4037" />
-        <path d="M140,218 Q150,225 160,218" stroke="#E57373" stroke-width="2" fill="none" /> <!-- Tongue hint -->
+        <circle cx="150" cy="210" r="18" fill="#5D4037" />
+        <path d="M140,218 Q150,225 160,218" stroke="#E57373" stroke-width="2" fill="none" />
     </svg>`,
 
     happy: `<svg viewBox="0 0 300 300" width="100%" height="100%">
@@ -143,32 +155,29 @@ const LION_SVGS = {
         <g filter="url(#shadow3)">
             <path d="M150,20 Q180,20 200,50 Q230,40 250,70 Q270,90 260,120 Q290,140 280,170 Q290,210 260,240 Q240,270 200,280 Q180,300 150,280 Q120,300 100,280 Q60,270 40,240 Q10,210 20,170 Q10,140 40,120 Q30,90 50,70 Q70,40 100,50 Q120,20 150,20 Z"
                   fill="url(#maneGrad3)" />
+            <path d="M150,30 Q170,30 180,50 M200,60 Q220,70 230,90"
+                  stroke="rgba(255,255,255,0.15)" stroke-width="2" fill="none" stroke-linecap="round" />
         </g>
 
         <circle cx="80" cy="80" r="25" fill="#DAA520" />
-        <circle cx="80" cy="80" r="15" fill="#8B4513" />
+        <circle cx="80" cy="80" r="15" fill="#6D4C41" />
         <circle cx="220" cy="80" r="25" fill="#DAA520" />
-        <circle cx="220" cy="80" r="15" fill="#8B4513" />
+        <circle cx="220" cy="80" r="15" fill="#6D4C41" />
 
         <circle cx="150" cy="160" r="90" fill="url(#faceGrad3)" />
         <ellipse cx="150" cy="190" rx="45" ry="35" fill="#FFF8DC" />
 
         <!-- Happy Eyes (Closed Curves) -->
         <g stroke="#3E2723" stroke-width="4" fill="none" stroke-linecap="round">
-            <path d="M100,140 Q115,130 130,140" />
-            <path d="M170,140 Q185,130 200,140" />
+            <path d="M100,145 Q115,135 130,145" />
+            <path d="M170,145 Q185,135 200,145" />
         </g>
 
-        <path d="M135,175 Q150,165 165,175 L150,195 Z" fill="#3E2723" />
+        <path d="M135,175 Q150,165 165,175 L158,188 Q150,195 142,188 Z" fill="#3E2723" />
 
-        <g stroke="#3E2723" stroke-width="2" opacity="0.6">
-            <line x1="80" y1="180" x2="110" y2="185" />
-            <line x1="80" y1="190" x2="110" y2="190" />
-            <line x1="80" y1="200" x2="110" y2="195" />
-
-            <line x1="220" y1="180" x2="190" y2="185" />
-            <line x1="220" y1="190" x2="190" y2="190" />
-            <line x1="220" y1="200" x2="190" y2="195" />
+        <g stroke="#3E2723" stroke-width="2" opacity="0.4">
+            <path d="M90,185 Q70,182 50,175" fill="none" />
+            <path d="M210,185 Q230,182 250,175" fill="none" />
         </g>
 
         <!-- Mouth (Big Smile) -->
@@ -188,8 +197,6 @@ const FOOD_ITEMS = [
     { e: '🍪', n: 'Cookie', k: 'noun_cookie' },
     { e: '🍕', n: 'Pizza', k: 'noun_pizza' }
 ];
-
-let currentFood = null;
 
 export function initFeedLionGame() {
     resetRoundState();
@@ -233,30 +240,33 @@ export function initFeedLionGame() {
 
     setDropCallback(handleDrop);
 
-    spawnFood();
+    spawnFoods();
 }
 
-function spawnFood() {
+function spawnFoods() {
     const tray = document.getElementById('feed-tray');
     if (!tray) return;
     tray.innerHTML = '';
 
-    const item = FOOD_ITEMS[Math.floor(Math.random() * FOOD_ITEMS.length)];
-    currentFood = item;
+    // Spawn 4 random items
+    for (let i = 0; i < 4; i++) {
+        const item = FOOD_ITEMS[Math.floor(Math.random() * FOOD_ITEMS.length)];
 
-    const el = document.createElement('div');
-    el.className = 'food-item draggable';
-    el.textContent = item.e;
-    el.dataset.label = item.n;
-    el.id = 'food-' + Date.now();
+        const el = document.createElement('div');
+        el.className = 'food-item draggable';
+        el.textContent = item.e;
+        el.dataset.label = item.n;
+        el.dataset.key = item.k; // Store key for specific audio
+        el.id = 'food-' + Date.now() + '-' + i;
 
-    // "Lion eats the [Food]"
-    setTimeout(() => {
-        speakSequence(['noun_lion', 'conn_eats_the', item.k]);
-    }, 500);
+        // Random slight rotation for "messy table" look
+        el.style.transform = `rotate(${Math.random() * 20 - 10}deg)`;
 
-    makeDraggable(el, 'lion', el.id); // Matches 'lion' droppable
-    tray.appendChild(el);
+        makeDraggable(el, 'lion', el.id); // Matches 'lion' droppable
+        tray.appendChild(el);
+    }
+
+    speakText("Feed the Lion!", "noun_lion");
 }
 
 function handleDrop(targetBox, draggedVal, draggedElId) {
@@ -264,24 +274,33 @@ function handleDrop(targetBox, draggedVal, draggedElId) {
 
     const lionDiv = targetBox;
     const foodEl = document.getElementById(draggedElId);
+
+    // Play specific item sound if available
+    if (foodEl && foodEl.dataset.key) {
+        speakSequence(['noun_lion', 'conn_eats_the', foodEl.dataset.key]);
+    }
+
     if (foodEl) foodEl.remove();
 
     // Chewing State
     lionDiv.classList.add('chewing');
     lionDiv.innerHTML = LION_SVGS.happy;
 
-    speakText("Yummy!", "generic_yummy");
+    // Check if table is empty
+    const remaining = document.querySelectorAll('#feed-tray .food-item');
+
     updateScore(10);
     updateScoreUI();
-
-    // Check progress
     incrementCorrect();
     checkOverallProgress('feedlion');
 
-    // Reset after delay
     setTimeout(() => {
         lionDiv.classList.remove('chewing');
         lionDiv.innerHTML = LION_SVGS.normal;
-        spawnFood();
+
+        if (remaining.length === 0) {
+            showCelebration();
+            setTimeout(spawnFoods, 2000);
+        }
     }, 2000);
 }
