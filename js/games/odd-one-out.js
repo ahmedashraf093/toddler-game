@@ -36,8 +36,10 @@ Object.keys(categories).forEach(k => {
     categories[k] = categories[k].filter(item => item.k && item.k !== 'null');
 });
 
+let streakCount = 0;
 
 export function initOddOneOutGame() {
+    streakCount = 0;
     resetRoundState();
     startRound();
 }
@@ -104,27 +106,38 @@ function handleCardClick(card, item) {
         card.style.borderColor = '#44cc44';
         card.style.backgroundColor = '#dfffd6';
 
-        // Celebration
-        showCelebration(); // Confetti
+        streakCount++;
         updateScore(10);
         updateScoreUI();
         incrementCorrect(); // Tracks progress if needed, but here we just do rounds
 
-        // Voice: "Pizza! Good Job!"
-        // Or if we can construct "Pizza is not a Animal", but we don't have "Animal" audio reliably?
-        // Let's stick to positive reinforcement.
-        if (item.k) {
-            speakSequence([item.k, 'generic_correct'], `${item.n}! Correct!`);
+        let delay = 1500; // Default short delay
+
+        // Celebration only every 3rd win
+        if (streakCount > 0 && streakCount % 3 === 0) {
+            showCelebration(); // Confetti & Music
+            delay = 4500; // Longer delay for celebration
+             // Voice with extra praise
+            if (item.k) {
+                speakSequence([item.k, 'generic_good_job'], `${item.n}! Good Job!`);
+            } else {
+                speakText("Good Job!");
+            }
         } else {
-            speakText("Correct!");
+             // Simple feedback
+            if (item.k) {
+                speakSequence([item.k, 'generic_correct'], `${item.n}! Correct!`);
+            } else {
+                speakText("Correct!");
+            }
         }
 
-        // Auto advance after short delay
+        // Auto advance after delay
         setTimeout(() => {
             // Check overall progress for daily challenges
             checkOverallProgress('oddoneout');
             startRound();
-        }, 3000);
+        }, delay);
 
     } else {
         // Incorrect
