@@ -72,7 +72,18 @@ function createMemoryCard(item) {
     card.appendChild(front);
     card.appendChild(back);
 
+    // 🎨 Palette: Accessibility
+    card.setAttribute('role', 'button');
+    card.setAttribute('tabindex', '0');
+    card.setAttribute('aria-label', 'Hidden card');
+
     card.addEventListener('click', handleCardClick);
+    card.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            this.click();
+        }
+    });
 
     return card;
 }
@@ -82,6 +93,9 @@ function handleCardClick() {
     if (this === flippedCards[0]) return;
 
     this.classList.add('flipped');
+
+    // 🎨 Palette: Update ARIA
+    this.setAttribute('aria-label', this.dataset.name);
 
     // Speak item name using sprite key
     const nounKey = 'noun_' + this.dataset.name.toLowerCase().replace(' ', '_');
@@ -158,6 +172,10 @@ function unflipCards() {
     setTimeout(() => {
         flippedCards[0].classList.remove('flipped');
         flippedCards[1].classList.remove('flipped');
+
+        // 🎨 Palette: Reset ARIA
+        flippedCards[0].setAttribute('aria-label', 'Hidden card');
+        flippedCards[1].setAttribute('aria-label', 'Hidden card');
 
         flippedCards = [];
         lockBoard = false;

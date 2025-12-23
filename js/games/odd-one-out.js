@@ -75,7 +75,18 @@ function startRound() {
         card.textContent = item.e;
         card.dataset.name = item.n;
 
+        // 🎨 Palette: Accessibility
+        card.setAttribute('role', 'button');
+        card.setAttribute('tabindex', '0');
+        card.setAttribute('aria-label', item.n); // "Dog", "Apple"
+
         card.onclick = () => handleCardClick(card, item);
+        card.onkeydown = (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleCardClick(card, item);
+            }
+        };
 
         grid.appendChild(card);
     });
