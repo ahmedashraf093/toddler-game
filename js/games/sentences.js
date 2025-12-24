@@ -4,36 +4,36 @@ import { gameState } from '../engine/state.js';
 import { showCelebration } from '../engine/ui.js';
 
 // Sentence Data: [Subject, Connector, Object]
-// Each part is a key from sprites.json
+// Each part is a key from sprites.json + Emoji for visual
 const sentenceData = [
     // Animals & Diet
-    { subject: 'noun_monkey', conn: 'conn_eats_the', object: 'noun_banana', label: 'Banana' },
-    { subject: 'noun_rabbit', conn: 'conn_eats_the', object: 'noun_carrot', label: 'Carrot' },
-    { subject: 'noun_dog', conn: 'conn_eats_the', object: 'noun_bone', label: 'Bone' },
-    { subject: 'noun_mouse', conn: 'conn_eats_the', object: 'noun_cheese', label: 'Cheese' },
+    { subject: 'noun_monkey', subjectEmoji: '🐵', conn: 'conn_eats_the', object: 'noun_banana', objectEmoji: '🍌', label: 'Banana' },
+    { subject: 'noun_rabbit', subjectEmoji: '🐰', conn: 'conn_eats_the', object: 'noun_carrot', objectEmoji: '🥕', label: 'Carrot' },
+    { subject: 'noun_dog', subjectEmoji: '🐶', conn: 'conn_eats_the', object: 'noun_bone', objectEmoji: '🦴', label: 'Bone' },
+    { subject: 'noun_mouse', subjectEmoji: '🐭', conn: 'conn_eats_the', object: 'noun_cheese', objectEmoji: '🧀', label: 'Cheese' },
 
     // Animals & Habitat
-    { subject: 'noun_lion', conn: 'conn_lives_in_the', object: 'noun_jungle', label: 'Jungle' },
-    { subject: 'noun_cow', conn: 'conn_lives_in_the', object: 'noun_farm', label: 'Farm' },
-    { subject: 'noun_whale', conn: 'conn_lives_in_the', object: 'noun_ocean', label: 'Ocean' },
+    { subject: 'noun_lion', subjectEmoji: '🦁', conn: 'conn_lives_in_the', object: 'noun_jungle', objectEmoji: '🌴', label: 'Jungle' },
+    { subject: 'noun_cow', subjectEmoji: '🐄', conn: 'conn_lives_in_the', object: 'noun_farm', objectEmoji: '🏡', label: 'Farm' },
+    { subject: 'noun_whale', subjectEmoji: '🐋', conn: 'conn_lives_in_the', object: 'noun_ocean', objectEmoji: '🌊', label: 'Ocean' },
 
     // Nature Transitions
-    { subject: 'noun_caterpillar', conn: 'conn_becomes_a', object: 'noun_butterfly', label: 'Butterfly' },
+    { subject: 'noun_caterpillar', subjectEmoji: '🐛', conn: 'conn_becomes_a', object: 'noun_butterfly', objectEmoji: '🦋', label: 'Butterfly' },
 
     // Professions & Tools/Vehicles
-    { subject: 'noun_fireman', conn: 'conn_uses', object: 'noun_fire_truck', label: 'Fire Truck' },
-    { subject: 'noun_doctor', conn: 'conn_uses', object: 'noun_ambulance', label: 'Ambulance' },
-    { subject: 'noun_astronaut', conn: 'conn_uses', object: 'noun_rocket', label: 'Rocket' },
-    { subject: 'noun_mechanic', conn: 'conn_uses', object: 'noun_wrench', label: 'Wrench' },
-    { subject: 'noun_artist', conn: 'conn_uses', object: 'noun_paint', label: 'Paint' },
-    { subject: 'noun_farmer', conn: 'conn_uses', object: 'noun_tractor', label: 'Tractor' },
+    { subject: 'noun_fireman', subjectEmoji: '👨‍🚒', conn: 'conn_uses', object: 'noun_fire_truck', objectEmoji: '🚒', label: 'Fire Truck' },
+    { subject: 'noun_doctor', subjectEmoji: '👨‍⚕️', conn: 'conn_uses', object: 'noun_ambulance', objectEmoji: '🚑', label: 'Ambulance' },
+    { subject: 'noun_astronaut', subjectEmoji: '👨‍🚀', conn: 'conn_uses', object: 'noun_rocket', objectEmoji: '🚀', label: 'Rocket' },
+    { subject: 'noun_mechanic', subjectEmoji: '👨‍🔧', conn: 'conn_uses', object: 'noun_wrench', objectEmoji: '🔧', label: 'Wrench' },
+    { subject: 'noun_artist', subjectEmoji: '👩‍🎨', conn: 'conn_uses', object: 'noun_paint', objectEmoji: '🖌️', label: 'Paint' },
+    { subject: 'noun_farmer', subjectEmoji: '👨‍🌾', conn: 'conn_uses', object: 'noun_tractor', objectEmoji: '🚜', label: 'Tractor' },
 
     // Shapes & Objects
-    { subject: 'noun_sun', conn: 'conn_looks_like_a', object: 'noun_circle', label: 'Circle' },
-    { subject: 'noun_kite', conn: 'conn_looks_like_a', object: 'noun_diamond', label: 'Diamond' },
-    { subject: 'noun_pizza_slice', conn: 'conn_looks_like_a', object: 'noun_triangle', label: 'Triangle' },
-    { subject: 'noun_door', conn: 'conn_looks_like_a', object: 'noun_rectangle', label: 'Rectangle' },
-    { subject: 'noun_ball', conn: 'conn_looks_like_a', object: 'noun_circle', label: 'Circle' }
+    { subject: 'noun_sun', subjectEmoji: '☀️', conn: 'conn_looks_like_a', object: 'noun_circle', objectEmoji: '🔴', label: 'Circle' },
+    { subject: 'noun_kite', subjectEmoji: '🪁', conn: 'conn_looks_like_a', object: 'noun_diamond', objectEmoji: '🔶', label: 'Diamond' },
+    { subject: 'noun_pizza_slice', subjectEmoji: '🍕', conn: 'conn_looks_like_a', object: 'noun_triangle', objectEmoji: '🔺', label: 'Triangle' },
+    { subject: 'noun_door', subjectEmoji: '🚪', conn: 'conn_looks_like_a', object: 'noun_rectangle', objectEmoji: '📟', label: 'Rectangle' },
+    { subject: 'noun_ball', subjectEmoji: '⚽', conn: 'conn_looks_like_a', object: 'noun_circle', objectEmoji: '🔴', label: 'Circle' }
 ];
 
 let currentSentence = null;
@@ -59,7 +59,7 @@ export function initSentenceGame() {
     strip.className = 'sentence-strip';
 
     // Subject Part
-    const subjectPart = createPart(currentSentence.subject, false);
+    const subjectPart = createPart(currentSentence.subjectEmoji, false);
     subjectPart.onclick = () => speakSequence([currentSentence.subject]);
 
     // Connector Part (Text/Icon placeholder)
@@ -90,16 +90,11 @@ export function initSentenceGame() {
         const btn = document.createElement('button');
         btn.className = 'sentence-option';
         btn.dataset.key = opt.key;
-        btn.onclick = () => handleOptionClick(opt.key, btn);
+        btn.onclick = () => handleOptionClick(opt.key, opt.emoji, btn);
 
-        // Image
-        const img = document.createElement('img');
-        // Simple image path assumption based on existing patterns
-        img.src = `assets/images/${opt.key.replace('noun_', '')}.png`;
+        // Emoji Content
+        btn.textContent = opt.emoji;
 
-        img.onerror = () => { img.style.display='none'; btn.textContent = opt.label || '???'; };
-
-        btn.appendChild(img);
         optionsContainer.appendChild(btn);
     });
 
@@ -111,13 +106,10 @@ export function initSentenceGame() {
     }, 500);
 }
 
-function createPart(key, isSlot) {
+function createPart(emoji, isSlot) {
     const div = document.createElement('div');
     div.className = 'sentence-part';
-    const img = document.createElement('img');
-    img.src = `assets/images/${key.replace('noun_', '')}.png`;
-    img.onerror = () => { img.style.display='none'; div.textContent = 'IMAGE'; };
-    div.appendChild(img);
+    div.textContent = emoji;
     return div;
 }
 
@@ -132,21 +124,21 @@ function getConnectorSymbol(connKey) {
 }
 
 function generateOptions(correct) {
-    const opts = [{ key: correct.object, label: correct.label }];
+    const opts = [{ key: correct.object, emoji: correct.objectEmoji, label: correct.label }];
     const used = new Set([correct.object]);
 
     while (opts.length < 3) {
         const random = sentenceData[Math.floor(Math.random() * sentenceData.length)];
         if (!used.has(random.object)) {
             used.add(random.object);
-            opts.push({ key: random.object, label: random.label });
+            opts.push({ key: random.object, emoji: random.objectEmoji, label: random.label });
         }
     }
     // Shuffle
     return opts.sort(() => Math.random() - 0.5);
 }
 
-function handleOptionClick(key, btnElement) {
+function handleOptionClick(key, emoji, btnElement) {
     if (isLocked) return;
 
     speakSequence([key]);
@@ -157,16 +149,13 @@ function handleOptionClick(key, btnElement) {
         const slot = document.getElementById('target-slot');
         slot.innerHTML = '';
         slot.className = 'sentence-part filled';
+        slot.textContent = emoji;
 
-        // Move image to slot (visual logic)
-        const img = btnElement.querySelector('img').cloneNode(true);
-        slot.appendChild(img);
         btnElement.style.visibility = 'hidden';
 
         // Play full sentence
         setTimeout(() => {
             speakSequence([currentSentence.subject, currentSentence.conn, currentSentence.object]);
-            // Immediate feedback not needed if sentence plays, or use specific "correct" sound
 
             // Celebrate after speech
             setTimeout(() => {
