@@ -13,5 +13,6 @@ export const themes = {
     memory: { primary: '#764ba2', bg: '#f3e8ff', dots: '#e9d5ff' },
     pattern: { primary: '#e056fd', bg: '#fae3ff', dots: '#f4c4ff' },
     sorting: { primary: '#ff9f43', bg: '#fff2e6', dots: '#ffe0b3' },
-    oddoneout: { primary: '#9b59b6', bg: '#f5eef8', dots: '#e8daef' }
+    oddoneout: { primary: '#9b59b6', bg: '#f5eef8', dots: '#e8daef' },
+    sentences: { primary: '#3498db', bg: '#e8f6f3', dots: '#a2d9ce' }
 };
