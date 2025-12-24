@@ -9,6 +9,7 @@ import { initPatternGame } from './games/pattern.js';
 import { initSortingGame } from './games/sorting.js';
 import { initOddOneOutGame } from './games/odd-one-out.js';
 import { initFeedLionGame } from './games/feed-lion.js';
+import { initSentenceGame } from './games/sentences.js';
 import { initChallenges, toggleChallengeMenu, isContentUnlocked } from './challenges/manager.js';
 import { ParentalGate } from './engine/parental-gate.js';
 
@@ -30,7 +31,8 @@ const gameModes = [
     { id: 'puzzle', name: 'Puzzle', icon: '🧩' },
     { id: 'memory', name: 'Memory', icon: '🧠' },
     { id: 'math', name: 'Math', icon: '➕' },
-    { id: 'oddoneout', name: 'Odd One', icon: '🧐' }
+    { id: 'oddoneout', name: 'Odd One', icon: '🧐' },
+    { id: 'sentences', name: 'Story', icon: '📝' }
 ];
 
 window.addEventListener('load', () => {
@@ -129,6 +131,7 @@ function setDifficulty(level, btn) {
 }
 
 function setMode(mode) {
+    console.log("setMode called with:", mode);
     gameState.currentMode = mode;
     toggleMenu(true); // Close menu
     setTheme(mode);
@@ -137,6 +140,7 @@ function setMode(mode) {
 
 // Global initRound to dispatch to specific games
 function initRound() {
+    console.log("initRound called. Mode:", gameState.currentMode);
     document.getElementById('reset-btn').style.display = 'none';
 
     // Visual transition handled in UI or CSS, here we just init logic
@@ -150,6 +154,7 @@ function initRound() {
     else if (mode === 'sorting') initSortingGame();
     else if (mode === 'oddoneout') initOddOneOutGame();
     else if (mode === 'feedlion') initFeedLionGame();
+    else if (mode === 'sentences') initSentenceGame();
     else initStandardGame();
 }
 
