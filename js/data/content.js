@@ -8,7 +8,11 @@ export const shadowLibrary = [
     { e: '✈️', n: 'Airplane' }, { e: '🚀', n: 'Rocket' },
     { e: '🍎', n: 'Apple' }, { e: '🍌', n: 'Banana' }, { e: '🍇', n: 'Grapes' },
     { e: '🍦', n: 'Ice Cream' }, { e: '🍕', n: 'Pizza' },
-    { e: '⚽', n: 'Ball' }
+    { e: '⚽', n: 'Ball' },
+    // New items to reach 30
+    { e: '🐱', n: 'Cat' }, { e: '🐭', n: 'Mouse' }, { e: '🐰', n: 'Rabbit' }, { e: '🐸', n: 'Frog' }, { e: '🦆', n: 'Duck' },
+    { e: '🌲', n: 'Tree' }, { e: '☀️', n: 'Sun' }, { e: '⭐', n: 'Star' },
+    { e: '🚌', n: 'Bus' }, { e: '🚂', n: 'Train' }, { e: '🍪', n: 'Cookie' }
 ];
 
 export const letterExamples = {
@@ -46,13 +50,48 @@ export const feedLibrary = [
 ];
 
 export const shapeLibrary = [
-    { id: 'triangle', shape: '🔺', obj: '🍕', shapeName: 'Triangle', objName: 'Pizza Slice' },
-    { id: 'circle', shape: '🔴', obj: '⏰', shapeName: 'Circle', objName: 'Clock' },
-    { id: 'square', shape: '🟧', obj: '🎁', shapeName: 'Square', objName: 'Gift' },
-    { id: 'rectangle', shape: '📟', obj: '🚪', shapeName: 'Rectangle', objName: 'Door' },
-
-    { id: 'oval', shape: '🥚', obj: '🥑', shapeName: 'Oval', objName: 'Avocado' },
-    { id: 'diamond', shape: '🔶', obj: '🪁', shapeName: 'Diamond', objName: 'Kite' }
+    {
+        id: 'triangle',
+        shape: `<svg viewBox="0 0 100 100" class="shape-svg"><polygon points="50,15 90,85 10,85" fill="#FF5722" stroke="#3E2723" stroke-width="3"/></svg>`,
+        obj: '🍕',
+        shapeName: 'Triangle',
+        objName: 'Pizza Slice'
+    },
+    {
+        id: 'circle',
+        shape: `<svg viewBox="0 0 100 100" class="shape-svg"><circle cx="50" cy="50" r="40" fill="#F44336" stroke="#3E2723" stroke-width="3"/></svg>`,
+        obj: '⏰',
+        shapeName: 'Circle',
+        objName: 'Clock'
+    },
+    {
+        id: 'square',
+        shape: `<svg viewBox="0 0 100 100" class="shape-svg"><rect x="15" y="15" width="70" height="70" fill="#2196F3" stroke="#3E2723" stroke-width="3"/></svg>`,
+        obj: '🎁',
+        shapeName: 'Square',
+        objName: 'Gift'
+    },
+    {
+        id: 'rectangle',
+        shape: `<svg viewBox="0 0 100 100" class="shape-svg"><rect x="10" y="25" width="80" height="50" fill="#4CAF50" stroke="#3E2723" stroke-width="3"/></svg>`,
+        obj: '🚪',
+        shapeName: 'Rectangle',
+        objName: 'Door'
+    },
+    {
+        id: 'oval',
+        shape: `<svg viewBox="0 0 100 100" class="shape-svg"><ellipse cx="50" cy="50" rx="40" ry="25" fill="#9C27B0" stroke="#3E2723" stroke-width="3"/></svg>`,
+        obj: '🥑',
+        shapeName: 'Oval',
+        objName: 'Avocado'
+    },
+    {
+        id: 'diamond',
+        shape: `<svg viewBox="0 0 100 100" class="shape-svg"><polygon points="50,10 90,50 50,90 10,50" fill="#FFC107" stroke="#3E2723" stroke-width="3"/></svg>`,
+        obj: '🪁',
+        shapeName: 'Diamond',
+        objName: 'Kite'
+    }
 ];
 
 export const weatherLibrary = [

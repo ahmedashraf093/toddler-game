@@ -26,7 +26,15 @@ content = {
         {'id': 'need_parent_help', 'text': 'Need parent help!'},
         {'id': 'choose_a_game', 'text': 'Choose a game!'},
         {'id': 'loading', 'text': 'Loading...'},
-        {'id': 'daily_quest', 'text': 'Daily Quest'}
+        {'id': 'daily_quest', 'text': 'Daily Quest'},
+        {'id': 'feed_the_lion', 'text': 'Feed the Lion!'},
+        {'id': 'complete_the_story', 'text': 'Complete the story!'}
+    ],
+    'number': [
+        {'id': '1', 'text': 'One'}, {'id': '2', 'text': 'Two'}, {'id': '3', 'text': 'Three'},
+        {'id': '4', 'text': 'Four'}, {'id': '5', 'text': 'Five'}, {'id': '6', 'text': 'Six'},
+        {'id': '7', 'text': 'Seven'}, {'id': '8', 'text': 'Eight'}, {'id': '9', 'text': 'Nine'},
+        {'id': '10', 'text': 'Ten'}
     ],
     'connector': [
         {'id': 'the', 'text': 'The'},
@@ -80,7 +88,7 @@ content = {
         'Shoe', 'Star', 'Ladybug', 'Cookie', 'Balloon', 'Crayon', 'Teddy Bear', 'Strawberry',
         'Car', 'Bus', 'Train', 'Helicopter',
         'Police', 'Fireman', 'Doctor', 'Astronaut', 'Chef', 'Farmer', 'Artist',
-        'Mechanic', 'Teacher', 'Pilot', 'Builder', 'Scientist'
+        'Mechanic', 'Teacher', 'Pilot', 'Builder', 'Scientist', 'Duck'
     ]
 }
 
@@ -139,6 +147,13 @@ async def main():
     # Alphabet
     for item in content['alphabet']:
         key = f"alpha_{item['id']}"
+        filepath = os.path.join(TEMP_DIR, f"{key}.mp3")
+        tasks.append(generate_audio(item['text'], filepath))
+        file_map.append({'key': key, 'path': filepath})
+
+    # Numbers
+    for item in content['number']:
+        key = f"num_{item['id']}"
         filepath = os.path.join(TEMP_DIR, f"{key}.mp3")
         tasks.append(generate_audio(item['text'], filepath))
         file_map.append({'key': key, 'path': filepath})

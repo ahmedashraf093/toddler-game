@@ -13,9 +13,27 @@ const roundSize = 5;
 
 export function initStandardGame() {
     resetRoundState();
-    const sourceCol = document.getElementById('source-col');
-    const targetCol = document.getElementById('target-col');
-    if (!sourceCol || !targetCol) return;
+    resetRoundState();
+    let sourceCol = document.getElementById('source-col');
+    let targetCol = document.getElementById('target-col');
+
+    // If columns are missing (e.g. wiped by Feed Lion), restore them
+    if (!sourceCol || !targetCol) {
+        const board = document.getElementById('game-board');
+        if (board) {
+            board.innerHTML = ''; // Clear potentially conflicting content like feed-lion-stage
+            sourceCol = document.createElement('div');
+            sourceCol.className = 'column';
+            sourceCol.id = 'source-col';
+            targetCol = document.createElement('div');
+            targetCol.className = 'column';
+            targetCol.id = 'target-col';
+            board.appendChild(sourceCol);
+            board.appendChild(targetCol);
+        } else {
+            return; // Critical error if board itself is missing
+        }
+    }
 
     sourceCol.innerHTML = '';
     targetCol.innerHTML = '';
@@ -27,7 +45,7 @@ export function initStandardGame() {
 
     if (mode === 'shadow') {
         const selected = smartSelect([...shadowLibrary], 'shadow', roundSize);
-        roundItems = selected.map(i => ({ id: i.e, src: i.e, tgt: i.e, type: 'simple', srcLabel: i.n, tgtLabel: i.n }));
+        roundItems = selected.map(i => ({ id: i.e, src: i.e, tgt: i.e, type: 'simple', srcLabel: i.n, tgtLabel: i.n, audioId: i.n }));
     }
     else if (mode === 'letter') {
         const allKeys = Object.keys(letterExamples);
@@ -47,7 +65,7 @@ export function initStandardGame() {
             let gridHtml = `<div class="number-grid">`;
             for (let i = 0; i < count; i++) gridHtml += `<span class="mini-emoji">${randomObj.e}</span>`;
             gridHtml += `</div>`;
-            return { id: nStr, src: gridHtml, tgt: nStr, type: 'html', emoji: randomObj.e, name: randomObj.n, srcLabel: randomObj.n, tgtLabel: nStr };
+            return { id: nStr, src: gridHtml, tgt: nStr, type: 'html', emoji: randomObj.e, name: randomObj.n, srcLabel: randomObj.n, tgtLabel: nStr, audioId: nStr };
         });
     }
     else if (mode === 'feed') {
@@ -56,7 +74,7 @@ export function initStandardGame() {
     }
     else if (mode === 'shape') {
         const selected = smartSelect([...shapeLibrary], 'shape', roundSize);
-        roundItems = selected.map(s => ({ id: s.id, src: s.shape, tgt: s.obj, type: 'simple', srcLabel: s.shapeName, tgtLabel: s.objName, audioId: s.id }));
+        roundItems = selected.map(s => ({ id: s.id, src: s.shape, tgt: s.obj, type: 'html', srcLabel: s.shapeName, tgtLabel: s.objName, audioId: s.id }));
     }
     else if (mode === 'weather') {
         const selected = smartSelect([...weatherLibrary], 'weather', roundSize);
@@ -68,13 +86,14 @@ export function initStandardGame() {
     }
     else if (mode === 'habitat') {
         const selected = smartSelect([...habitatLibrary], 'habitat', roundSize);
-        roundItems = selected.map(h => ({ id: h.id, src: h.animal, tgt: h.home, type: 'simple', srcLabel: h.animalName, tgtLabel: h.homeName, audioId: h.id }));
+        roundItems = selected.map(h => ({ id: h.id, matchId: h.homeName, src: h.animal, tgt: h.home, type: 'simple', srcLabel: h.animalName, tgtLabel: h.homeName, audioId: h.id }));
     }
 
     const draggables = shuffle([...roundItems]);
     const targets = shuffle([...roundItems]);
-    draggables.forEach(obj => createStandardItem(obj.src, obj.id, sourceCol, true, obj.type, obj));
-    targets.forEach(obj => createStandardItem(obj.tgt, obj.id, targetCol, false, obj.type, obj));
+    // Use matchId if available (for habitat grouping), otherwise unique id
+    draggables.forEach(obj => createStandardItem(obj.src, obj.matchId || obj.id, sourceCol, true, obj.type, obj));
+    targets.forEach(obj => createStandardItem(obj.tgt, obj.matchId || obj.id, targetCol, false, obj.type, obj));
 }
 
 function createStandardItem(content, id, container, isDrag, type, dataObj) {
@@ -83,30 +102,53 @@ function createStandardItem(content, id, container, isDrag, type, dataObj) {
     const ttsText = isDrag ? (dataObj.srcLabel || '') : (dataObj.tgtLabel || '');
     if (ttsText) el.dataset.label = ttsText;
 
-    // Add click handler for TTS
-    el.onclick = () => {
-        // Try to construct a simple key sequence for click
-        let audioKey = null;
+    // Pre-calculate audio key
+    let audioKey = null;
+    if (dataObj && dataObj.audioId) {
+        // Use the label relevant for this item type (src or tgt)
+        // Actually, just use audioId as base, but we need the type prefix logic
+        // The original logic used srcLabel or tgtLabel. Let's stick to that for consistency but use the correct one based on isDrag?
+        // Actually, for shadow mode, src/tgt labels are same.
+        // For job: src=Police, tgt=Police Car.
+        // audioId=police.
+        // Wait, the logic used label...
+        // Let's preserve the exact logic but run it now.
+        const label = (isDrag ? (dataObj.srcLabel || '') : (dataObj.tgtLabel || '')).toLowerCase().replace(' ', '_');
 
-        // Use explicit audioId if available (set in initStandardGame)
-        if (dataObj && dataObj.audioId) {
-             const label = (dataObj.srcLabel || dataObj.tgtLabel || '').toLowerCase().replace(' ', '_');
+        // However, looking at the previous code:
+        // const label = (dataObj.srcLabel || dataObj.tgtLabel || '')...
+        // It preferred srcLabel. If srcLabel missing, tgtLabel.
+        // But ttsText is strictly `isDrag ? src : tgt`.
+        // We should match ttsText for the label part if we want the audio to match the text.
 
-             // Heuristic to match sprite keys
-             // Letters: 'alpha_a'
-             if (type === 'simple' && label.length === 1 && label >= 'a' && label <= 'z') {
-                 audioKey = 'alpha_' + label;
-             } else {
-                 // Try noun
-                 audioKey = 'noun_' + label;
-             }
-        }
+        // Refined logic: use ttsText as the base for the key generation if audioId is present
+        // NO, audioId is the 'id' (e.g. 'police'). label might be 'police_car'.
+        // The previous logic was: if (dataObj.audioId) { check label... }
 
-        if (audioKey) {
-             speakText(ttsText, audioKey);
+        // Let's reproduce the heuristic but strictly use ttsText as the source for the key name if possible,
+        // OR just use the heuristic on the label that corresponds to the text.
+
+        const keyLabel = ttsText.toLowerCase().replace(' ', '_');
+
+        if (type === 'simple' && keyLabel.length === 1 && keyLabel >= 'a' && keyLabel <= 'z') {
+            audioKey = 'alpha_' + keyLabel;
+        } else if (!isNaN(keyLabel)) {
+            audioKey = 'num_' + keyLabel;
         } else {
-             speakText(ttsText);
+            audioKey = 'noun_' + keyLabel;
         }
+    }
+
+    if (audioKey) el.dataset.audioKey = audioKey;
+
+    // Store specific ID for reward lookups (overriding the generic match ID)
+    if (dataObj && dataObj.id) {
+        el.dataset.specificId = dataObj.id;
+    }
+
+    // Add click handler for TTS (Mouse/Non-drag click)
+    el.onclick = () => {
+        speakText(ttsText, el.dataset.audioKey || null);
 
         // Visual effect
         el.style.transform = "scale(1.2)";
@@ -151,10 +193,18 @@ function handleDrop(targetBox, draggedVal, draggedElId) {
     else if (mode === 'shape') showShapeReward(draggedVal);
     else if (mode === 'weather') showWeatherReward(draggedVal);
     else if (mode === 'nature') showNatureReward(draggedVal);
-    else if (mode === 'habitat') showHabitatReward(draggedVal);
+    else if (mode === 'nature') showNatureReward(draggedVal);
+    else if (mode === 'habitat') {
+        // Retrieve specific animal ID from dragged element to show correct reward
+        const source = document.getElementById(draggedElId);
+        const specificId = source && source.dataset.specificId ? source.dataset.specificId : draggedVal;
+        showHabitatReward(specificId);
+    }
     else if (mode === 'number') {
         launchModal(draggedVal, targetBox.dataset.emoji, targetBox.dataset.name);
-        speakText(`${draggedVal}... ${targetBox.dataset.name}`);
+        const numKey = `num_${draggedVal}`;
+        const nounKey = `noun_${targetBox.dataset.name.toLowerCase().replace(' ', '_')}`;
+        speakSequence([numKey, nounKey], `${draggedVal}... ${targetBox.dataset.name}`);
     }
     else {
         // Generic match

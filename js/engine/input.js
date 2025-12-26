@@ -86,10 +86,11 @@ function dragStart(e) {
         e.dataTransfer.setDragImage(e.target, e.target.offsetWidth / 2, e.target.offsetHeight / 2);
     }
 
-    if (e.target.dataset.label) speakText(e.target.dataset.label, null, true);
+    const key = e.target.dataset.audioKey || null;
+    if (e.target.dataset.label) speakText(e.target.dataset.label, key, true);
 
     toggleOtherDraggables(e.target.id, true);
-    if(draggedVal) startHintTimer(draggedVal);
+    if (draggedVal) startHintTimer(draggedVal);
 
     if (onDragStartCallback) onDragStartCallback(e.target);
 }
@@ -122,10 +123,11 @@ function touchStart(e) {
     draggedVal = activeTouchEl.dataset.val;
     draggedElId = activeTouchEl.id;
 
-    if (activeTouchEl.dataset.label) speakText(activeTouchEl.dataset.label, null, true);
+    const key = activeTouchEl.dataset.audioKey || null;
+    if (activeTouchEl.dataset.label) speakText(activeTouchEl.dataset.label, key, true);
 
     toggleOtherDraggables(activeTouchEl.id, true);
-    if(draggedVal) startHintTimer(draggedVal);
+    if (draggedVal) startHintTimer(draggedVal);
 
     // Create spacer to prevent layout shift
     const spacer = document.createElement('div');
@@ -176,8 +178,6 @@ function touchEnd(e) {
     activeTouchEl.style.zIndex = '';
     activeTouchEl.style.transform = '';
 
-    toggleOtherDraggables(null, false);
-
     const t = e.changedTouches[0];
 
     // Temporarily hide element to find what's underneath
@@ -196,6 +196,8 @@ function touchEnd(e) {
         // Pass activeTouchEl as the dragged element (3rd arg was ID, passing element reference is also useful or use ID)
         onDropCallback(targetBox, draggedVal, draggedElId, e, activeTouchEl);
     }
+
+    toggleOtherDraggables(null, false); // Restore pointer events AFTER finding target
 
     activeTouchEl = null;
 }

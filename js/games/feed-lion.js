@@ -321,6 +321,7 @@ function spawnFoods() {
 
         el.dataset.label = item.n;
         el.dataset.key = item.k; // Store key for specific audio
+        el.dataset.audioKey = item.k; // Store for input.js input handling
         el.id = 'food-' + Date.now() + '-' + i;
 
         // Random slight rotation for "messy table" look
@@ -335,7 +336,7 @@ function spawnFoods() {
         tray.appendChild(el);
     }
 
-    speakText("Feed the Lion!", "noun_lion");
+    speakText("Feed the Lion!", "sys_feed_the_lion");
 }
 
 function handleDrop(targetBox, draggedVal, draggedElId) {

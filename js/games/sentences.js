@@ -60,7 +60,7 @@ export function initSentenceGame() {
     const instr = document.createElement('div');
     instr.className = 'sentence-instruction';
     instr.textContent = "Complete the Story!";
-    instr.onclick = () => speakText("Complete the story!");
+    instr.onclick = () => speakText("Complete the story!", "sys_complete_the_story");
     container.appendChild(instr);
 
     // 1. Create the Sentence Strip
@@ -114,7 +114,7 @@ export function initSentenceGame() {
     stopAllAudio();
 
     // Use fallbackTTS for intro if key might be missing, or speakSequence if sure
-    speakText("Complete the story!", null, true);
+    speakText("Complete the story!", "sys_complete_the_story", true);
 
     // Brief delay then read the partial sentence
     introTimer = setTimeout(() => {

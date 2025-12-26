@@ -90,9 +90,11 @@ export function initSortingGame() {
 
         const dragId = `drag-sort-${item.n}-${Math.random().toString(36).substr(2, 5)}`;
 
+        const nounKey = 'noun_' + item.n.toLowerCase().replace(' ', '_');
+        el.dataset.audioKey = nounKey;
+
         el.onclick = () => {
-             const nounKey = 'noun_' + item.n.toLowerCase().replace(' ', '_');
-             speakText(item.n, nounKey);
+            speakText(item.n, nounKey);
         };
 
         makeDraggable(el, item.matchId, dragId);

@@ -7,45 +7,134 @@ let modalTimeout = null;
 
 const CELEB_CHARACTERS = {
     sun: {
-        svg: `<svg viewBox="0 0 100 100" width="100%" height="100%">
-                <circle cx="50" cy="50" r="30" fill="#FFD700">
-                    <animate attributeName="r" values="30;32;30" dur="2s" repeatCount="indefinite" />
-                </circle>
-                <g transform="translate(50,50)">
+        svg: `<svg viewBox="0 0 300 300" width="100%" height="100%">
+                <defs>
+                    <radialGradient id="sunGrad" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+                        <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
+                        <stop offset="80%" style="stop-color:#FFA500;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#FF8C00;stop-opacity:1" />
+                    </radialGradient>
+                    <filter id="sunGlow" x="-50%" y="-50%" width="200%" height="200%">
+                        <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur" />
+                        <feMerge>
+                            <feMergeNode in="blur" />
+                            <feMergeNode in="SourceGraphic" />
+                        </feMerge>
+                    </filter>
+                    <style>
+                        .sun-rays { animation: spin 10s linear infinite; transform-origin: center; }
+                        .sun-face { animation: bob 2s ease-in-out infinite; transform-origin: center; }
+                        @keyframes spin { 100% { transform: rotate(360deg); } }
+                        @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+                    </style>
+                </defs>
+                <g class="sun-rays">
                     ${Array.from({ length: 12 }).map((_, i) => `
-                        <rect x="-2" y="-45" width="4" height="15" fill="#FFD700" transform="rotate(${i * 30})">
-                            <animate attributeName="height" values="15;20;15" dur="1s" delay="${i * 0.1}s" repeatCount="indefinite" />
-                        </rect>
+                        <path d="M150,50 L165,100 L135,100 Z" fill="#FF8C00" transform="rotate(${i * 30}, 150, 150)" />
                     `).join('')}
                 </g>
-                <circle cx="40" cy="45" r="3" fill="#333" />
-                <circle cx="60" cy="45" r="3" fill="#333" />
-                <path d="M 35 60 Q 50 75 65 60" fill="none" stroke="#333" stroke-width="3" stroke-linecap="round" />
+                <circle cx="150" cy="150" r="70" fill="url(#sunGrad)" filter="url(#sunGlow)" />
+                <g class="sun-face">
+                    <!-- Eyes with Sunglasses -->
+                    <path d="M110,140 Q150,130 190,140 L185,160 Q150,170 115,160 Z" fill="#333" />
+                    <line x1="110" y1="140" x2="190" y2="140" stroke="#333" stroke-width="2" />
+                    <!-- Smile -->
+                    <path d="M130,170 Q150,190 170,170" fill="none" stroke="#8B4513" stroke-width="4" stroke-linecap="round" />
+                    <!-- Cheeks -->
+                    <circle cx="110" cy="165" r="8" fill="#FF6347" opacity="0.4" />
+                    <circle cx="190" cy="165" r="8" fill="#FF6347" opacity="0.4" />
+                </g>
               </svg>`,
         color: '#FFD700',
         subText: 'Sunny Day!'
     },
     lion: {
-        svg: `<svg viewBox="0 0 100 100" width="100%" height="100%">
-                <circle cx="50" cy="50" r="40" fill="#FFA500" stroke="#E67E22" stroke-width="2" />
-                <circle cx="50" cy="50" r="30" fill="#FFCC33" />
-                <circle cx="40" cy="45" r="3" fill="#333" />
-                <circle cx="60" cy="45" r="3" fill="#333" />
-                <path d="M 45 60 Q 50 65 55 60" fill="none" stroke="#333" stroke-width="2" />
-                <g class="paw">
-                    <circle cx="80" cy="70" r="10" fill="#FFA500" />
-                    <animateTransform attributeName="transform" type="rotate" from="-10 80 70" to="10 80 70" dur="0.5s" repeatCount="indefinite" additive="sum" />
-                </g>
-              </svg>`,
+        svg: `<svg viewBox="0 0 300 300" width="100%" height="100%" class="lion-svg-root">
+        <defs>
+            <linearGradient id="maneGradCeleb" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#D2691E;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#8B4513;stop-opacity:1" />
+            </linearGradient>
+            <radialGradient id="faceGradCeleb" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+                <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#DAA520;stop-opacity:1" />
+            </radialGradient>
+            <filter id="shadowCeleb" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.3"/>
+            </filter>
+            <style>
+                .celeb-head { animation: head-bounce 0.6s ease-in-out infinite; transform-origin: center bottom; }
+                .celeb-mane { animation: mane-sway 2s ease-in-out infinite; transform-origin: center; }
+                @keyframes head-bounce { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-5px) scale(1.02); } }
+                @keyframes mane-sway { 0%, 100% { transform: rotate(-2deg) scale(1); } 50% { transform: rotate(2deg) scale(1.05); } }
+            </style>
+        </defs>
+        <g class="celeb-head">
+            <g class="celeb-mane" filter="url(#shadowCeleb)">
+                <path d="M150,20 Q180,20 200,50 Q230,40 250,70 Q270,90 260,120 Q290,140 280,170 Q290,210 260,240 Q240,270 200,280 Q180,300 150,280 Q120,300 100,280 Q60,270 40,240 Q10,210 20,170 Q10,140 40,120 Q30,90 50,70 Q70,40 100,50 Q120,20 150,20 Z" fill="url(#maneGradCeleb)" />
+            </g>
+            <circle cx="80" cy="80" r="25" fill="#DAA520" />
+            <circle cx="80" cy="80" r="15" fill="#6D4C41" />
+            <circle cx="220" cy="80" r="25" fill="#DAA520" />
+            <circle cx="220" cy="80" r="15" fill="#6D4C41" />
+            <circle cx="150" cy="160" r="90" fill="url(#faceGradCeleb)" />
+            <ellipse cx="150" cy="190" rx="45" ry="35" fill="#FFF8DC" />
+            <!-- Happy Eyes -->
+            <g stroke="#3E2723" stroke-width="4" fill="none" stroke-linecap="round">
+                <path d="M100,145 Q115,135 130,145" />
+                <path d="M170,145 Q185,135 200,145" />
+            </g>
+            <path d="M135,175 Q150,165 165,175 L158,188 Q150,195 142,188 Z" fill="#3E2723" />
+            <g stroke="#3E2723" stroke-width="2" opacity="0.4">
+                <path d="M90,185 Q70,182 50,175" fill="none" />
+                <path d="M210,185 Q230,182 250,175" fill="none" />
+            </g>
+            <path d="M130,205 Q150,225 170,205" stroke="#3E2723" stroke-width="3" fill="none" />
+            <circle cx="100" cy="170" r="10" fill="#FFAB91" opacity="0.6" />
+            <circle cx="200" cy="170" r="10" fill="#FFAB91" opacity="0.6" />
+        </g>
+    </svg>`,
         color: '#FFA500',
         subText: 'Roar-some!'
     },
     star: {
-        svg: `<svg viewBox="0 0 100 100" width="100%" height="100%">
-                <path d="M50 5 L63 35 L95 35 L70 55 L80 85 L50 70 L20 85 L30 55 L5 35 L37 35 Z" fill="#FFD700" stroke="#DAA520" stroke-width="2">
-                    <animateTransform attributeName="transform" type="rotate" from="0 50 50" to="360 50 50" dur="5s" repeatCount="indefinite" />
-                    <animate attributeName="fill" values="#FFD700;#FFFACD;#FFD700" dur="2s" repeatCount="indefinite" />
-                </path>
+        svg: `<svg viewBox="0 0 300 300" width="100%" height="100%">
+                <defs>
+                    <linearGradient id="starGrad" x1="50%" y1="0%" x2="50%" y2="100%">
+                        <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#DAA520;stop-opacity:1" />
+                    </linearGradient>
+                    <filter id="starGlow" x="-20%" y="-20%" width="140%" height="140%">
+                        <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur" />
+                        <feDropShadow dx="0" dy="0" stdDeviation="5" flood-color="#FFD700" flood-opacity="0.6" />
+                        <feMerge>
+                            <feMergeNode in="blur" />
+                            <feMergeNode in="SourceGraphic" />
+                        </feMerge>
+                    </filter>
+                    <style>
+                        .star-body { animation: pulse-rotate 3s ease-in-out infinite; transform-origin: center; }
+                        @keyframes pulse-rotate { 
+                            0% { transform: scale(1) rotate(0deg); } 
+                            50% { transform: scale(1.1) rotate(5deg); } 
+                            100% { transform: scale(1) rotate(0deg); } 
+                        }
+                    </style>
+                </defs>
+                <g class="star-body" filter="url(#starGlow)">
+                    <path d="M150,20 L185,110 L280,110 L205,170 L230,260 L150,210 L70,260 L95,170 L20,110 L115,110 Z" fill="url(#starGrad)" stroke="#DAA520" stroke-width="3" stroke-linejoin="round" />
+                    <!-- Face -->
+                    <g transform="translate(150, 160)">
+                        <circle cx="-35" cy="-10" r="8" fill="#333" />
+                        <circle cx="35" cy="-10" r="8" fill="#333" />
+                        <circle cx="-33" cy="-12" r="3" fill="#fff" />
+                        <circle cx="37" cy="-12" r="3" fill="#fff" />
+                        <path d="M-20,15 Q0,30 20,15" fill="none" stroke="#333" stroke-width="3" stroke-linecap="round" />
+                        <!-- Cheeks -->
+                        <circle cx="-45" cy="5" r="8" fill="#FF6347" opacity="0.4" />
+                        <circle cx="45" cy="5" r="8" fill="#FF6347" opacity="0.4" />
+                    </g>
+                </g>
               </svg>`,
         color: '#FFD700',
         subText: 'Super Star!'
@@ -79,8 +168,19 @@ export function launchModal(topText, emoji, word) {
     const modal = document.getElementById('reward-modal');
     if (!modal) return;
 
-    document.getElementById('modal-top').textContent = topText;
-    document.getElementById('modal-emoji').textContent = emoji;
+    const topEl = document.getElementById('modal-top');
+    if (topText && typeof topText === 'string' && topText.trim().startsWith('<svg')) {
+        topEl.innerHTML = topText;
+    } else {
+        topEl.textContent = topText;
+    }
+
+    const emojiEl = document.getElementById('modal-emoji');
+    if (emoji && emoji.trim().startsWith('<svg')) {
+        emojiEl.innerHTML = emoji;
+    } else {
+        emojiEl.textContent = emoji;
+    }
     document.getElementById('modal-word').textContent = word;
     modal.classList.add('show');
 
@@ -332,13 +432,22 @@ export function populateGamesMenu(gameModes, setModeCallback) {
         };
 
         if (themes[game.id]) {
-            card.style.backgroundColor = themes[game.id].bg;
-            card.style.borderColor = themes[game.id].primary;
+            card.style.backgroundColor = '#ffffff'; // Force white background
+            card.style.borderColor = themes[game.id].primary; // Keep theme border
+            // Optional: Add a subtle shadow or specific styling if white is too plain,
+            // but user asked for "white background".
         }
 
         const icon = document.createElement('div');
         icon.className = 'game-icon';
-        icon.textContent = isLocked ? '🔒' : game.icon;
+
+        if (!isLocked && game.icon.includes('.')) {
+            // It's an image path (e.g. .png)
+            icon.innerHTML = `<img src="${game.icon}" alt="${game.name}" class="game-icon-img" style="width: 100%; height: 100%; object-fit: contain; border-radius: 10px;">`;
+            // Remove default font-size padding if needed via CSS, but inline style helps
+        } else {
+            icon.textContent = isLocked ? '🔒' : game.icon;
+        }
 
         const name = document.createElement('div');
         name.className = 'game-name';

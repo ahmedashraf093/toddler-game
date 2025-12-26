@@ -47,7 +47,7 @@ export async function initPuzzleGame() {
 
     // Set preview
     const targetImg = document.getElementById('puzzle-target-img');
-    if(targetImg) targetImg.src = puzzle.src;
+    if (targetImg) targetImg.src = puzzle.src;
 
     // Reset grid
     const slots = document.querySelectorAll('.puzzle-slot');
@@ -81,6 +81,10 @@ export async function initPuzzleGame() {
         const x = (pos % 2) * 100;
         const y = Math.floor(pos / 2) * 100;
         piece.style.backgroundPosition = `${x}% ${y}%`;
+
+        // Add TTS for drag
+        piece.dataset.label = puzzle.name;
+        piece.dataset.audioKey = nounKey;
 
         // makeDraggable sets up events
         makeDraggable(piece, pos, piece.id);

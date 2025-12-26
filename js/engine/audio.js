@@ -114,7 +114,7 @@ export function speakSequence(keys, fallbackText) {
 function playSpriteSequence(keys) {
     if (!audioCtx) return;
     let now = audioCtx.currentTime;
-    let startTime = now + 0.05; // Slightly tighter start
+    let startTime = now; // Immediate start
 
     keys.forEach(key => {
         const data = spriteMap[key];
@@ -132,7 +132,9 @@ function playSpriteSequence(keys) {
             activeSources = activeSources.filter(s => s !== source);
         };
 
-        startTime += data.duration - 0.35;
+        // Aggressively overlap to remove edge-tts silence
+        // Most clips have ~0.5s silence at start/end
+        startTime += data.duration - 0.75;
     });
 }
 

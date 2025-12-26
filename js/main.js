@@ -19,21 +19,21 @@ const GAME_VERSION = 'v2.0';
 // Configuration for Game Modes
 const gameModes = [
     // World
-    { id: 'feedlion', name: 'Feed Lion', icon: '🦁', category: 'world' },
-    { id: 'weather', name: 'Weather', icon: '🌤️', category: 'world' },
-    { id: 'nature', name: 'Nature', icon: '🍃', category: 'world' },
-    { id: 'habitat', name: 'Homes', icon: '🏠', category: 'world' },
+    { id: 'feedlion', name: 'Feed Lion', icon: 'assets/images/game_icons/icon_feed.png', category: 'world' },
+    { id: 'weather', name: 'Weather', icon: 'assets/images/game_icons/icon_weather.png', category: 'world' },
+    { id: 'nature', name: 'Nature', icon: 'assets/images/game_icons/icon_nature.png', category: 'world' },
+    { id: 'habitat', name: 'Homes', icon: 'assets/images/game_icons/icon_homes.png', category: 'world' },
 
     // Basics
-    { id: 'shadow', name: 'Shadows', icon: '🐶', category: 'basics' },
-    { id: 'shape', name: 'Shapes', icon: '🔷', category: 'basics' },
-    { id: 'sorting', name: 'Sorting', icon: '📂', category: 'basics' },
+    { id: 'shadow', name: 'Shadows', icon: 'assets/images/game_icons/icon_shadows.png', category: 'basics' },
+    { id: 'shape', name: 'Shapes', icon: 'assets/images/game_icons/icon_shapes.png', category: 'basics' },
+    { id: 'sorting', name: 'Sorting', icon: 'assets/images/game_icons/icon_sorting.png', category: 'basics' },
 
     // Learning
-    { id: 'letter', name: 'Letters', icon: '🅰️', category: 'learning' },
-    { id: 'number', name: 'Numbers', icon: '1️⃣', category: 'learning' },
-    { id: 'math', name: 'Math', icon: '➕', category: 'learning' },
-    { id: 'sentences', name: 'Story', icon: '📝', category: 'learning' },
+    { id: 'letter', name: 'Letters', icon: 'assets/images/game_icons/icon_letters.png', category: 'learning' },
+    { id: 'number', name: 'Numbers', icon: 'assets/images/game_icons/icon_numbers.png', category: 'learning' },
+    { id: 'math', name: 'Math', icon: 'assets/images/game_icons/icon_math.png', category: 'learning' },
+    { id: 'sentences', name: 'Story', icon: 'assets/images/game_icons/icon_story.png', category: 'learning' },
     { id: 'job', name: 'Jobs', icon: '👮', category: 'learning' },
     { id: 'listening', name: 'Listening', icon: '👂', category: 'learning' },
 
@@ -86,14 +86,14 @@ window.addEventListener('load', () => {
     document.querySelectorAll('.diff-btn').forEach(btn => {
         btn.onclick = (e) => {
             const level = e.target.classList.contains('diff-easy') ? 'easy' :
-                          e.target.classList.contains('diff-med') ? 'medium' : 'hard';
+                e.target.classList.contains('diff-med') ? 'medium' : 'hard';
             setDifficulty(level, e.target);
         };
     });
 
     // Reset/Next Round button
     const resetBtn = document.getElementById('reset-btn');
-    if(resetBtn) resetBtn.onclick = initRound;
+    if (resetBtn) resetBtn.onclick = initRound;
 
     // Populate Menu
     populateGamesMenu(gameModes, setMode);

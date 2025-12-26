@@ -88,6 +88,8 @@ function loadMathQuestion() {
         el.className = 'item math-option draggable';
         el.textContent = val;
         el.id = 'math-opt-' + val;
+        el.dataset.label = val.toString();
+        el.dataset.audioKey = 'num_' + val;
         makeDraggable(el, val, el.id);
         optionsRow.appendChild(el);
     });
