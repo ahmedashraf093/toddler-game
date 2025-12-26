@@ -47,9 +47,9 @@ export const ParentalGate = {
         }
 
         // Generate Question
-        // Requirements: "easier number no more than 5x5". Range 2-5 seems appropriate.
-        const a = Math.floor(Math.random() * 4) + 2;
-        const b = Math.floor(Math.random() * 4) + 2;
+        // Requirements: "around 6x6 7x7". Range 5-9 seems appropriate.
+        const a = Math.floor(Math.random() * 5) + 5;
+        const b = Math.floor(Math.random() * 5) + 5;
         this.currentAnswer = a * b;
         this.inputBuffer = '';
 

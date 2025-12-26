@@ -33,7 +33,21 @@ const sentenceData = [
     { subject: 'noun_kite', subjectEmoji: '🪁', conn: 'conn_looks_like_a', object: 'noun_diamond', objectEmoji: '🔶', label: 'Diamond' },
     { subject: 'noun_pizza_slice', subjectEmoji: '🍕', conn: 'conn_looks_like_a', object: 'noun_triangle', objectEmoji: '🔺', label: 'Triangle' },
     { subject: 'noun_door', subjectEmoji: '🚪', conn: 'conn_looks_like_a', object: 'noun_rectangle', objectEmoji: '📟', label: 'Rectangle' },
-    { subject: 'noun_ball', subjectEmoji: '⚽', conn: 'conn_looks_like_a', object: 'noun_circle', objectEmoji: '🔴', label: 'Circle' }
+    { subject: 'noun_ball', subjectEmoji: '⚽', conn: 'conn_looks_like_a', object: 'noun_circle', objectEmoji: '🔴', label: 'Circle' },
+
+    // New Stories (Round 2)
+    { subject: 'noun_bear', subjectEmoji: '🐻', conn: 'conn_eats_the', object: 'noun_honey', objectEmoji: '🍯', label: 'Honey' },
+    { subject: 'noun_bird', subjectEmoji: '🐦', conn: 'conn_lives_in_the', object: 'noun_nest', objectEmoji: '🪺', label: 'Nest' },
+    { subject: 'noun_frog', subjectEmoji: '🐸', conn: 'conn_eats_the', object: 'noun_fly', objectEmoji: '🪰', label: 'Fly' },
+    { subject: 'noun_spider', subjectEmoji: '🕷️', conn: 'conn_lives_in_the', object: 'noun_web', objectEmoji: '🕸️', label: 'Web' },
+    { subject: 'noun_chef', subjectEmoji: '👨‍🍳', conn: 'conn_uses', object: 'noun_pan', objectEmoji: '🍳', label: 'Pan' },
+    { subject: 'noun_teacher', subjectEmoji: '🧑‍🏫', conn: 'conn_uses', object: 'noun_books', objectEmoji: '📚', label: 'Books' },
+    { subject: 'noun_police', subjectEmoji: '👮', conn: 'conn_uses', object: 'noun_whistle', objectEmoji: '😙', label: 'Whistle' }, // Emoji for whistle? 😙 (whistling face) or 🪈 (flute)? Or 📢? Let's use 🎺 or 📢 or just 😙
+    { subject: 'noun_artist', subjectEmoji: '👩‍🎨', conn: 'conn_uses', object: 'noun_brush', objectEmoji: '🖌️', label: 'Brush' },
+    { subject: 'noun_dentist', subjectEmoji: '🦷', conn: 'conn_uses', object: 'noun_toothbrush', objectEmoji: '🪥', label: 'Toothbrush' },
+    { subject: 'noun_gardener', subjectEmoji: '👩‍🌾', conn: 'conn_love_flowers', object: 'noun_flower', objectEmoji: '🌻', label: 'Flower' },
+    { subject: 'noun_baby', subjectEmoji: '👶', conn: 'conn_eats_the', object: 'noun_milk', objectEmoji: '🍼', label: 'Milk' },
+    { subject: 'noun_cat', subjectEmoji: '🐱', conn: 'conn_eats_the', object: 'noun_fish', objectEmoji: '🐟', label: 'Fish' }
 ];
 
 let currentSentence = null;

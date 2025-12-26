@@ -26,7 +26,9 @@ content = {
         {'id': 'need_parent_help', 'text': 'Need parent help!'},
         {'id': 'choose_a_game', 'text': 'Choose a game!'},
         {'id': 'loading', 'text': 'Loading...'},
-        {'id': 'daily_quest', 'text': 'Daily Quest'}
+        {'id': 'daily_quest', 'text': 'Daily Quest'},
+        {'id': 'complete_story', 'text': 'Complete the Story!'},
+        {'id': 'story_maker', 'text': 'Story Maker'}
     ],
     'connector': [
         {'id': 'the', 'text': 'The'},
@@ -80,7 +82,10 @@ content = {
         'Shoe', 'Star', 'Ladybug', 'Cookie', 'Balloon', 'Crayon', 'Teddy Bear', 'Strawberry',
         'Car', 'Bus', 'Train', 'Helicopter',
         'Police', 'Fireman', 'Doctor', 'Astronaut', 'Chef', 'Farmer', 'Artist',
-        'Mechanic', 'Teacher', 'Pilot', 'Builder', 'Scientist'
+        'Mechanic', 'Teacher', 'Pilot', 'Builder', 'Scientist',
+        # New additions for Story Maker (Round 2)
+        'Bear', 'Honey', 'Bird', 'Nest', 'Spider', 'Web', 'Whistle', 'Brush',
+        'Dentist', 'Toothbrush', 'Gardener', 'Baby', 'Milk'
     ]
 }
 
@@ -204,8 +209,7 @@ async def main():
 
     ffprobe_cmd = 'ffprobe'
     if os.path.exists('tools/ffprobe'):
-        ffprobe_cmd = '../tools/ffprobe'
-    # Fallback: try to use system ffprobe. If missing, we have a problem.
+        ffprobe_cmd = 'tools/ffprobe'
 
     for entry in file_map:
         if not os.path.exists(entry['path']):
