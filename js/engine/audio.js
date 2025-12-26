@@ -14,6 +14,7 @@ let isBgmPlaying = false;
 let spriteBuffer = null;
 let spriteMap = null;
 let decodingPromise = null;
+let activeSources = [];
 
 export function initAudio() {
     isMuted = localStorage.getItem('isMuted') === 'true';
@@ -73,13 +74,10 @@ export function getMuteState() {
 // --- Speaking Logic ---
 
 export function speakText(text, key = null, throttle = false) {
-    console.log(`speakText called: text="${text}", key="${key}"`);
-    // Legacy support for single key (though we now prefer sequences)
-    if (key) {
+    if (key && spriteMap && spriteMap[key]) {
         speakSequence([key], text);
     } else {
-        console.log("speakText: No key provided, skipping TTS (Disabled).");
-        // fallbackTTS(text, throttle);
+        fallbackTTS(text, throttle);
     }
 }
 
@@ -89,12 +87,11 @@ export function speakSequence(keys, fallbackText) {
         return;
     }
 
-    console.log(`speakSequence called. Keys: ${JSON.stringify(keys)}`);
-    console.log(`AudioContext: ${audioCtx ? audioCtx.state : 'null'}`);
-    console.log(`SpriteBuffer: ${spriteBuffer ? 'Loaded' : 'Null'}`);
-    console.log(`SpriteMap: ${spriteMap ? 'Loaded' : 'Null'}`);
+    // NEW: Stop previous audio to prevent overlaps
+    stopAllAudio();
 
-    // Check if we have sprite support
+    console.log(`speakSequence called. Keys: ${JSON.stringify(keys)}`);
+    // ... rest of the same logic
     if (audioCtx && spriteBuffer && spriteMap) {
         let validKeys = keys.filter(k => {
             const hasKey = !!spriteMap[k];
@@ -103,33 +100,21 @@ export function speakSequence(keys, fallbackText) {
         });
 
         if (validKeys.length > 0) {
-            console.log(`Playing sequence: ${JSON.stringify(validKeys)}`);
             playSpriteSequence(validKeys);
             return;
-        } else {
-            console.error("No valid keys found in sequence.");
         }
     } else if (window.rawSpriteBuffer && audioCtx) {
-        console.log("Trying to decode sprites on-the-fly...");
-        // Try to decode on the fly if not yet decoded
         decodeSprites().then(() => {
-             speakSequence(keys, fallbackText);
+            speakSequence(keys, fallbackText);
         });
         return;
-    } else {
-        console.error("Audio system not ready (Ctx, Buffer, or Map missing).");
     }
-
-    // Fallback if no valid keys or no audio support
-    console.log("Fallback TTS triggered (but DISABLED).");
-    // fallbackTTS(fallbackText);
 }
 
 function playSpriteSequence(keys) {
     if (!audioCtx) return;
     let now = audioCtx.currentTime;
-    // Add a small delay to start
-    let startTime = now + 0.1;
+    let startTime = now + 0.05; // Slightly tighter start
 
     keys.forEach(key => {
         const data = spriteMap[key];
@@ -139,20 +124,47 @@ function playSpriteSequence(keys) {
         source.buffer = spriteBuffer;
         source.connect(audioCtx.destination);
 
-        // Start playing segment
         source.start(startTime, data.start, data.duration);
+        activeSources.push(source);
 
-        // Schedule next
-        // Reduce the gap to speed up flow (some sprites have trailing silence)
-        // User requested significantly faster pronunciation
+        // Cleanup when finished
+        source.onended = () => {
+            activeSources = activeSources.filter(s => s !== source);
+        };
+
         startTime += data.duration - 0.35;
     });
 }
 
+export function stopAllAudio() {
+    // 1. Stop Speech Synthesis
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+    }
+    // 2. Stop Web Audio Sprites
+    activeSources.forEach(s => {
+        try {
+            s.stop();
+        } catch (e) { }
+    });
+    activeSources = [];
+}
+
 function fallbackTTS(text, throttle = false) {
-    // DISABLED
-    console.log("fallbackTTS: DISABLED");
-    return;
+    if (!('speechSynthesis' in window) || isMuted) return;
+
+    if (throttle) {
+        const now = Date.now();
+        if (text === lastSpokenText && (now - lastSpokenTime) < 3000) return;
+        lastSpokenText = text;
+        lastSpokenTime = now;
+    }
+
+    stopAllAudio(); // Stop sprites and previous TTS
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = 1.1;
+    utterance.pitch = 1.2;
+    window.speechSynthesis.speak(utterance);
 }
 
 // --- Audio Context ---
@@ -208,7 +220,7 @@ async function decodeSprites() {
         window.rawSpriteBuffer = null; // Free memory
         decodingPromise = null;
         console.log("Audio Sprites Decoded Successfully!");
-    } catch(e) {
+    } catch (e) {
         console.error("Sprite decode error", e);
         decodingPromise = null;
     }

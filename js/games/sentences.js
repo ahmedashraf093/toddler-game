@@ -1,7 +1,8 @@
 
-import { speakSequence, speakText } from '../engine/audio.js';
+import { speakSequence, speakText, stopAllAudio } from '../engine/audio.js';
 import { gameState } from '../engine/state.js';
-import { showCelebration } from '../engine/ui.js';
+import { showCelebration, updateScoreUI } from '../engine/ui.js';
+import { checkOverallProgress } from '../challenges/manager.js';
 
 // Sentence Data: [Subject, Connector, Object]
 // Each part is a key from sprites.json + Emoji for visual
@@ -38,6 +39,7 @@ const sentenceData = [
 
 let currentSentence = null;
 let isLocked = false;
+let introTimer = null;
 
 export function initSentenceGame() {
     console.log("initSentenceGame: Starting...");
@@ -107,13 +109,19 @@ export function initSentenceGame() {
 
     container.appendChild(optionsContainer);
 
-    // Initial Speak (Instruction -> Subject + Connector)
-    setTimeout(() => {
-        speakText("Complete the story!", null, true); // Speak instruction
-        setTimeout(() => {
+    // Stop anything playing before starting intro
+    if (introTimer) clearTimeout(introTimer);
+    stopAllAudio();
+
+    // Use fallbackTTS for intro if key might be missing, or speakSequence if sure
+    speakText("Complete the story!", null, true);
+
+    // Brief delay then read the partial sentence
+    introTimer = setTimeout(() => {
+        if (gameState.currentMode === 'sentences' && !isLocked) {
             speakSequence([currentSentence.subject, currentSentence.conn]);
-        }, 1500);
-    }, 500);
+        }
+    }, 2000);
 }
 
 function createPart(emoji, isSlot) {
@@ -167,19 +175,22 @@ function handleOptionClick(key, emoji, btnElement) {
         setTimeout(() => {
             speakSequence([currentSentence.subject, currentSentence.conn, currentSentence.object]);
 
-            // Celebrate after speech
-            setTimeout(() => {
-                showCelebration();
-                // Add a next button manually if showReward doesn't auto-handle it
-                const nextBtn = document.createElement('button');
-                nextBtn.className = 'next-round-btn';
-                nextBtn.innerHTML = '➡️';
-                nextBtn.onclick = initSentenceGame;
-                // Ensure container still exists before appending
-                const c = document.querySelector('.sentence-game-container');
-                if(c) c.appendChild(nextBtn);
-            }, 3000);
-        }, 500);
+            // Track progress (handles celebration every 3 rounds)
+            gameState.totalScore += 20;
+            updateScoreUI();
+            checkOverallProgress('sentences');
+
+            // Add a next button for user-driven progression
+            const nextBtn = document.createElement('button');
+            nextBtn.className = 'next-round-btn';
+            nextBtn.innerHTML = 'Next Story ➡️';
+            nextBtn.onclick = () => {
+                stopAllAudio();
+                initSentenceGame();
+            };
+            const c = document.querySelector('.sentence-game-container');
+            if (c) c.appendChild(nextBtn);
+        }, 800);
 
     } else {
         // Incorrect

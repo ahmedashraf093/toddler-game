@@ -39,7 +39,8 @@ body {
 }
 
 #start-btn:focus-visible {
-    outline: 4px dashed #2E7D32; /* Darker green for contrast */
+    outline: 4px dashed #2E7D32;
+    /* Darker green for contrast */
     outline-offset: 4px;
 }
 
@@ -225,7 +226,8 @@ body {
     align-items: center;
     gap: 5px;
     box-shadow: 0 6px 0 #ccc;
-    margin-bottom: 6px; /* Space for shadow */
+    margin-bottom: 6px;
+    /* Space for shadow */
 }
 
 .game-select-card:hover {
@@ -238,7 +240,8 @@ body {
 .game-select-card:focus-visible {
     transform: translateY(-2px);
     box-shadow: 0 8px 0 #ccc, 0 0 0 4px var(--primary-color);
-    outline: none; /* Replaces default dashed outline with shadow */
+    outline: none;
+    /* Replaces default dashed outline with shadow */
     z-index: 10;
 }
 
@@ -759,15 +762,16 @@ body {
     height: 60px;
     font-size: 30px;
     cursor: pointer;
-    box-shadow: 0 4px 0 rgba(0,0,0,0.05);
+    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.05);
     display: flex;
     justify-content: center;
     align-items: center;
     transition: all 0.2s;
 }
+
 .icon-btn:active {
     transform: translateY(2px);
-    box-shadow: 0 2px 0 rgba(0,0,0,0.05);
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.05);
 }
 
 .whatsapp-btn {
@@ -784,7 +788,7 @@ body {
     align-items: center;
     gap: 8px;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
 .whatsapp-btn:hover {
@@ -802,26 +806,70 @@ body {
     opacity: 0.6;
 }
 
-.cloud-1 { top: 10%; left: 10%; animation: drift 20s linear infinite; }
-.cloud-2 { top: 20%; right: 15%; animation: drift 25s linear infinite reverse; }
-.star-1 { bottom: 15%; left: 20%; font-size: 40px; animation: float 4s ease-in-out infinite 1s; }
-.star-2 { bottom: 25%; right: 10%; font-size: 50px; animation: float 5s ease-in-out infinite; }
+.cloud-1 {
+    top: 10%;
+    left: 10%;
+    animation: drift 20s linear infinite;
+}
+
+.cloud-2 {
+    top: 20%;
+    right: 15%;
+    animation: drift 25s linear infinite reverse;
+}
+
+.star-1 {
+    bottom: 15%;
+    left: 20%;
+    font-size: 40px;
+    animation: float 4s ease-in-out infinite 1s;
+}
+
+.star-2 {
+    bottom: 25%;
+    right: 10%;
+    font-size: 50px;
+    animation: float 5s ease-in-out infinite;
+}
 
 @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-20px); }
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-20px);
+    }
 }
 
 @keyframes drift {
-    0% { transform: translateX(0); }
-    50% { transform: translateX(20px); }
-    100% { transform: translateX(0); }
+    0% {
+        transform: translateX(0);
+    }
+
+    50% {
+        transform: translateX(20px);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
 }
 
 @keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+
+    100% {
+        transform: scale(1);
+    }
 }
 
 @keyframes popIn {
@@ -854,11 +902,15 @@ body {
 
 @keyframes balloon-rise {
     0% {
-        transform: translateY(0) rotate(0deg);
+        transform: translateY(0) rotate(0deg) scale(1);
+    }
+
+    50% {
+        transform: translateY(-60vh) rotate(10deg) scale(1.1);
     }
 
     100% {
-        transform: translateY(-120vh) rotate(20deg);
+        transform: translateY(-120vh) rotate(-10deg) scale(1);
     }
 }
 
@@ -897,10 +949,29 @@ body {
     transition: all 0.5s ease;
 }
 
-.corner-top-left { top: 20px; left: 20px; transform: rotate(-15deg); }
-.corner-top-right { top: 20px; right: 20px; transform: rotate(15deg); }
-.corner-bottom-left { bottom: 20px; left: 20px; transform: rotate(15deg); }
-.corner-bottom-right { bottom: 20px; right: 20px; transform: rotate(-15deg); }
+.corner-top-left {
+    top: 20px;
+    left: 20px;
+    transform: rotate(-15deg);
+}
+
+.corner-top-right {
+    top: 20px;
+    right: 20px;
+    transform: rotate(15deg);
+}
+
+.corner-bottom-left {
+    bottom: 20px;
+    left: 20px;
+    transform: rotate(15deg);
+}
+
+.corner-bottom-right {
+    bottom: 20px;
+    right: 20px;
+    transform: rotate(-15deg);
+}
 
 /* 3. Bouncing Emojis */
 .emoji-bounce {
@@ -1166,15 +1237,15 @@ body {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: linear-gradient(45deg, #ff9a9e, #fad0c4, #fbc2eb, #a6c1ee, #c2e9fb);
-    background-size: 400% 400%;
-    z-index: 2000;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.95) 0%, rgba(200, 230, 255, 0.9) 100%);
+    z-index: 10000;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    animation: gradientBG 3s ease infinite;
     transition: opacity 0.5s ease, visibility 0.5s;
+    overflow: hidden;
+    backdrop-filter: blur(8px);
 }
 
 #celebration-overlay.hidden {
@@ -1198,11 +1269,66 @@ body {
 }
 
 .celebration-message {
-    font-size: 5rem;
+    font-size: clamp(3rem, 15vw, 6rem);
+    font-weight: 900;
+    background: linear-gradient(to right, #ff5252, #ffab40, #ffd740, #69f0ae, #40c4ff, #7c4dff, #ff5252);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 4px 4px 20px rgba(0, 0, 0, 0.1);
+    margin: 10px 0;
+    animation: bounceIn 0.8s cubic-bezier(0.36, 0, 0.66, -0.56) infinite alternate, rainbow 3s linear infinite;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    z-index: 10;
+}
+
+@keyframes rainbow {
+    to {
+        background-position: 200% center;
+    }
+}
+
+.celebration-sub-message {
+    font-size: clamp(1.2rem, 5vw, 2rem);
+    color: #4facfe;
     font-weight: bold;
-    color: white;
-    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    margin-top: 5px;
+    z-index: 10;
+    animation: fadeInUp 0.5s ease both 0.5s;
+}
+
+.celebration-character {
+    width: clamp(150px, 40vw, 300px);
+    height: clamp(150px, 40vw, 300px);
+    margin-bottom: 20px;
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@keyframes bounceIn {
+    from {
+        transform: scale(0.9);
+    }
+
+    to {
+        transform: scale(1.1);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .confetti {
@@ -1215,12 +1341,12 @@ body {
 
 @keyframes confetti-fall {
     0% {
-        transform: translateY(-10vh) rotate(0deg);
+        transform: translateY(-10vh) rotateX(0deg) rotateY(0deg) rotateZ(0deg);
         opacity: 1;
     }
 
     100% {
-        transform: translateY(110vh) rotate(720deg);
+        transform: translateY(110vh) rotateX(720deg) rotateY(360deg) rotateZ(180deg);
         opacity: 0;
     }
 }
@@ -1241,6 +1367,7 @@ body {
         opacity: 1;
     }
 }
+
 /* --- Memory Game --- */
 #memory-stage {
     display: none;
@@ -1348,10 +1475,12 @@ body {
     0% {
         transform: rotateY(180deg) scale(1);
     }
+
     50% {
         transform: rotateY(180deg) scale(1.2);
         box-shadow: 0 0 20px #ffd700;
     }
+
     100% {
         transform: rotateY(180deg) scale(1);
     }
@@ -1364,7 +1493,8 @@ body {
         height: 80px;
     }
 
-    .front, .back {
+    .front,
+    .back {
         font-size: 40px;
     }
 
@@ -1414,7 +1544,7 @@ body {
 #update-btn:hover {
     transform: rotate(180deg);
     opacity: 1;
-    background-color: rgba(0,0,0,0.05);
+    background-color: rgba(0, 0, 0, 0.05);
 }
 
 #update-btn:active {
@@ -1573,7 +1703,7 @@ body {
     text-align: center;
     width: 90%;
     max-width: 400px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
 .pg-content h2 {
@@ -1647,11 +1777,25 @@ body {
 }
 
 @keyframes shake {
-    0% { transform: translateX(0); }
-    25% { transform: translateX(-10px); }
-    50% { transform: translateX(10px); }
-    75% { transform: translateX(-10px); }
-    100% { transform: translateX(0); }
+    0% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-10px);
+    }
+
+    50% {
+        transform: translateX(10px);
+    }
+
+    75% {
+        transform: translateX(-10px);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
 }
 
 .error-text {
@@ -1692,19 +1836,20 @@ body {
     background: white;
     border: 5px solid white;
     border-radius: 20px;
-    aspect-ratio: 1; /* Square */
+    aspect-ratio: 1;
+    /* Square */
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 60px;
-    box-shadow: 0 8px 0 rgba(0,0,0,0.1);
+    box-shadow: 0 8px 0 rgba(0, 0, 0, 0.1);
     cursor: pointer;
     transition: transform 0.1s;
 }
 
 .odd-one-card:active {
     transform: scale(0.95);
-    box-shadow: 0 4px 0 rgba(0,0,0,0.1);
+    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.1);
 }
 
 .odd-one-card.shake {
@@ -1716,6 +1861,7 @@ body {
     .odd-one-grid {
         gap: 15px;
     }
+
     .odd-one-card {
         font-size: 50px;
         border-width: 3px;
@@ -1739,7 +1885,7 @@ body {
     height: 280px;
     margin-top: 10px;
     transition: transform 0.3s ease;
-    filter: drop-shadow(0 10px 10px rgba(0,0,0,0.1));
+    filter: drop-shadow(0 10px 10px rgba(0, 0, 0, 0.1));
 }
 
 .feed-tray {
@@ -1751,11 +1897,11 @@ body {
     align-items: center;
     /* Wooden Table Look */
     background-color: #8B4513;
-    background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.05) 0px, rgba(255,255,255,0.05) 2px, transparent 2px, transparent 10px);
+    background-image: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.05) 0px, rgba(255, 255, 255, 0.05) 2px, transparent 2px, transparent 10px);
     border-radius: 20px;
     border-bottom: 8px solid #5D4037;
     margin-bottom: 20px;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
     position: relative;
     padding: 10px;
     box-sizing: border-box;
@@ -1768,7 +1914,7 @@ body {
     left: 10px;
     right: 10px;
     bottom: 10px;
-    border: 2px dashed rgba(255,255,255,0.2);
+    border: 2px dashed rgba(255, 255, 255, 0.2);
     border-radius: 10px;
     pointer-events: none;
 }
@@ -1782,7 +1928,7 @@ body {
     align-items: center;
     cursor: grab;
     transition: transform 0.2s;
-    filter: drop-shadow(0 5px 5px rgba(0,0,0,0.2));
+    filter: drop-shadow(0 5px 5px rgba(0, 0, 0, 0.2));
     user-select: none;
 }
 
@@ -1817,7 +1963,8 @@ body {
 
     .feed-tray {
         height: 140px;
-        margin-bottom: 80px; /* Space for bottom nav/controls */
+        margin-bottom: 80px;
+        /* Space for bottom nav/controls */
     }
 
     .food-item {
@@ -1835,9 +1982,19 @@ body {
 }
 
 @keyframes gentle-wiggle {
-    0%, 100% { transform: rotate(0deg); }
-    25% { transform: rotate(-5deg); }
-    75% { transform: rotate(5deg); }
+
+    0%,
+    100% {
+        transform: rotate(0deg);
+    }
+
+    25% {
+        transform: rotate(-5deg);
+    }
+
+    75% {
+        transform: rotate(5deg);
+    }
 }
 
 /* --- Sentence Game Styles --- */
@@ -1861,7 +2018,7 @@ body {
     background: white;
     padding: 10px 20px;
     border-radius: 50px;
-    box-shadow: 0 4px 0 rgba(0,0,0,0.1);
+    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.1);
     margin-bottom: 10px;
     animation: popIn 0.5s;
     text-align: center;
@@ -1878,7 +2035,8 @@ body {
     gap: 15px;
     border: 5px solid #3498db;
     max-width: 100%;
-    flex-wrap: wrap; /* Allow wrapping on very small screens */
+    flex-wrap: wrap;
+    /* Allow wrapping on very small screens */
 }
 
 .sentence-part {
@@ -1890,11 +2048,12 @@ body {
     justify-content: center;
     align-items: center;
     border: 4px solid #a2d9ce;
-    font-size: 80px; /* Big Emojis */
+    font-size: 80px;
+    /* Big Emojis */
     position: relative;
     user-select: none;
     transition: transform 0.2s;
-    box-shadow: 0 5px 0 rgba(0,0,0,0.05);
+    box-shadow: 0 5px 0 rgba(0, 0, 0, 0.05);
 }
 
 .sentence-part.connector-part {
@@ -1923,9 +2082,23 @@ body {
 }
 
 @keyframes slotPulse {
-    0% { transform: scale(1); border-color: #3498db; box-shadow: 0 0 0 0 rgba(52, 152, 219, 0.4); }
-    50% { transform: scale(1.05); border-color: #2980b9; box-shadow: 0 0 0 10px rgba(52, 152, 219, 0); }
-    100% { transform: scale(1); border-color: #3498db; box-shadow: 0 0 0 0 rgba(52, 152, 219, 0); }
+    0% {
+        transform: scale(1);
+        border-color: #3498db;
+        box-shadow: 0 0 0 0 rgba(52, 152, 219, 0.4);
+    }
+
+    50% {
+        transform: scale(1.05);
+        border-color: #2980b9;
+        box-shadow: 0 0 0 10px rgba(52, 152, 219, 0);
+    }
+
+    100% {
+        transform: scale(1);
+        border-color: #3498db;
+        box-shadow: 0 0 0 0 rgba(52, 152, 219, 0);
+    }
 }
 
 .sentence-options {
@@ -1969,20 +2142,23 @@ body {
 }
 
 .next-round-btn {
-    margin-top: 20px;
+    margin-top: 30px;
     background: #2ecc71;
     color: white;
     border: none;
-    border-radius: 50%;
-    width: 60px;
-    height: 60px;
-    font-size: 30px;
-    box-shadow: 0 4px 0 #27ae60;
+    border-radius: 50px;
+    padding: 12px 30px;
+    font-size: 24px;
+    font-weight: bold;
+    box-shadow: 0 6px 0 #27ae60;
     cursor: pointer;
     animation: popIn 0.5s;
     display: flex;
     justify-content: center;
     align-items: center;
+    min-width: 200px;
+    font-family: inherit;
+    transition: transform 0.1s, box-shadow 0.1s;
 }
 
 .next-round-btn:active {
@@ -1991,9 +2167,19 @@ body {
 }
 
 @keyframes popIn {
-    0% { transform: scale(0); opacity: 0; }
-    80% { transform: scale(1.1); }
-    100% { transform: scale(1); opacity: 1; }
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+
+    80% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
 
 @media (max-width: 600px) {
@@ -2001,15 +2187,18 @@ body {
         padding: 10px;
         gap: 8px;
     }
+
     .sentence-part {
         width: 70px;
         height: 70px;
         font-size: 30px;
     }
+
     .sentence-part.connector-part {
         width: 50px;
         font-size: 20px;
     }
+
     .sentence-option {
         width: 80px;
         height: 80px;
