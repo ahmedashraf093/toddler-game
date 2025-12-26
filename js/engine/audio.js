@@ -5,9 +5,9 @@ let audioCtx = null;
 // Removed Oscillator BGM variables
 let bgmAudio = new Audio('background_happy.mp3');
 bgmAudio.loop = true;
-bgmAudio.volume = 0.1; // Keep it background level
+bgmAudio.volume = 0.05; // Reduced by 50% from 0.1
 
-let isMuted = false;
+let isMusicMuted = false;
 let isBgmPlaying = false;
 
 // Audio Sprites
@@ -17,13 +17,7 @@ let decodingPromise = null;
 let activeSources = [];
 
 export function initAudio() {
-    isMuted = localStorage.getItem('isMuted') === 'true';
-
-    // Disable TTS init for debugging
-    // if ('speechSynthesis' in window) {
-    //     window.speechSynthesis.onvoiceschanged = loadVoices;
-    //     loadVoices();
-    // }
+    isMusicMuted = localStorage.getItem('isMusicMuted') === 'true';
 
     // Load Sprites
     loadSprites();
@@ -55,20 +49,19 @@ function loadVoices() {
 }
 
 export function toggleMute() {
-    isMuted = !isMuted;
-    localStorage.setItem('isMuted', isMuted);
+    isMusicMuted = !isMusicMuted;
+    localStorage.setItem('isMusicMuted', isMusicMuted);
 
-    if (isMuted) {
+    if (isMusicMuted) {
         stopBackgroundMusic();
-        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
     } else {
         playBackgroundMusic();
     }
-    return isMuted;
+    return isMusicMuted;
 }
 
 export function getMuteState() {
-    return isMuted;
+    return isMusicMuted;
 }
 
 // --- Speaking Logic ---
@@ -82,10 +75,7 @@ export function speakText(text, key = null, throttle = false) {
 }
 
 export function speakSequence(keys, fallbackText) {
-    if (isMuted) {
-        console.log("speakSequence: Muted.");
-        return;
-    }
+    // SPEECH IS NO LONGER MUTED BY THE MUSIC BUTTON
 
     // NEW: Stop previous audio to prevent overlaps
     stopAllAudio();
@@ -151,7 +141,7 @@ export function stopAllAudio() {
 }
 
 function fallbackTTS(text, throttle = false) {
-    if (!('speechSynthesis' in window) || isMuted) return;
+    if (!('speechSynthesis' in window)) return;
 
     if (throttle) {
         const now = Date.now();
@@ -179,7 +169,7 @@ export function resumeAudioContext() {
     }
 
     // Try to play BGM on interaction if not playing
-    if (!isMuted && bgmAudio.paused) {
+    if (!isMusicMuted && bgmAudio.paused) {
         bgmAudio.play().catch(e => console.log("BGM play failed", e));
         isBgmPlaying = true;
     }
@@ -229,7 +219,7 @@ async function decodeSprites() {
 // --- Music ---
 
 export function playBackgroundMusic() {
-    if (isMuted) return;
+    if (isMusicMuted) return;
 
     // Using HTML5 Audio for new mp3 file
     bgmAudio.play().then(() => {
@@ -245,7 +235,7 @@ export function stopBackgroundMusic() {
 }
 
 export function playVictoryMusic() {
-    if (isMuted) return;
+    if (isMusicMuted) return;
     resumeAudioContext();
     if (!audioCtx) return;
 
