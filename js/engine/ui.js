@@ -322,7 +322,26 @@ export function populateGamesMenu(gameModes, setModeCallback) {
     if (!grid) return;
     grid.innerHTML = '';
 
+    const categoryNames = {
+        'world': 'Earth & Nature 🌍',
+        'basics': 'Basics 👶',
+        'learning': 'Learning 📚',
+        'logic': 'Logic & Puzzles 🧩'
+    };
+
+    let currentCategory = null;
+
     gameModes.forEach(game => {
+        // Insert separator if category changes
+        if (game.category !== currentCategory) {
+            currentCategory = game.category;
+            const sep = document.createElement('div');
+            sep.className = 'game-category-separator';
+            sep.textContent = categoryNames[currentCategory] || 'Games';
+            sep.style.cssText = "width: 100%; font-size: 1.5rem; font-weight: bold; color: #555; margin: 20px 0 10px; text-align: left; padding-left: 10px; border-bottom: 2px dashed #ddd;";
+            grid.appendChild(sep);
+        }
+
         let isLocked = false;
         if (game.id === 'feedlion' && !isContentUnlocked()) {
             isLocked = true;
