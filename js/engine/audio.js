@@ -60,7 +60,7 @@ export function toggleMute() {
 
     if (isMuted) {
         stopBackgroundMusic();
-        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+        // Do NOT cancel speech - User wants SFX active
     } else {
         playBackgroundMusic();
     }
@@ -82,10 +82,8 @@ export function speakText(text, key = null, throttle = false) {
 }
 
 export function speakSequence(keys, fallbackText) {
-    if (isMuted) {
-        console.log("speakSequence: Muted.");
-        return;
-    }
+    // SFX/Voice should play regardless of Music Mute
+    // if (isMuted) return; // REMOVED per user request
 
     // NEW: Stop previous audio to prevent overlaps
     stopAllAudio();
@@ -153,7 +151,8 @@ export function stopAllAudio() {
 }
 
 function fallbackTTS(text, throttle = false) {
-    if (!('speechSynthesis' in window) || isMuted) return;
+    if (!('speechSynthesis' in window)) return;
+    // Removed isMuted check
 
     if (throttle) {
         const now = Date.now();
@@ -247,7 +246,9 @@ export function stopBackgroundMusic() {
 }
 
 export function playVictoryMusic() {
-    if (isMuted) return;
+    // This is SFX/Fanfare, keep it playing? Or treat as music? 
+    // Usually fanfare is SFX. Let's keep it.
+    // if (isMuted) return; 
     resumeAudioContext();
     if (!audioCtx) return;
 
@@ -282,7 +283,8 @@ export function playVictoryMusic() {
 }
 
 export function playCrunchSound() {
-    if (isMuted) return;
+    // Crunch is SFX, keep playing
+    // if (isMuted) return; 
     resumeAudioContext();
     if (!audioCtx) return;
 

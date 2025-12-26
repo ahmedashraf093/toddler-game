@@ -70,11 +70,15 @@ function loadMathQuestion() {
     target.className = 'math-target';
     makeDroppable(target, q.ans.toString());
 
-    const opWord = q.op === '+' ? 'plus' : 'minus';
-    target.dataset.tts = `${q.A} ${opWord} ${q.B} equals ${q.ans}`;
+    const opWord = q.op === '+' ? 'conn_plus' : 'conn_minus';
+    const numA = `num_${q.A}`;
+    const numB = `num_${q.B}`;
+    const numAns = `num_${q.ans}`;
 
-    // Store keys sequence for TTS
-    const keys = [q.A.toString(), opWord, q.B.toString(), 'equals', q.ans.toString()];
+    target.dataset.tts = `${q.A} ${q.op === '+' ? 'plus' : 'minus'} ${q.B} equals ${q.ans}`;
+
+    // Store keys sequence for TTS (Correct prefixes)
+    const keys = [numA, opWord, numB, 'conn_equals', numAns];
     target.dataset.keys = JSON.stringify(keys);
 
     target.dataset.emoji = emoji;
@@ -107,13 +111,13 @@ function dropMath(targetBox, draggedVal) {
         if (targetBox.dataset.keys) {
             try {
                 const keys = JSON.parse(targetBox.dataset.keys);
-                speakSequence(['correct', ...keys]);
+                speakSequence(['generic_correct', ...keys]);
             } catch (e) {
                 console.warn("Error parsing TTS keys", e);
-                speakText("Correct!", "correct");
+                speakText("Correct!", "generic_correct");
             }
         } else {
-            speakText("Correct!", "correct");
+            speakText("Correct!", "generic_correct");
         }
 
         launchModal(draggedVal, targetBox.dataset.emoji, "Correct!");

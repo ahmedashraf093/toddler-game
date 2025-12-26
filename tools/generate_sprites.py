@@ -53,7 +53,11 @@ content = {
         {'id': 'wear_your', 'text': 'Wear your'},
         {'id': 'wear_a', 'text': 'Wear a'},
         {'id': 'wear', 'text': 'Wear'},
-        {'id': 'use_an', 'text': 'Use an'}
+        {'id': 'wear', 'text': 'Wear'},
+        {'id': 'use_an', 'text': 'Use an'},
+        {'id': 'plus', 'text': 'Plus'},
+        {'id': 'minus', 'text': 'Minus'},
+        {'id': 'equals', 'text': 'Equals'}
     ],
     'alphabet': [
         {'id': 'a', 'text': 'A'}, {'id': 'b', 'text': 'B'}, {'id': 'c', 'text': 'C'},
