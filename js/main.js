@@ -85,9 +85,11 @@ window.addEventListener('load', () => {
     // Difficulty buttons
     document.querySelectorAll('.diff-btn').forEach(btn => {
         btn.onclick = (e) => {
-            const level = e.target.classList.contains('diff-easy') ? 'easy' :
-                e.target.classList.contains('diff-med') ? 'medium' : 'hard';
-            setDifficulty(level, e.target);
+            const target = e.currentTarget;
+            const level = target.classList.contains('diff-easy') ? 'easy' :
+                target.classList.contains('diff-med') ? 'medium' : 'hard';
+            console.log("Difficulty set to:", level);
+            setDifficulty(level, target);
         };
     });
 
