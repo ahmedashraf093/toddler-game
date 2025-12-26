@@ -2327,3 +2327,148 @@ body {
     box-shadow: none;
     /* Remove shadow to avoid square bleed */
 }
+
+/* --- Landscape Mode Enhancements (Horizontal Layout - No Scroll) --- */
+@media (orientation: landscape) and (min-width: 600px) {
+
+    /* 1. Global Game Board: Side-by-Side Columns */
+    .game-board {
+        flex-direction: row;
+        justify-content: space-evenly;
+        align-items: center;
+        /* Center vertically */
+        /* Center vertically */
+        padding-top: 80px;
+        /* Ensure it fits in viewport */
+        height: calc(100vh - 80px) !important;
+        overflow: hidden;
+    }
+
+    .column {
+        width: 48%;
+        height: 100%;
+        flex-direction: row;
+        /* Allow items to flow in a grid/row inside the column */
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+        align-content: center;
+        /* Center the grid of items vertically */
+    }
+
+    /* Compact Items for Horizontal View */
+    .item {
+        width: 110px;
+        /* Smaller to fit 2-3 per row inside the column */
+        height: 80px;
+        font-size: 35px;
+        margin: 0;
+    }
+
+    /* 2. Feed Lion Stage: Side-by-Side */
+    #feed-lion-stage {
+        display: flex;
+        flex-direction: row;
+        /* Lion Left, Food Right */
+        align-items: center;
+        justify-content: space-around;
+        width: 100%;
+        max-width: 900px;
+        height: calc(100vh - 100px);
+        /* Fit in view minus header */
+        padding: 0;
+    }
+
+    .lion-container {
+        width: 35vh;
+        /* Scale with height */
+        height: 35vh;
+        max-width: 300px;
+        max-height: 300px;
+        margin-top: 0;
+    }
+
+    .feed-tray {
+        width: 50%;
+        height: 80%;
+        /* Vertical tray */
+        max-height: 400px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-content: center;
+        gap: 15px;
+        margin-bottom: 0;
+        background-color: #8B4513;
+        /* Adjust for side tray look */
+        border-bottom: none;
+        border-left: 8px solid #5D4037;
+    }
+
+    .food-item {
+        width: 80px;
+        height: 80px;
+    }
+
+    /* 3. Math & Puzzle Optimizations */
+    #math-stage {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .math-question-box {
+        width: 40%;
+        margin-bottom: 0;
+        min-height: 140px;
+    }
+
+    .math-options {
+        width: 40%;
+        flex-wrap: wrap;
+    }
+
+    #puzzle-stage {
+        flex-direction: row;
+        justify-content: space-evenly;
+        align-items: center;
+        height: 100%;
+        padding-bottom: 0;
+        overflow: hidden;
+    }
+
+    #puzzle-target-container {
+        margin-bottom: 0;
+        margin-right: 20px;
+    }
+
+    #puzzle-pieces-pool {
+        width: 40%;
+        min-height: 300px;
+        align-content: center;
+    }
+
+    /* 4. Full Width Games Menu */
+    .games-grid,
+    .menu-header {
+        max-width: 900px !important;
+        /* Allow wider grid */
+        width: 90% !important;
+    }
+
+    /* 5. Home Page Horizontal */
+    #start-screen {
+        flex-direction: row;
+        gap: 50px;
+    }
+
+    .start-logo {
+        width: 180px;
+        height: 180px;
+        margin-bottom: 0;
+    }
+}
