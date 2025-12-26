@@ -20,6 +20,12 @@
 
     <meta name="theme-color" content="#ffffff">
     <meta name="twitter:card" content="summary_large_image">
+
+    <!-- Google Fonts: Comic Neue for that accessible Comic Sans look -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700;900&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="css/style.css">
 </head>
 
@@ -69,10 +75,20 @@
     </div>
 
     <div class="header-container">
-        <div class="header-row">
-            <div class="score-board">⭐️ <span id="score-val">0</span></div>
-            <button id="menu-btn">🎮 Games</button>
-            <button id="challenges-btn">🏆 Daily</button>
+        <div class="floating-header">
+            <div class="nav-group">
+                <button id="menu-btn" class="header-pill" aria-label="Games Menu">
+                    <span class="icon">🎮</span> <span class="label">Games</span>
+                </button>
+                <button id="challenges-btn" class="header-pill" aria-label="Daily Challenges">
+                    <span class="icon">🏆</span> <span class="label">Daily</span>
+                </button>
+            </div>
+            <div class="score-group">
+                <div class="score-pill">
+                    <span class="icon">⭐️</span> <span id="score-val">0</span>
+                </div>
+            </div>
         </div>
 
         <div id="difficulty-bar">

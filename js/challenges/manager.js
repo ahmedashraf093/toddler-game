@@ -12,7 +12,10 @@ let challengeState = {
     lastPlayed: Date.now()
 };
 
-export function initChallenges() {
+let gameSelectContext = null;
+
+export function initChallenges(onGameSelect) {
+    if (onGameSelect) gameSelectContext = onGameSelect;
     loadState();
     updateChallengeUI();
 }
@@ -141,15 +144,34 @@ function updateChallengeUI() {
             c.tasks.forEach(t => {
                 const prog = challengeState.progress[t.type] || 0;
                 const done = prog >= t.count;
-                html += `<span>${done ? '✅' : '⬜'} ${t.type}: ${prog}/${t.count}</span>`;
+                // Add click handler via data attribute or onclick if safe, 
+                // but since we are generating HTML string, we'll add event listeners after rendering
+                html += `<div class="task-row" data-type="${t.type}" style="cursor: pointer; padding: 5px; background: rgba(255,255,255,0.5); border-radius: 5px; margin-top: 5px;">
+                            <span>${done ? '✅' : '👉'} ${t.type.toUpperCase()}: ${prog}/${t.count}</span>
+                         </div>`;
             });
             html += `</div>`;
         }
 
         el.innerHTML = html;
         list.appendChild(el);
+
+        // Bind clicks for active tasks
+        if (isCurrent) {
+            const tasks = el.querySelectorAll('.task-row');
+            tasks.forEach(taskEl => {
+                taskEl.onclick = (e) => {
+                    const type = taskEl.dataset.type;
+                    if (gameSelectContext && type) {
+                        e.stopPropagation();
+                        toggleChallengeMenu(); // Close menu
+                        gameSelectContext(type); // Switch game
+                    }
+                };
+            });
+        }
     });
 }
 export function resetChallengesIfNeeded() {
-  // Logic for resetting challenges if needed
+    // Logic for resetting challenges if needed
 }

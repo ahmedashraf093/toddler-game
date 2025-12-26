@@ -280,3 +280,47 @@ export function playVictoryMusic() {
         osc.stop(t + 0.4);
     });
 }
+
+export function playCrunchSound() {
+    if (isMuted) return;
+    resumeAudioContext();
+    if (!audioCtx) return;
+
+    // Create a burst of white noise
+    const bufferSize = audioCtx.sampleRate * 0.5; // 0.5 seconds buffer
+    const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+    const data = buffer.getChannelData(0);
+
+    for (let i = 0; i < bufferSize; i++) {
+        data[i] = Math.random() * 2 - 1;
+    }
+
+    // Play 2-3 rapid bursts to simulate "Crunch Crunch"
+    const playBurst = (delay) => {
+        const source = audioCtx.createBufferSource();
+        source.buffer = buffer;
+
+        // Bandpass Filter to remove harsh highs and muddy lows
+        const filter = audioCtx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.value = 1000;
+
+        // Gain Envelope for a short, crisp decay
+        const gain = audioCtx.createGain();
+        const t = audioCtx.currentTime + delay;
+        gain.gain.setValueAtTime(0, t);
+        gain.gain.linearRampToValueAtTime(0.8, t + 0.01); // Attack
+        gain.gain.exponentialRampToValueAtTime(0.01, t + 0.15); // Decay - crisp bite
+
+        source.connect(filter);
+        filter.connect(gain);
+        gain.connect(audioCtx.destination);
+        source.start(t);
+        source.stop(t + 0.2);
+    };
+
+    playBurst(0);
+    playBurst(0.15);
+    // Optional third bite for variation
+    if (Math.random() > 0.5) playBurst(0.3);
+}

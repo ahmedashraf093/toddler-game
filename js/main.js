@@ -34,14 +34,14 @@ const gameModes = [
     { id: 'number', name: 'Numbers', icon: 'assets/images/game_icons/icon_numbers.png', category: 'learning' },
     { id: 'math', name: 'Math', icon: 'assets/images/game_icons/icon_math.png', category: 'learning' },
     { id: 'sentences', name: 'Story', icon: 'assets/images/game_icons/icon_story.png', category: 'learning' },
-    { id: 'job', name: 'Jobs', icon: '👮', category: 'learning' },
-    { id: 'listening', name: 'Listening', icon: '👂', category: 'learning' },
+    { id: 'job', name: 'Jobs', icon: 'assets/images/game_icons/icon_jobs.png', category: 'learning' },
+    { id: 'listening', name: 'Listening', icon: 'assets/images/game_icons/icon_listening.png', category: 'learning' },
 
     // Logic
-    { id: 'pattern', name: 'Pattern', icon: '❓', category: 'logic' },
-    { id: 'puzzle', name: 'Puzzle', icon: '🧩', category: 'logic' },
-    { id: 'memory', name: 'Memory', icon: '🧠', category: 'logic' },
-    { id: 'oddoneout', name: 'Odd One', icon: '🧐', category: 'logic' }
+    { id: 'pattern', name: 'Pattern', icon: 'assets/images/game_icons/icon_pattern.png', category: 'logic' },
+    { id: 'puzzle', name: 'Puzzle', icon: 'assets/images/game_icons/icon_puzzle.png', category: 'logic' },
+    { id: 'memory', name: 'Memory', icon: 'assets/images/game_icons/icon_memory.png', category: 'logic' },
+    { id: 'oddoneout', name: 'Odd One', icon: 'assets/images/game_icons/icon_oddoneout.png', category: 'logic' }
 ];
 
 window.addEventListener('load', () => {
@@ -52,7 +52,7 @@ window.addEventListener('load', () => {
     if (verDisplay) verDisplay.textContent = GAME_VERSION;
 
     initAudio();
-    initChallenges();
+    initChallenges(setMode);
 
     // Bind global buttons
     const startBtn = document.getElementById('start-btn');

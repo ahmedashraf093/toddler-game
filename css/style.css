@@ -5,7 +5,7 @@
 }
 
 body {
-    font-family: 'Comic Sans MS', 'Chalkboard SE', 'Comic Neue', sans-serif;
+    font-family: 'Comic Neue', 'Comic Sans MS', 'Chalkboard SE', sans-serif;
     background-color: var(--bg-color);
     background-image: radial-gradient(var(--dot-color) 20%, transparent 20%),
         radial-gradient(var(--dot-color) 20%, transparent 20%);
@@ -95,56 +95,116 @@ body {
     }
 }
 
-/* --- Header --- */
+/* --- Floating Header --- */
 .header-container {
+    width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 95%;
-    max-width: 800px;
-    margin-top: 5px;
-    gap: 5px;
+    position: sticky;
+    top: 10px;
+    z-index: 100;
+    pointer-events: none;
+    /* Let clicks pass through container */
 }
 
-.header-row {
+.floating-header {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    padding: 8px 12px;
+    border-radius: 50px;
     display: flex;
-    justify-content: center;
-    /* Or space-between if you want them apart */
+    justify-content: space-between;
     align-items: center;
     gap: 20px;
-    width: 100%;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    pointer-events: auto;
+    /* Re-enable clicks */
+    transition: transform 0.3s ease;
+    width: 90%;
+    max-width: 600px;
 }
 
-.score-board {
-    background: #fff;
-    padding: 5px 20px;
-    border-radius: 50px;
-    font-size: 20px;
-    font-weight: 900;
-    color: #ffaa00;
-    border: 3px solid #eee;
-    box-shadow: 0 4px 0px rgba(0, 0, 0, 0.05);
+.nav-group {
+    display: flex;
+    gap: 10px;
+}
+
+.header-pill {
+    background: transparent;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 30px;
+    font-size: 18px;
+    font-weight: 800;
+    color: #555;
+    cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 15px;
-}
-
-#menu-btn {
-    background: #fff;
-    border: 3px solid #eee;
-    border-radius: 50px;
-    padding: 8px 20px;
-    font-size: 20px;
-    font-weight: 900;
-    color: var(--primary-color);
-    cursor: pointer;
-    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.05);
+    gap: 8px;
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     font-family: inherit;
-    transition: transform 0.1s;
 }
 
-#menu-btn:active {
+.header-pill .icon {
+    font-size: 22px;
+}
+
+.header-pill:hover {
+    background: #f0f0f0;
+    transform: translateY(-2px);
+    color: var(--primary-color);
+}
+
+.header-pill:active {
     transform: scale(0.95);
+}
+
+.score-pill {
+    background: #fff8e1;
+    color: #ff8f00;
+    padding: 8px 16px;
+    border-radius: 30px;
+    font-weight: 900;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 2px solid #ffe082;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+@media (max-width: 480px) {
+    .floating-header {
+        padding: 6px 10px;
+        gap: 8px;
+        /* Tighter gap */
+        width: 98%;
+        /* Maximize width */
+    }
+
+    .header-pill {
+        padding: 6px 10px;
+        font-size: 14px;
+        /* Readably small */
+    }
+
+    .header-pill .icon {
+        font-size: 18px;
+        margin-right: 4px;
+        /* Space between icon and text */
+    }
+
+    .header-pill .label {
+        display: inline-block;
+        /* Show label! */
+    }
+
+    .score-pill {
+        padding: 6px 10px;
+        font-size: 16px;
+    }
 }
 
 /* --- Full Screen Menu Overlay --- */
@@ -185,6 +245,9 @@ body {
 }
 
 .close-menu-btn {
+    z-index: 2100;
+    /* Ensure it is clickable */
+    position: relative;
     background: #ff4444;
     color: white;
     border: 3px solid #cc0000;
@@ -687,24 +750,37 @@ body {
 }
 
 .big-letter {
-    font-size: 70px;
+    font-size: 80px;
     display: block;
     line-height: 1;
     color: var(--primary-color);
     margin-bottom: 5px;
+    font-family: 'Comic Neue', 'Comic Sans MS', 'Chalkboard SE', cursive;
+    text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.1);
+    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .big-emoji {
-    font-size: 90px;
+    font-size: 100px;
     display: block;
     margin: 5px 0;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+    animation: bounceIn 0.6s cubic-bezier(0.36, 0, 0.66, -0.56) 0.2s backwards;
 }
 
 .big-word {
-    font-size: 35px;
-    color: #444;
+    font-size: 45px;
     font-weight: 900;
     display: block;
+    font-family: 'Comic Neue', 'Comic Sans MS', 'Chalkboard SE', cursive;
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0px 4px 10px rgba(79, 172, 254, 0.2);
+    margin-top: 5px;
+    letter-spacing: 1px;
+    animation: fadeInUp 0.4s ease both 0.3s;
 }
 
 /* --- Start Screen (New) --- */
@@ -1269,19 +1345,21 @@ body {
 }
 
 .celebration-message {
-    font-size: clamp(3rem, 15vw, 6rem);
+    font-size: clamp(3.5rem, 15vw, 6.5rem);
     font-weight: 900;
-    background: linear-gradient(to right, #ff5252, #ffab40, #ffd740, #69f0ae, #40c4ff, #7c4dff, #ff5252);
-    background-size: 200% auto;
+    font-family: 'Comic Neue', 'Comic Sans MS', 'Chalkboard SE', cursive;
+    background: linear-gradient(180deg, #FFEB3B 0%, #FF9800 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    text-shadow: 4px 4px 20px rgba(0, 0, 0, 0.1);
+    text-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.8)) drop-shadow(0 0 10px #FF9800);
     margin: 10px 0;
-    animation: bounceIn 0.8s cubic-bezier(0.36, 0, 0.66, -0.56) infinite alternate, rainbow 3s linear infinite;
+    animation: bounceIn 0.8s cubic-bezier(0.36, 0, 0.66, -0.56) infinite alternate;
     text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: 3px;
     z-index: 10;
+    line-height: 1.1;
 }
 
 @keyframes rainbow {
@@ -1291,11 +1369,17 @@ body {
 }
 
 .celebration-sub-message {
-    font-size: clamp(1.2rem, 5vw, 2rem);
-    color: #4facfe;
+    font-size: clamp(1.5rem, 5vw, 2.5rem);
+    color: #fff;
+    font-family: 'Comic Neue', 'Comic Sans MS', 'Chalkboard SE', cursive;
     font-weight: bold;
-    margin-top: 5px;
+    text-shadow: 2px 2px 0px #4facfe, 4px 4px 0px rgba(0, 0, 0, 0.1);
+    margin-top: 10px;
     z-index: 10;
+    background: #4facfe;
+    padding: 5px 20px;
+    border-radius: 50px;
+    box-shadow: 0 4px 10px rgba(79, 172, 254, 0.4);
     animation: fadeInUp 0.5s ease both 0.5s;
 }
 

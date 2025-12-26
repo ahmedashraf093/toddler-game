@@ -1,6 +1,6 @@
 import { gameState, incrementCorrect, updateScore, resetRoundState } from '../engine/state.js';
 import { makeDraggable, makeDroppable, setDropCallback, setDragStartCallback } from '../engine/input.js';
-import { speakText, speakSequence } from '../engine/audio.js';
+import { speakText, speakSequence, playCrunchSound } from '../engine/audio.js';
 import { updateScoreUI, showCelebration } from '../engine/ui.js';
 import { checkOverallProgress } from '../challenges/manager.js';
 
@@ -351,7 +351,9 @@ function handleDrop(targetBox, draggedVal, draggedElId) {
     const foodEl = document.getElementById(draggedElId);
 
     // Play simple feedback sound (User requested removing long sentences)
-    speakText("Yummy!", "generic_good_job");
+    // Play eating sound effect
+    // speakText("Chomp chomp! Mmmm!", "feed_lion_eat");
+    playCrunchSound();
 
     if (foodEl) foodEl.remove();
 
