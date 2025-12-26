@@ -299,6 +299,43 @@ export function showCelebration() {
     }, 5000);
 }
 
+export function triggerConfetti(x, y) {
+    // Create localized confetti at x,y
+    const colors = ['#f00', '#0f0', '#00f', '#ff0', '#0ff', '#f0f', '#FFA500'];
+    const count = 20; // Small burst
+
+    for (let i = 0; i < count; i++) {
+        const c = document.createElement('div');
+        c.className = 'confetti-mini'; // New class for mini confetti
+        c.style.left = x + 'px';
+        c.style.top = y + 'px';
+        c.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        c.style.width = '8px';
+        c.style.height = '8px';
+        c.style.position = 'fixed';
+        c.style.zIndex = '10002';
+
+        // Random trajectory
+        const angle = Math.random() * Math.PI * 2;
+        const velocity = 50 + Math.random() * 100;
+        const tx = Math.cos(angle) * velocity;
+        const ty = Math.sin(angle) * velocity;
+
+        c.style.transition = 'all 1s ease-out';
+        c.style.transform = 'scale(0)'; // Start small
+
+        document.body.appendChild(c);
+
+        // Animate
+        requestAnimationFrame(() => {
+            c.style.transform = `translate(${tx}px, ${ty}px) scale(1) rotate(${Math.random() * 360}deg)`;
+            c.style.opacity = '0';
+        });
+
+        setTimeout(() => c.remove(), 1000);
+    }
+}
+
 export function toggleMenu(forceHide = false) {
     const overlay = document.getElementById('games-menu-overlay');
     if (forceHide) {

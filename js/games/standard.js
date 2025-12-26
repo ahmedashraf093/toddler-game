@@ -6,7 +6,7 @@ import {
 import { smartSelect, shuffle } from '../engine/utils.js';
 import { makeDraggable, makeDroppable, setDropCallback } from '../engine/input.js';
 import { speakText, speakSequence } from '../engine/audio.js'; // Imported speakSequence
-import { launchModal, updateScoreUI, showLoader } from '../engine/ui.js';
+import { launchModal, updateScoreUI, showLoader, triggerConfetti } from '../engine/ui.js';
 import { checkOverallProgress } from '../challenges/manager.js';
 
 const roundSize = 5;
@@ -183,7 +183,10 @@ function handleDrop(targetBox, draggedVal, draggedElId) {
     if (source) source.style.visibility = 'hidden';
 
     updateScore(10);
+    updateScore(10);
     updateScoreUI();
+    const rect = targetBox.getBoundingClientRect();
+    triggerConfetti(rect.left + rect.width / 2, rect.top + rect.height / 2);
 
     const mode = gameState.currentMode;
     // Reward logic

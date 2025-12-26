@@ -1,7 +1,7 @@
 import { gameState, updateScore } from '../engine/state.js';
 import { objectPool } from '../data/content.js';
 import { speakText } from '../engine/audio.js';
-import { launchModal, updateScoreUI } from '../engine/ui.js';
+import { launchModal, updateScoreUI, triggerConfetti } from '../engine/ui.js';
 import { shuffle } from '../engine/utils.js';
 import { checkOverallProgress } from '../challenges/manager.js';
 
@@ -92,7 +92,7 @@ function createMemoryCard(item) {
     card.setAttribute('aria-label', 'Hidden card');
 
     card.addEventListener('click', handleCardClick);
-    card.addEventListener('keydown', function(e) {
+    card.addEventListener('keydown', function (e) {
         if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
             this.click();
@@ -147,7 +147,16 @@ function disableCards() {
 
     matchedPairs++;
     updateScore(10);
+    updateScore(10);
     updateScoreUI();
+    const rect1 = card1.getBoundingClientRect();
+    const rect2 = card2.getBoundingClientRect();
+
+    // Sparkle on both cards
+    triggerConfetti(rect1.left + rect1.width / 2, rect1.top + rect1.height / 2);
+    setTimeout(() => {
+        triggerConfetti(rect2.left + rect2.width / 2, rect2.top + rect2.height / 2);
+    }, 200);
 
     const nounKey = 'noun_' + card1.dataset.name.toLowerCase().replace(' ', '_');
     // "Match! [Item]"

@@ -95,6 +95,93 @@ body {
     }
 }
 
+/* Ghost Hand Hint */
+/* Ghost Hand Hint */
+.ghost-hand {
+    position: fixed !important;
+    font-size: 80px;
+    /* Increased from 50px */
+    z-index: 9999;
+    pointer-events: none;
+    filter: drop-shadow(0 10px 10px rgba(0, 0, 0, 0.4));
+    transition: opacity 0.5s;
+    opacity: 0;
+}
+
+.ghost-hand.active {
+    opacity: 1;
+    animation: hint-drag 2.5s infinite ease-in-out;
+}
+
+@keyframes hint-drag {
+    0% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    15% {
+        /* Press down */
+        transform: translate(0, 0) scale(0.8);
+    }
+
+    50% {
+        /* Move to target */
+        transform: translate(var(--tx), var(--ty)) scale(0.8);
+    }
+
+    70% {
+        /* Release */
+        transform: translate(var(--tx), var(--ty)) scale(1);
+    }
+
+    85% {
+        /* Fade out / Reset pos visually (opacity handled by class but we loop position) */
+        transform: translate(var(--tx), var(--ty)) scale(1);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translate(0, 0) scale(1);
+        opacity: 0;
+    }
+}
+
+/* Juicy Drag Effect */
+.juicy-drag {
+    transform: scale(1.2) rotate(-5deg) !important;
+    z-index: 9999 !important;
+    filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.3)) brightness(1.1);
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Wiggle Error Animation */
+@keyframes wiggle {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    25% {
+        transform: rotate(-5deg);
+    }
+
+    50% {
+        transform: rotate(5deg);
+    }
+
+    75% {
+        transform: rotate(-5deg);
+    }
+
+    100% {
+        transform: rotate(0deg);
+    }
+}
+
+.wiggle-error {
+    animation: wiggle 0.4s ease-in-out;
+    color: red !important;
+    /* Visual feedback */
+}
+
 /* --- Floating Header --- */
 .header-container {
     width: 100%;
@@ -2423,9 +2510,6 @@ body {
         /* Vertical tray */
         max-height: 400px;
         display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        align-content: center;
         gap: 15px;
         margin-bottom: 0;
         background-color: #8B4513;

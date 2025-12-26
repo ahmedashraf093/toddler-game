@@ -1,18 +1,100 @@
-import { speakText, resumeAudioContext } from './audio.js';
+import { speakText, resumeAudioContext, playErrorSound } from './audio.js';
 
 let activeTouchEl = null;
 let draggedVal = null;
 let draggedElId = null;
-let hintTimer = null;
+let hintTimer = null; // For drag-over hints
+// Idle Hint Logic
+let idleTimer = null;
+let ghostHandEl = null;
 
-// Callbacks to be set by the active game
+// Callbacks at the top...
 let onDropCallback = null;
 let onDragStartCallback = null;
+
+// Initialize Global Idle Tracker
+export function initInput() {
+    // Reset idle timer on any interaction
+    ['touchstart', 'touchmove', 'mousedown', 'mousemove', 'keydown'].forEach(evt => {
+        document.addEventListener(evt, resetIdleTimer, { passive: true });
+    });
+    resetIdleTimer();
+}
+
+function resetIdleTimer() {
+    clearIdleHint();
+    if (idleTimer) clearTimeout(idleTimer);
+    idleTimer = setTimeout(triggerGhostHand, 10000); // 10 seconds idle
+}
+
+function clearIdleHint() {
+    if (ghostHandEl) {
+        ghostHandEl.remove();
+        ghostHandEl = null;
+    }
+}
+
+function triggerGhostHand() {
+    // 1. Find a valid move
+    // Naively pick the first unmatched draggable that has a visible target
+    const draggables = Array.from(document.querySelectorAll('.draggable:not([style*="display: none"])'));
+    const targets = Array.from(document.querySelectorAll('.droppable:not(.matched)'));
+
+    let source = null;
+    let target = null;
+
+    // Find a pair
+    for (let d of draggables) {
+        // Skip sources that are "hidden" or matched (game specific)
+        if (d.style.visibility === 'hidden') continue;
+
+        // Find matching target
+        const matchVal = d.dataset.val || d.dataset.label; // Depending on game logic
+        // In most games: makeDraggable(el, MatchValue, Id). dataset.val is the key.
+        // makeDroppable(el, MatchValue). dataset.match is the key.
+
+        const match = targets.find(t => t.dataset.match === d.dataset.val);
+        if (match) {
+            source = d;
+            target = match;
+            break;
+        }
+    }
+
+    if (!source || !target) return; // No hints available
+
+    // 2. Create Ghost Hand
+    ghostHandEl = document.createElement('div');
+    ghostHandEl.className = 'ghost-hand active';
+    ghostHandEl.textContent = '👆'; // Or SVG
+    document.body.appendChild(ghostHandEl);
+
+    // 3. Calculate Positions
+    const sRect = source.getBoundingClientRect();
+    const tRect = target.getBoundingClientRect();
+
+    // Start center of source
+    const startX = sRect.left + sRect.width / 2;
+    const startY = sRect.top + sRect.height / 2;
+
+    // End center of target
+    const endX = tRect.left + tRect.width / 2;
+    const endY = tRect.top + tRect.height / 2;
+
+    // Set CSS Vars for animation
+    ghostHandEl.style.position = 'fixed';
+    ghostHandEl.style.left = `${startX}px`;
+    ghostHandEl.style.top = `${startY}px`;
+    ghostHandEl.style.zIndex = '10000';
+    ghostHandEl.style.setProperty('--tx', `${endX - startX}px`);
+    ghostHandEl.style.setProperty('--ty', `${endY - startY}px`);
+}
 
 export function setDropCallback(callback) {
     onDropCallback = callback;
 }
-
+// ... existing exports ...
+// Renaming internal hint function to avoid confusion if needed, but keeping for now as they are drag-hints
 export function setDragStartCallback(callback) {
     onDragStartCallback = callback;
 }
@@ -40,22 +122,43 @@ export function makeDroppable(el, matchVal) {
 
 function startHintTimer(val) {
     clearHint();
-    hintTimer = setTimeout(() => { showHint(val); }, 5000);
+    hintTimer = setTimeout(() => { showDragHint(val); }, 2000); // Wait 2s before highlighting target
 }
 
-function showHint(val) {
+function showDragHint(val) {
+    // ... existing target highlight logic ...
     const targets = document.querySelectorAll('.droppable');
     targets.forEach(t => {
-        // Generic hint logic: look for data-match attribute
         if (t.dataset.match === val && !t.classList.contains('matched')) {
             t.classList.add('hint-active');
         }
     });
 }
-
+// ... existing clearHint ...
 function clearHint() {
     if (hintTimer) clearTimeout(hintTimer);
     document.querySelectorAll('.hint-active').forEach(el => el.classList.remove('hint-active'));
+}
+
+function createSparkles(el) {
+    const rect = el.getBoundingClientRect();
+    const center = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+
+    for (let i = 0; i < 5; i++) {
+        const sparkle = document.createElement('div');
+        sparkle.className = 'sparkle';
+        sparkle.style.left = center.x + 'px';
+        sparkle.style.top = center.y + 'px';
+
+        // Random direction
+        const angle = Math.random() * Math.PI * 2;
+        const dist = 30 + Math.random() * 50;
+        sparkle.style.setProperty('--dx', `${Math.cos(angle) * dist}px`);
+        sparkle.style.setProperty('--dy', `${Math.sin(angle) * dist}px`);
+
+        document.body.appendChild(sparkle);
+        setTimeout(() => sparkle.remove(), 600);
+    }
 }
 
 function toggleOtherDraggables(activeId, disable) {
@@ -92,12 +195,24 @@ function dragStart(e) {
     toggleOtherDraggables(e.target.id, true);
     if (draggedVal) startHintTimer(draggedVal);
 
+    // Juicy Drag
+    e.target.classList.add('juicy-drag');
+    createSparkles(e.target);
+
     if (onDragStartCallback) onDragStartCallback(e.target);
 }
 
 function dragEnd(e) {
     clearHint();
     toggleOtherDraggables(null, false);
+    e.target.classList.remove('juicy-drag');
+
+    // Wiggle if failed (still visible)
+    if (e.target.style.visibility !== 'hidden' && e.target.style.display !== 'none') {
+        e.target.classList.add('wiggle-error');
+        playErrorSound();
+        setTimeout(() => e.target.classList.remove('wiggle-error'), 400);
+    }
 }
 
 function drop(e) {
@@ -128,6 +243,10 @@ function touchStart(e) {
 
     toggleOtherDraggables(activeTouchEl.id, true);
     if (draggedVal) startHintTimer(draggedVal);
+
+    // Juicy Drag
+    activeTouchEl.classList.add('juicy-drag');
+    createSparkles(activeTouchEl);
 
     // Create spacer to prevent layout shift
     const spacer = document.createElement('div');
@@ -190,11 +309,20 @@ function touchEnd(e) {
     activeTouchEl.style.position = '';
     activeTouchEl.style.zIndex = '';
     activeTouchEl.style.width = '';
+    activeTouchEl.classList.remove('juicy-drag'); // Remove Juicy Class
 
     if (onDropCallback) {
         const targetBox = below ? below.closest('.droppable') : null;
         // Pass activeTouchEl as the dragged element (3rd arg was ID, passing element reference is also useful or use ID)
         onDropCallback(targetBox, draggedVal, draggedElId, e, activeTouchEl);
+    }
+
+    // Wiggle if failed (still visible)
+    // Note: onDropCallback logic (e.g. standard.js) sets visibility hidden on success.
+    if (activeTouchEl.style.visibility !== 'hidden' && activeTouchEl.style.display !== 'none') {
+        activeTouchEl.classList.add('wiggle-error');
+        playErrorSound();
+        setTimeout(() => { if (activeTouchEl) activeTouchEl.classList.remove('wiggle-error'); }, 400);
     }
 
     toggleOtherDraggables(null, false); // Restore pointer events AFTER finding target

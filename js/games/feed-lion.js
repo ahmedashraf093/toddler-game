@@ -1,7 +1,7 @@
 import { gameState, incrementCorrect, updateScore, resetRoundState } from '../engine/state.js';
 import { makeDraggable, makeDroppable, setDropCallback, setDragStartCallback } from '../engine/input.js';
 import { speakText, speakSequence, playCrunchSound } from '../engine/audio.js';
-import { updateScoreUI, showCelebration } from '../engine/ui.js';
+import { updateScoreUI, showCelebration, triggerConfetti } from '../engine/ui.js';
 import { checkOverallProgress } from '../challenges/manager.js';
 
 // Extremely High-Fidelity SVG Lion
@@ -365,7 +365,10 @@ function handleDrop(targetBox, draggedVal, draggedElId) {
     const remaining = document.querySelectorAll('#feed-tray .food-item');
 
     updateScore(10);
+    updateScore(10);
     updateScoreUI();
+    const rect = lionDiv.getBoundingClientRect();
+    triggerConfetti(rect.left + rect.width / 2, rect.top + rect.height / 2);
     incrementCorrect();
     // Do NOT call checkOverallProgress here every time, only at end of round
 

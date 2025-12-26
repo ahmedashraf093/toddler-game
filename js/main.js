@@ -1,6 +1,7 @@
 import { initAudio, resumeAudioContext, toggleMute, getMuteState } from './engine/audio.js';
 import { gameState } from './engine/state.js';
 import { showLoader, toggleMenu, setTheme, populateGamesMenu } from './engine/ui.js';
+import { initInput } from './engine/input.js';
 import { initStandardGame } from './games/standard.js';
 import { initMathGame } from './games/math.js';
 import { initPuzzleGame } from './games/puzzle.js';
@@ -52,6 +53,7 @@ window.addEventListener('load', () => {
     if (verDisplay) verDisplay.textContent = GAME_VERSION;
 
     initAudio();
+    initInput(); // Start Idle Tracking
     initChallenges(setMode);
 
     // Bind global buttons
