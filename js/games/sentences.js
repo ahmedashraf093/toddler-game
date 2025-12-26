@@ -43,9 +43,9 @@ let introTimer = null;
 
 export function initSentenceGame() {
     console.log("initSentenceGame: Starting...");
-    const container = document.getElementById('game-board');
+    const container = document.getElementById('sentences-stage');
     if (!container) {
-        console.error("initSentenceGame: #game-board not found!");
+        console.error("initSentenceGame: #sentences-stage not found!");
         return;
     }
     console.log("initSentenceGame: Container found.");
@@ -188,7 +188,7 @@ function handleOptionClick(key, emoji, btnElement) {
                 stopAllAudio();
                 initSentenceGame();
             };
-            const c = document.querySelector('.sentence-game-container');
+            const c = document.getElementById('sentences-stage');
             if (c) c.appendChild(nextBtn);
         }, 800);
 

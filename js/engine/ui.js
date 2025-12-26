@@ -7,45 +7,101 @@ let modalTimeout = null;
 
 const CELEB_CHARACTERS = {
     sun: {
-        svg: `<svg viewBox="0 0 100 100" width="100%" height="100%">
-                <circle cx="50" cy="50" r="30" fill="#FFD700">
-                    <animate attributeName="r" values="30;32;30" dur="2s" repeatCount="indefinite" />
-                </circle>
+        svg: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <radialGradient id="sunGrad" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%" style="stop-color:#FFF7AD" />
+                        <stop offset="100%" style="stop-color:#FFD700" />
+                    </radialGradient>
+                    <filter id="sunShadow" x="-20%" y="-20%" width="140%" height="140%">
+                        <feGaussianBlur in="SourceAlpha" stdDeviation="2" />
+                        <feOffset dx="2" dy="2" />
+                        <feComponentTransfer><feFuncA type="linear" slope="0.3"/></feComponentTransfer>
+                        <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+                    </filter>
+                </defs>
                 <g transform="translate(50,50)">
                     ${Array.from({ length: 12 }).map((_, i) => `
-                        <rect x="-2" y="-45" width="4" height="15" fill="#FFD700" transform="rotate(${i * 30})">
-                            <animate attributeName="height" values="15;20;15" dur="1s" delay="${i * 0.1}s" repeatCount="indefinite" />
-                        </rect>
+                        <path d="M -6 -35 L 0 -55 L 6 -35 Z" fill="#FF8C00" transform="rotate(${i * 30})">
+                            <animateTransform attributeName="transform" type="scale" values="1;1.2;1" dur="1.5s" delay="${i * 0.1}s" repeatCount="indefinite" additive="sum" />
+                        </path>
                     `).join('')}
                 </g>
-                <circle cx="40" cy="45" r="3" fill="#333" />
-                <circle cx="60" cy="45" r="3" fill="#333" />
-                <path d="M 35 60 Q 50 75 65 60" fill="none" stroke="#333" stroke-width="3" stroke-linecap="round" />
+                <circle cx="50" cy="50" r="32" fill="url(#sunGrad)" filter="url(#sunShadow)" />
+                <circle cx="35" cy="55" r="5" fill="#FFB6C1" opacity="0.6" />
+                <circle cx="65" cy="55" r="5" fill="#FFB6C1" opacity="0.6" />
+                <circle cx="40" cy="45" r="4" fill="#333">
+                    <animate attributeName="r" values="4;3;4" dur="2s" repeatCount="indefinite" />
+                </circle>
+                <circle cx="60" cy="45" r="4" fill="#333">
+                    <animate attributeName="r" values="4;3;4" dur="2s" repeatCount="indefinite" />
+                </circle>
+                <path d="M 38 62 Q 50 75 62 62" fill="none" stroke="#333" stroke-width="3" stroke-linecap="round" />
               </svg>`,
         color: '#FFD700',
         subText: 'Sunny Day!'
     },
     lion: {
-        svg: `<svg viewBox="0 0 100 100" width="100%" height="100%">
-                <circle cx="50" cy="50" r="40" fill="#FFA500" stroke="#E67E22" stroke-width="2" />
-                <circle cx="50" cy="50" r="30" fill="#FFCC33" />
-                <circle cx="40" cy="45" r="3" fill="#333" />
-                <circle cx="60" cy="45" r="3" fill="#333" />
-                <path d="M 45 60 Q 50 65 55 60" fill="none" stroke="#333" stroke-width="2" />
-                <g class="paw">
-                    <circle cx="80" cy="70" r="10" fill="#FFA500" />
-                    <animateTransform attributeName="transform" type="rotate" from="-10 80 70" to="10 80 70" dur="0.5s" repeatCount="indefinite" additive="sum" />
+        svg: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <radialGradient id="lionFace" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%" style="stop-color:#FFCC33" />
+                        <stop offset="100%" style="stop-color:#FFAC33" />
+                    </radialGradient>
+                    <linearGradient id="maneGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#E67E22" />
+                        <stop offset="100%" style="stop-color:#A04000" />
+                    </linearGradient>
+                </defs>
+                <g transform="translate(50,50)">
+                    ${Array.from({ length: 18 }).map((_, i) => `
+                        <circle cx="34" cy="0" r="11" fill="url(#maneGrad)" transform="rotate(${i * 20})">
+                            <animate attributeName="r" values="11;13;11" dur="1.5s" delay="${i * 0.08}s" repeatCount="indefinite" />
+                        </circle>
+                    `).join('')}
+                </g>
+                <circle cx="30" cy="35" r="9" fill="#E67E22" />
+                <circle cx="70" cy="35" r="9" fill="#E67E22" />
+                <circle cx="30" cy="35" r="5" fill="#FFCC33" />
+                <circle cx="70" cy="35" r="5" fill="#FFCC33" />
+                <circle cx="50" cy="55" r="34" fill="url(#lionFace)" stroke="#D35400" stroke-width="2" />
+                <circle cx="40" cy="48" r="4" fill="#333" />
+                <circle cx="60" cy="48" r="4" fill="#333" />
+                <circle cx="35" cy="62" r="4" fill="#FFB6C1" opacity="0.4" />
+                <circle cx="65" cy="62" r="4" fill="#FFB6C1" opacity="0.4" />
+                <path d="M 46 60 L 54 60 L 50 66 Z" fill="#E74C3C" />
+                <path d="M 45 70 Q 50 75 55 70" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" />
+                <g>
+                    <circle cx="82" cy="78" r="14" fill="#E67E22" stroke="#A04000" stroke-width="1.5" />
+                    <circle cx="82" cy="78" r="10" fill="#FFCC33" opacity="0.3" />
+                    <animateTransform attributeName="transform" type="rotate" from="-10 82 78" to="10 82 78" dur="0.5s" repeatCount="indefinite" />
                 </g>
               </svg>`,
         color: '#FFA500',
         subText: 'Roar-some!'
     },
     star: {
-        svg: `<svg viewBox="0 0 100 100" width="100%" height="100%">
-                <path d="M50 5 L63 35 L95 35 L70 55 L80 85 L50 70 L20 85 L30 55 L5 35 L37 35 Z" fill="#FFD700" stroke="#DAA520" stroke-width="2">
-                    <animateTransform attributeName="transform" type="rotate" from="0 50 50" to="360 50 50" dur="5s" repeatCount="indefinite" />
-                    <animate attributeName="fill" values="#FFD700;#FFFACD;#FFD700" dur="2s" repeatCount="indefinite" />
+        svg: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <radialGradient id="starGrad" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%" style="stop-color:#FFFFFF" />
+                        <stop offset="30%" style="stop-color:#FFF176" />
+                        <stop offset="100%" style="stop-color:#FBC02D" />
+                    </radialGradient>
+                    <filter id="glow">
+                        <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur" />
+                        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                    </filter>
+                </defs>
+                <path d="M50 8 L62 36 L92 36 L68 54 L77 82 L50 67 L23 82 L32 54 L8 36 L38 36 Z" fill="#FFEE58" opacity="0.4" filter="url(#glow)">
+                    <animate attributeName="opacity" values="0.4;0.7;0.4" dur="1.5s" repeatCount="indefinite" />
                 </path>
+                <path d="M50 12 L60 38 L88 38 L66 54 L74 80 L50 66 L26 80 L34 54 L12 38 L40 38 Z" fill="url(#starGrad)" stroke="#F9A825" stroke-width="3" stroke-linejoin="round">
+                    <animateTransform attributeName="transform" type="scale" values="1;1.08;1" dur="2s" repeatCount="indefinite" transform-origin="center" />
+                </path>
+                <circle cx="42" cy="50" r="3.5" fill="#333" />
+                <circle cx="58" cy="50" r="3.5" fill="#333" />
+                <path d="M 40 62 Q 50 72 60 62" fill="none" stroke="#333" stroke-width="2.5" stroke-linecap="round" />
               </svg>`,
         color: '#FFD700',
         subText: 'Super Star!'
@@ -221,14 +277,18 @@ export function setTheme(mode) {
 
     // UI visibility management
     const diffBar = document.getElementById('difficulty-bar');
-    const standardBoard = document.getElementById('game-board');
+    const standardStage = document.getElementById('standard-stage');
+    const sentencesStage = document.getElementById('sentences-stage');
+    const feedLionStage = document.getElementById('feed-lion-stage');
     const mathStage = document.getElementById('math-stage');
     const puzzleStage = document.getElementById('puzzle-stage');
     const memoryStage = document.getElementById('memory-stage');
     const oddOneStage = document.getElementById('odd-one-stage');
 
     // Reset visibility
-    if (standardBoard) standardBoard.style.display = 'none';
+    if (standardStage) standardStage.classList.add('hidden');
+    if (sentencesStage) sentencesStage.classList.add('hidden');
+    if (feedLionStage) feedLionStage.classList.add('hidden');
     if (mathStage) mathStage.classList.remove('active');
     if (puzzleStage) puzzleStage.classList.add('hidden');
     if (memoryStage) memoryStage.classList.remove('active');
@@ -245,10 +305,14 @@ export function setTheme(mode) {
         if (puzzleStage) puzzleStage.classList.remove('hidden');
     } else if (mode === 'oddoneout') {
         if (oddOneStage) oddOneStage.classList.add('active');
+    } else if (mode === 'sentences') {
+        if (sentencesStage) sentencesStage.classList.remove('hidden');
+    } else if (mode === 'feedlion') {
+        if (feedLionStage) feedLionStage.classList.remove('hidden');
     } else {
-        if (standardBoard) {
-            standardBoard.style.display = 'flex';
-            standardBoard.className = 'game-board ' + mode + '-mode';
+        if (standardStage) {
+            standardStage.classList.remove('hidden');
+            standardStage.className = 'game-board ' + mode + '-mode';
         }
     }
 }

@@ -274,14 +274,11 @@ export function initFeedLionGame() {
     resetRoundState();
 
     // Create Stage Structure
-    const board = document.getElementById('game-board');
-    if (!board) return;
+    const stage = document.getElementById('feed-lion-stage');
+    if (!stage) return;
 
-    // Clear existing board content
-    board.innerHTML = '';
-
-    const stage = document.createElement('div');
-    stage.id = 'feed-lion-stage';
+    // Clear existing stage content
+    stage.innerHTML = '';
 
     // Lion
     const lionDiv = document.createElement('div');
@@ -296,7 +293,6 @@ export function initFeedLionGame() {
 
     stage.appendChild(lionDiv);
     stage.appendChild(tray);
-    board.appendChild(stage);
 
     setDropCallback(handleDrop);
     setDragStartCallback(openMouth);
