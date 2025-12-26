@@ -170,3 +170,5 @@ function initRound() {
 
 // Expose some globals for debugging if needed, but try to avoid it
 window.gameState = gameState;
+// Make available globally for HTML onclick
+window.toggleParentalGate = ParentalGate.toggle;
