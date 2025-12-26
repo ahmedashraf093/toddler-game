@@ -809,18 +809,22 @@ body {
 }
 
 #start-btn {
-    font-size: 40px;
-    padding: 15px 40px;
-    border-radius: 50px;
+    font-size: 60px;
+    /* Bigger! */
+    padding: 20px 60px;
+    border-radius: 60px;
     background: #4CAF50;
     color: white;
     border: none;
-    box-shadow: 0 10px 0 #2E7D32;
+    border: 5px solid white;
+    /* Pop! */
+    box-shadow: 0 10px 0 #2E7D32, 0 10px 20px rgba(0, 0, 0, 0.2);
     cursor: pointer;
     font-family: inherit;
     font-weight: 900;
     animation: pulse 2s infinite;
     transition: transform 0.1s;
+    margin-top: 20px;
 }
 
 #start-btn:active {
@@ -843,6 +847,9 @@ body {
     justify-content: center;
     align-items: center;
     transition: all 0.2s;
+    position: absolute;
+    top: 20px;
+    right: 20px;
 }
 
 .icon-btn:active {
@@ -851,26 +858,31 @@ body {
 }
 
 .whatsapp-btn {
-    margin-top: 30px;
-    background: rgba(255, 255, 255, 0.8);
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 0;
+    background: rgba(255, 255, 255, 0.9);
     border: 2px solid #25D366;
     color: #075E54;
-    padding: 10px 20px;
-    border-radius: 25px;
+    padding: 12px 30px;
+    border-radius: 30px;
     text-decoration: none;
     font-weight: bold;
-    font-size: 16px;
+    font-size: 18px;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    white-space: nowrap;
 }
 
 .whatsapp-btn:hover {
     background: #25D366;
     color: white;
-    transform: scale(1.05);
+    transform: translateX(-50%) scale(1.05);
 }
 
 /* Background Decorations */
