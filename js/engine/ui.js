@@ -280,6 +280,7 @@ export function setTheme(mode) {
     const standardStage = document.getElementById('standard-stage');
     const sentencesStage = document.getElementById('sentences-stage');
     const feedLionStage = document.getElementById('feed-lion-stage');
+    const listeningStage = document.getElementById('listening-stage');
     const mathStage = document.getElementById('math-stage');
     const puzzleStage = document.getElementById('puzzle-stage');
     const memoryStage = document.getElementById('memory-stage');
@@ -289,6 +290,7 @@ export function setTheme(mode) {
     if (standardStage) standardStage.classList.add('hidden');
     if (sentencesStage) sentencesStage.classList.add('hidden');
     if (feedLionStage) feedLionStage.classList.add('hidden');
+    if (listeningStage) listeningStage.classList.add('hidden');
     if (mathStage) mathStage.classList.remove('active');
     if (puzzleStage) puzzleStage.classList.add('hidden');
     if (memoryStage) memoryStage.classList.remove('active');
@@ -309,6 +311,8 @@ export function setTheme(mode) {
         if (sentencesStage) sentencesStage.classList.remove('hidden');
     } else if (mode === 'feedlion') {
         if (feedLionStage) feedLionStage.classList.remove('hidden');
+    } else if (mode === 'listening') {
+        if (listeningStage) listeningStage.classList.remove('hidden');
     } else {
         if (standardStage) {
             standardStage.classList.remove('hidden');

@@ -13,15 +13,15 @@ const listeningItems = shadowLibrary;
 
 export function initListeningGame() {
     resetRoundState();
-    const gameBoard = document.getElementById('game-board');
-    if (!gameBoard) return;
+    const stage = document.getElementById('listening-stage');
+    if (!stage) return;
 
-    gameBoard.innerHTML = `
-        <div id="listening-stage" class="game-stage active" style="display: flex; flex-direction: column; align-items: center; width: 100%;">
-            <div id="instruction-area" style="margin-bottom: 20px; font-size: 2rem; cursor: pointer;">
-                🔊 <span id="instruction-text">Listen...</span>
+    stage.innerHTML = `
+        <div class="listening-game-container" style="display: flex; flex-direction: column; align-items: center; width: 100%; padding: 20px;">
+            <div id="instruction-area" style="margin-bottom: 30px; font-size: 2.5rem; cursor: pointer; background: white; padding: 15px 30px; border-radius: 50px; box-shadow: 0 6px 0 rgba(0,0,0,0.1); transition: transform 0.2s;">
+                🔊 <span id="instruction-text" style="font-weight: 900; color: #3498db;">Listen...</span>
             </div>
-            <div id="listening-grid" style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;"></div>
+            <div id="listening-grid" style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; width: 100%;"></div>
         </div>
     `;
 
@@ -75,7 +75,7 @@ function playPrompt(target) {
 
     // Animate instruction
     const instr = document.getElementById('instruction-area');
-    if(instr) {
+    if (instr) {
         instr.style.transform = "scale(1.1)";
         setTimeout(() => instr.style.transform = "scale(1)", 200);
     }
