@@ -1,5 +1,5 @@
 
-import { speakSequence } from '../engine/audio.js';
+import { speakSequence, speakText } from '../engine/audio.js';
 import { gameState } from '../engine/state.js';
 import { showCelebration } from '../engine/ui.js';
 
@@ -54,6 +54,13 @@ export function initSentenceGame() {
     // Pick a random sentence
     currentSentence = sentenceData[Math.floor(Math.random() * sentenceData.length)];
 
+    // 0. Instruction Header
+    const instr = document.createElement('div');
+    instr.className = 'sentence-instruction';
+    instr.textContent = "Complete the Story!";
+    instr.onclick = () => speakText("Complete the story!");
+    container.appendChild(instr);
+
     // 1. Create the Sentence Strip
     const strip = document.createElement('div');
     strip.className = 'sentence-strip';
@@ -100,9 +107,12 @@ export function initSentenceGame() {
 
     container.appendChild(optionsContainer);
 
-    // Initial Speak (Subject + Connector)
+    // Initial Speak (Instruction -> Subject + Connector)
     setTimeout(() => {
-        speakSequence([currentSentence.subject, currentSentence.conn]);
+        speakText("Complete the story!", null, true); // Speak instruction
+        setTimeout(() => {
+            speakSequence([currentSentence.subject, currentSentence.conn]);
+        }, 1500);
     }, 500);
 }
 
