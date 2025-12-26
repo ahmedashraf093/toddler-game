@@ -2015,3 +2015,22 @@ body {
         height: 80px;
     }
 }
+
+/* --- Category Separators --- */
+.game-category-separator {
+    grid-column: 1 / -1;
+    text-align: center;
+    font-size: 24px;
+    font-weight: 900;
+    color: var(--primary-color);
+    margin-top: 20px;
+    margin-bottom: 10px;
+    text-transform: capitalize;
+    background: linear-gradient(90deg, transparent, rgba(79, 172, 254, 0.1), transparent);
+    padding: 5px;
+    border-radius: 10px;
+}
+
+#start-screen.hidden {
+    display: none !important;
+}
