@@ -10,6 +10,7 @@ import { initSortingGame } from './games/sorting.js';
 import { initOddOneOutGame } from './games/odd-one-out.js';
 import { initFeedLionGame } from './games/feed-lion.js';
 import { initSentenceGame } from './games/sentences.js';
+import { initListeningGame } from './games/listening.js';
 import { initChallenges, toggleChallengeMenu, isContentUnlocked } from './challenges/manager.js';
 import { ParentalGate } from './engine/parental-gate.js';
 
@@ -17,22 +18,30 @@ const GAME_VERSION = 'v2.0';
 
 // Configuration for Game Modes
 const gameModes = [
-    { id: 'feedlion', name: 'Feed Lion', icon: '🦁' },
-    { id: 'sorting', name: 'Sorting', icon: '📂' },
-    { id: 'shadow', name: 'Shadows', icon: '🐶' },
-    { id: 'letter', name: 'Letters', icon: '🅰️' },
-    { id: 'pattern', name: 'Pattern', icon: '❓' },
-    { id: 'job', name: 'Jobs', icon: '👮' },
-    { id: 'number', name: 'Numbers', icon: '1️⃣' },
-    { id: 'shape', name: 'Shapes', icon: '🔷' },
-    { id: 'weather', name: 'Weather', icon: '🌤️' },
-    { id: 'nature', name: 'Nature', icon: '🍃' },
-    { id: 'habitat', name: 'Homes', icon: '🏠' },
-    { id: 'puzzle', name: 'Puzzle', icon: '🧩' },
-    { id: 'memory', name: 'Memory', icon: '🧠' },
-    { id: 'math', name: 'Math', icon: '➕' },
-    { id: 'oddoneout', name: 'Odd One', icon: '🧐' },
-    { id: 'sentences', name: 'Story', icon: '📝' }
+    // World
+    { id: 'feedlion', name: 'Feed Lion', icon: '🦁', category: 'world' },
+    { id: 'weather', name: 'Weather', icon: '🌤️', category: 'world' },
+    { id: 'nature', name: 'Nature', icon: '🍃', category: 'world' },
+    { id: 'habitat', name: 'Homes', icon: '🏠', category: 'world' },
+
+    // Basics
+    { id: 'shadow', name: 'Shadows', icon: '🐶', category: 'basics' },
+    { id: 'shape', name: 'Shapes', icon: '🔷', category: 'basics' },
+    { id: 'sorting', name: 'Sorting', icon: '📂', category: 'basics' },
+
+    // Learning
+    { id: 'letter', name: 'Letters', icon: '🅰️', category: 'learning' },
+    { id: 'number', name: 'Numbers', icon: '1️⃣', category: 'learning' },
+    { id: 'math', name: 'Math', icon: '➕', category: 'learning' },
+    { id: 'sentences', name: 'Story', icon: '📝', category: 'learning' },
+    { id: 'job', name: 'Jobs', icon: '👮', category: 'learning' },
+    { id: 'listening', name: 'Listening', icon: '👂', category: 'learning' },
+
+    // Logic
+    { id: 'pattern', name: 'Pattern', icon: '❓', category: 'logic' },
+    { id: 'puzzle', name: 'Puzzle', icon: '🧩', category: 'logic' },
+    { id: 'memory', name: 'Memory', icon: '🧠', category: 'logic' },
+    { id: 'oddoneout', name: 'Odd One', icon: '🧐', category: 'logic' }
 ];
 
 window.addEventListener('load', () => {
@@ -155,6 +164,7 @@ function initRound() {
     else if (mode === 'oddoneout') initOddOneOutGame();
     else if (mode === 'feedlion') initFeedLionGame();
     else if (mode === 'sentences') initSentenceGame();
+    else if (mode === 'listening') initListeningGame();
     else initStandardGame();
 }
 
