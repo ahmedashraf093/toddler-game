@@ -99,8 +99,10 @@ function handleBubbleClick(e, val, targetNum, bubble) {
     if (String(val) === String(targetNum)) {
         // Correct
         popBubble(bubble, true);
-        const seq = ['generic_pop', `num_${val}`];
-        speakSequence(seq); // "Pop! Five!"
+        popBubble(bubble, true);
+
+        // Use Generated Sprites: "Pop!" + "One"
+        speakSequence(['generic_pop', `num_${val}`]);
 
         updateScore(10);
         updateScoreUI();

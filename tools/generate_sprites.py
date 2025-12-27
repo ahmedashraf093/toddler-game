@@ -17,7 +17,12 @@ content = {
         {'id': 'yummy', 'text': 'Yummy!'},
         {'id': 'home', 'text': 'Home!'},
         {'id': 'nature', 'text': 'Nature!'},
-        {'id': 'amazing', 'text': 'Amazing!'}
+        {'id': 'amazing', 'text': 'Amazing!'},
+        {'id': 'pop', 'text': 'Pop!'},
+        {'id': 'emo_happy_win', 'text': 'You did it! Happy Face!'},
+        {'id': 'emo_sad_win', 'text': 'You did it! Sad Face!'},
+        {'id': 'emo_angry_win', 'text': 'You did it! Angry Face!'},
+        {'id': 'emo_surprised_win', 'text': 'You did it! Surprised Face!'}
     ],
     'system': [
         {'id': 'find_the_pairs', 'text': 'Find the pairs!'},
@@ -93,6 +98,13 @@ content = {
         'Car', 'Bus', 'Train', 'Helicopter',
         'Police', 'Fireman', 'Doctor', 'Astronaut', 'Chef', 'Farmer', 'Artist',
         'Mechanic', 'Teacher', 'Pilot', 'Builder', 'Scientist', 'Duck'
+        'Mechanic', 'Teacher', 'Pilot', 'Builder', 'Scientist', 'Duck'
+    ],
+    'emotions': [
+        {'id': 'happy', 'text': 'Make a Happy Face!'},
+        {'id': 'sad', 'text': 'Make a Sad Face!'},
+        {'id': 'angry', 'text': 'Make an Angry Face!'},
+        {'id': 'surprised', 'text': 'Make a Surprised Face!'}
     ]
 }
 
@@ -168,6 +180,13 @@ async def main():
         key = f"noun_{safe_id}"
         filepath = os.path.join(TEMP_DIR, f"{key}.mp3")
         tasks.append(generate_audio(text, filepath))
+        file_map.append({'key': key, 'path': filepath})
+
+    # Emotions Instructions (New)
+    for item in content.get('emotions', []):
+        key = f"emo_{item['id']}"
+        filepath = os.path.join(TEMP_DIR, f"{key}.mp3")
+        tasks.append(generate_audio(item['text'], filepath))
         file_map.append({'key': key, 'path': filepath})
 
     print(f"Generating {len(tasks)} temp files...")

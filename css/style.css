@@ -28,7 +28,11 @@ body {
     touch-action: none;
     overscroll-behavior: none;
     width: 100vw;
-    overflow-y: auto;
+    width: 100vw;
+    overflow: hidden;
+    /* Disable global scroll */
+    position: fixed;
+    /* Lock body in place */
 }
 
 /* 🎨 Palette: Global Focus Ring */
