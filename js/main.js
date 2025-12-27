@@ -12,7 +12,9 @@ import { initOddOneOutGame } from './games/odd-one-out.js';
 import { initFeedLionGame } from './games/feed-lion.js';
 import { initSentenceGame } from './games/sentences.js';
 import { initListeningGame } from './games/listening.js';
+import { initBubblePopGame } from './games/bubble-pop.js';
 import { initChallenges, toggleChallengeMenu, isContentUnlocked } from './challenges/manager.js';
+import { initStickers, toggleStickerBook } from './engine/stickers.js';
 import { ParentalGate } from './engine/parental-gate.js';
 
 const GAME_VERSION = 'v2.0';
@@ -42,7 +44,8 @@ const gameModes = [
     { id: 'pattern', name: 'Pattern', icon: 'assets/images/game_icons/icon_pattern.png', category: 'logic' },
     { id: 'puzzle', name: 'Puzzle', icon: 'assets/images/game_icons/icon_puzzle.png', category: 'logic' },
     { id: 'memory', name: 'Memory', icon: 'assets/images/game_icons/icon_memory.png', category: 'logic' },
-    { id: 'oddoneout', name: 'Odd One', icon: 'assets/images/game_icons/icon_oddoneout.png', category: 'logic' }
+    { id: 'oddoneout', name: 'Odd One', icon: 'assets/images/game_icons/icon_oddoneout.png', category: 'logic' },
+    { id: 'bubblepop', name: 'Bubble Pop', icon: 'assets/images/game_icons/icon_bubble.png', category: 'logic' }
 ];
 
 window.addEventListener('load', () => {
@@ -54,11 +57,23 @@ window.addEventListener('load', () => {
 
     initAudio();
     initInput(); // Start Idle Tracking
+    initAudio();
+    initInput(); // Start Idle Tracking
     initChallenges(setMode);
+    initStickers(); // Load stickers
 
     // Bind global buttons
     const startBtn = document.getElementById('start-btn');
     if (startBtn) startBtn.onclick = startGame;
+
+    // ... (mute btn)
+
+    const stickerBookBtn = document.getElementById('sticker-book-btn');
+    if (stickerBookBtn) stickerBookBtn.onclick = () => toggleStickerBook(true);
+
+    // Also make the progress bar clickable
+    const stickerBar = document.getElementById('sticker-bar-container');
+    if (stickerBar) stickerBar.onclick = () => toggleStickerBook(true);
 
     const muteBtn = document.getElementById('mute-btn');
     if (muteBtn) {
@@ -169,6 +184,7 @@ function initRound() {
     else if (mode === 'feedlion') initFeedLionGame();
     else if (mode === 'sentences') initSentenceGame();
     else if (mode === 'listening') initListeningGame();
+    else if (mode === 'bubblepop') initBubblePopGame();
     else initStandardGame();
 }
 

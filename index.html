@@ -27,6 +27,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700;900&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/bubble-pop.css">
+    <link rel="stylesheet" href="css/stickers.css">
 </head>
 
 <body>
@@ -85,9 +87,16 @@
                 </button>
             </div>
             <div class="score-group">
-                <div class="score-pill">
-                    <span class="icon">⭐️</span> <span id="score-val">0</span>
+                <div class="sticker-bar-container" id="sticker-bar-container" role="button"
+                    aria-label="Sticker Progress">
+                    <div class="sticker-icon-small">⭐</div>
+                    <div class="progress-track">
+                        <div class="progress-fill" id="sticker-progress-fill" style="width: 0%"></div>
+                    </div>
                 </div>
+                <button id="sticker-book-btn" class="header-pill" aria-label="My Stickers">
+                    <span class="icon">📒</span>
+                </button>
             </div>
         </div>
 
@@ -134,6 +143,8 @@
         <div class="math-options" id="math-options-row"></div>
     </div>
 
+    <div id="bubble-stage" class="hidden"></div>
+
     <div id="reward-modal">
         <div class="modal-card">
             <span class="big-letter" id="modal-top"></span>
@@ -164,6 +175,17 @@
             <button class="close-menu-btn" aria-label="Close menu">❌</button>
         </div>
         <div id="challenges-list"></div>
+    </div>
+
+    <!-- Sticker Book Overlay -->
+    <div id="sticker-book-overlay" class="overlay-full hidden">
+        <div class="menu-header">
+            <h2>My Sticker Book 📒</h2>
+            <button class="close-menu-btn" aria-label="Close book">❌</button>
+        </div>
+        <div id="sticker-grid" class="sticker-grid">
+            <!-- Stickers populated by JS -->
+        </div>
     </div>
 
     <div id="celebration-overlay" class="hidden">
