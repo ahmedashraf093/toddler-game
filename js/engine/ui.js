@@ -156,11 +156,16 @@ export function showLoader(show = true, text = "Loading Fun...") {
 }
 
 export function updateScoreUI() {
-    const scoreEl = document.getElementById('score-val');
-    if (scoreEl) {
-        scoreEl.textContent = gameState.totalScore;
-        scoreEl.parentElement.style.transform = "scale(1.2)";
-        setTimeout(() => { scoreEl.parentElement.style.transform = "scale(1)"; }, 200);
+    // This function might be called by legacy code, but we want to focus on sticker progress.
+    // However, the sticker progress is updated by addStickerProgress inside the game logic or state wrapper.
+    // Let's rely on the sticker module to update its own UI.
+    // But for visual feedback on "points", maybe we show a flying star?
+
+    // We will keep this function to prevent errors, but maybe use it to trigger a small "progress +1" visual?
+    const progressFill = document.getElementById('sticker-progress-fill');
+    if (progressFill) {
+        progressFill.parentElement.classList.add('pulse');
+        setTimeout(() => progressFill.parentElement.classList.remove('pulse'), 300);
     }
 }
 

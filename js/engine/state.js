@@ -15,8 +15,13 @@ export function resetRoundState() {
     gameState.correctCount = 0;
 }
 
+import { addStickerProgress } from './stickers.js';
+
 export function updateScore(points) {
     gameState.totalScore += points;
+    // 10 points = 5% progress? 
+    // Let's say 200 points for a sticker -> 10 points = 5%
+    addStickerProgress(points / 2);
     return gameState.totalScore;
 }
 

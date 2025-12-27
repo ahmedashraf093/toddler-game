@@ -1,0 +1,144 @@
+/* Bubble Pop Game Styles */
+.bubble-stage {
+    position: relative;
+    width: 100%;
+    height: 70vh;
+    /* Occupy most of the board */
+    overflow: hidden;
+    background: linear-gradient(to bottom, #87CEEB 0%, #E0F7FA 100%);
+    border-radius: 15px;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.bubble-instruction {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.8);
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+    z-index: 10;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.bubble {
+    position: absolute;
+    bottom: -100px;
+    /* Start below view */
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: 900;
+    color: white;
+    cursor: pointer;
+    box-shadow:
+        inset -10px -10px 20px rgba(0, 0, 0, 0.1),
+        inset 10px 10px 20px rgba(255, 255, 255, 0.4),
+        0 5px 10px rgba(0, 0, 0, 0.1);
+    animation: floatUp linear forwards;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.bubble::after {
+    content: '';
+    position: absolute;
+    top: 15%;
+    left: 20%;
+    width: 25%;
+    height: 15%;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.6);
+    transform: rotate(-45deg);
+}
+
+.bub-red {
+    background: radial-gradient(circle at 30% 30%, #ff7675, #d63031);
+}
+
+.bub-blue {
+    background: radial-gradient(circle at 30% 30%, #74b9ff, #0984e3);
+}
+
+.bub-green {
+    background: radial-gradient(circle at 30% 30%, #55efc4, #00b894);
+}
+
+.bub-purple {
+    background: radial-gradient(circle at 30% 30%, #a29bfe, #6c5ce7);
+}
+
+.bub-orange {
+    background: radial-gradient(circle at 30% 30%, #fab1a0, #e17055);
+}
+
+@keyframes floatUp {
+    0% {
+        transform: translateY(0) translateX(0);
+        bottom: -100px;
+        opacity: 0.8;
+    }
+
+    25% {
+        transform: translateX(10px);
+    }
+
+    50% {
+        transform: translateX(-10px);
+    }
+
+    75% {
+        transform: translateX(5px);
+    }
+
+    100% {
+        transform: translateY(-90vh);
+        bottom: 100%;
+        opacity: 1;
+    }
+}
+
+.bubble.popped {
+    animation: none;
+    transition: all 0.2s;
+    opacity: 0;
+    transform: scale(1.5);
+    background: transparent;
+    box-shadow: none;
+    color: #333;
+}
+
+.bubble.shake {
+    animation: shake 0.4s cubic-bezier(.36, .07, .19, .97) both;
+}
+
+@keyframes shake {
+
+    10%,
+    90% {
+        transform: translate3d(-2px, 0, 0);
+    }
+
+    20%,
+    80% {
+        transform: translate3d(4px, 0, 0);
+    }
+
+    30%,
+    50%,
+    70% {
+        transform: translate3d(-8px, 0, 0);
+    }
+
+    40%,
+    60% {
+        transform: translate3d(8px, 0, 0);
+    }
+}
