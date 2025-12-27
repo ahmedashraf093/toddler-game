@@ -99,8 +99,10 @@ function handleBubbleClick(e, val, targetNum, bubble) {
     if (String(val) === String(targetNum)) {
         // Correct
         popBubble(bubble, true);
-        const seq = ['generic_pop', `num_${val}`];
-        speakSequence(seq); // "Pop! Five!"
+        popBubble(bubble, true);
+
+        // Use Generated Sprites: "Pop!" + "One"
+        speakSequence(['generic_pop', `num_${val}`]);
 
         updateScore(10);
         updateScoreUI();
@@ -127,18 +129,54 @@ function handleBubbleClick(e, val, targetNum, bubble) {
 }
 
 function popBubble(bubble, isCorrect) {
-    bubble.style.transform = "scale(1.2)";
-    bubble.innerHTML = isCorrect ? "🌟" : "💨";
-    bubble.classList.add('popped');
+    // Freeze bubble at current visual position
+    const rect = bubble.getBoundingClientRect();
+    bubble.style.position = 'fixed';
+    bubble.style.left = rect.left + 'px';
+    bubble.style.top = rect.top + 'px';
+    bubble.style.bottom = 'auto';
+    bubble.style.transform = 'none';
 
-    // Trigger confetti at position if correct
+    bubble.classList.add('popped');
+    bubble.innerHTML = isCorrect ? "💥" : "💨";
+
+    // Create particle spray effect
     if (isCorrect) {
-        const rect = bubble.getBoundingClientRect();
-        // Trigger confetti at the bottom of the balloon as requested
-        triggerConfetti(rect.left + rect.width / 2, rect.bottom - 20);
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+
+        // Spawn 8 particles in a circle
+        for (let i = 0; i < 8; i++) {
+            const particle = document.createElement('div');
+            particle.style.position = 'fixed';
+            particle.style.left = centerX + 'px';
+            particle.style.top = centerY + 'px';
+            particle.style.fontSize = '2rem';
+            particle.innerHTML = ['✨', '⭐', '💫', '🌟'][Math.floor(Math.random() * 4)];
+            particle.style.pointerEvents = 'none';
+            particle.style.zIndex = '9999';
+
+            const angle = (i / 8) * Math.PI * 2;
+            const distance = 100;
+            const tx = Math.cos(angle) * distance;
+            const ty = Math.sin(angle) * distance;
+
+            document.body.appendChild(particle);
+
+            particle.animate([
+                { transform: 'translate(0, 0) scale(1) rotate(0deg)', opacity: 1 },
+                { transform: `translate(${tx}px, ${ty}px) scale(0.5) rotate(360deg)`, opacity: 0 }
+            ], {
+                duration: 600,
+                easing: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+            }).onfinish = () => particle.remove();
+        }
+
+        // Trigger confetti at the center
+        triggerConfetti(centerX, centerY);
     }
 
     setTimeout(() => {
         if (bubble.parentNode) bubble.remove();
-    }, 200);
+    }, 600);
 }

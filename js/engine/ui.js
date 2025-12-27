@@ -368,14 +368,21 @@ export function setTheme(mode) {
     const puzzleStage = document.getElementById('puzzle-stage');
     const memoryStage = document.getElementById('memory-stage');
     const oddOneStage = document.getElementById('odd-one-stage');
+    // New stages
+    const bubbleStage = document.getElementById('bubble-stage');
+    const emotionsStage = document.getElementById('emotions-stage');
+    const listeningStage = document.getElementById('listening-stage');
 
-    // Reset visibility
+    // Reset visibility (Hide ALL)
     if (standardBoard) standardBoard.style.display = 'none';
     if (mathStage) mathStage.classList.remove('active');
     if (puzzleStage) puzzleStage.classList.add('hidden');
     if (memoryStage) memoryStage.classList.remove('active');
     if (oddOneStage) oddOneStage.classList.remove('active');
     if (diffBar) diffBar.style.display = 'none';
+    if (emotionsStage) emotionsStage.classList.add('hidden');
+    if (bubbleStage) bubbleStage.classList.add('hidden');
+    if (listeningStage) listeningStage.classList.add('hidden');
 
     if (mode === 'math') {
         if (mathStage) mathStage.classList.add('active');
@@ -387,13 +394,24 @@ export function setTheme(mode) {
         if (puzzleStage) puzzleStage.classList.remove('hidden');
     } else if (mode === 'oddoneout') {
         if (oddOneStage) oddOneStage.classList.add('active');
+    } else if (mode === 'emotions') {
+        if (emotionsStage) emotionsStage.classList.remove('hidden');
+    } else if (mode === 'bubblepop') {
+        // Bubble pop uses visual standard board but we also check its specific stage if standalone
+        // In current implementation it appends to game-board, so we might need to SHOW game-board
+        if (standardBoard) {
+            standardBoard.style.display = 'flex';
+            standardBoard.className = 'game-board ' + mode + '-mode';
+        }
     } else {
+        // Standard modes (shadow, letter, number, etc)
         if (standardBoard) {
             standardBoard.style.display = 'flex';
             standardBoard.className = 'game-board ' + mode + '-mode';
         }
     }
 }
+
 
 export function populateGamesMenu(gameModes, setModeCallback) {
     const grid = document.querySelector('.games-grid');

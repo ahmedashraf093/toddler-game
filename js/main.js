@@ -15,6 +15,7 @@ import { initListeningGame } from './games/listening.js';
 import { initBubblePopGame } from './games/bubble-pop.js';
 import { initChallenges, toggleChallengeMenu, isContentUnlocked } from './challenges/manager.js';
 import { initStickers, toggleStickerBook } from './engine/stickers.js';
+import { initEmotionGame } from './games/emotions.js';
 import { ParentalGate } from './engine/parental-gate.js';
 
 const GAME_VERSION = 'v2.0';
@@ -34,8 +35,9 @@ const gameModes = [
 
     // Learning
     { id: 'letter', name: 'Letters', icon: 'assets/images/game_icons/icon_letters.png', category: 'learning' },
-    { id: 'number', name: 'Numbers', icon: 'assets/images/game_icons/icon_numbers.png', category: 'learning' },
-    { id: 'math', name: 'Math', icon: 'assets/images/game_icons/icon_math.png', category: 'learning' },
+    { id: 'bubblepop', name: 'Bubble Pop', icon: 'assets/images/game_icons/icon_bubble.png', category: 'basics' },
+    { id: 'emotions', name: 'Emotions', icon: '🦁', category: 'learning' },
+    { id: 'math', name: 'Math Party', icon: 'assets/images/game_icons/icon_math.png', category: 'learning' },
     { id: 'sentences', name: 'Story', icon: 'assets/images/game_icons/icon_story.png', category: 'learning' },
     { id: 'job', name: 'Jobs', icon: 'assets/images/game_icons/icon_jobs.png', category: 'learning' },
     { id: 'listening', name: 'Listening', icon: 'assets/images/game_icons/icon_listening.png', category: 'learning' },
@@ -45,7 +47,7 @@ const gameModes = [
     { id: 'puzzle', name: 'Puzzle', icon: 'assets/images/game_icons/icon_puzzle.png', category: 'logic' },
     { id: 'memory', name: 'Memory', icon: 'assets/images/game_icons/icon_memory.png', category: 'logic' },
     { id: 'oddoneout', name: 'Odd One', icon: 'assets/images/game_icons/icon_oddoneout.png', category: 'logic' },
-    { id: 'bubblepop', name: 'Bubble Pop', icon: 'assets/images/game_icons/icon_bubble.png', category: 'logic' }
+
 ];
 
 window.addEventListener('load', () => {
@@ -185,6 +187,7 @@ function initRound() {
     else if (mode === 'sentences') initSentenceGame();
     else if (mode === 'listening') initListeningGame();
     else if (mode === 'bubblepop') initBubblePopGame();
+    else if (mode === 'emotions') initEmotionGame();
     else initStandardGame();
 }
 

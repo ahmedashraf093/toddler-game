@@ -1,6 +1,6 @@
 
 import { speakSequence, speakText, stopAllAudio } from '../engine/audio.js';
-import { gameState } from '../engine/state.js';
+import { gameState, updateScore } from '../engine/state.js';
 import { showCelebration, updateScoreUI } from '../engine/ui.js';
 import { checkOverallProgress } from '../challenges/manager.js';
 
@@ -176,7 +176,7 @@ function handleOptionClick(key, emoji, btnElement) {
             speakSequence([currentSentence.subject, currentSentence.conn, currentSentence.object]);
 
             // Track progress (handles celebration every 3 rounds)
-            gameState.totalScore += 20;
+            updateScore(20);
             updateScoreUI();
             checkOverallProgress('sentences');
 
