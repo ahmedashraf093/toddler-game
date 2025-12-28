@@ -75,7 +75,16 @@ window.addEventListener('load', () => {
 
     // Also make the progress bar clickable
     const stickerBar = document.getElementById('sticker-bar-container');
-    if (stickerBar) stickerBar.onclick = () => toggleStickerBook(true);
+    if (stickerBar) {
+        stickerBar.onclick = () => toggleStickerBook(true);
+        // 🎨 Palette: Keyboard accessibility for sticker bar
+        stickerBar.onkeydown = (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleStickerBook(true);
+            }
+        };
+    }
 
     const muteBtn = document.getElementById('mute-btn');
     if (muteBtn) {
