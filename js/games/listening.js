@@ -17,11 +17,11 @@ export function initListeningGame() {
     if (!gameBoard) return;
 
     gameBoard.innerHTML = `
-        <div id="listening-stage" class="game-stage active" style="display: flex; flex-direction: column; align-items: center; width: 100%;">
-            <div id="instruction-area" style="margin-bottom: 20px; font-size: 2rem; cursor: pointer;">
+        <div id="listening-stage" class="listening-stage active">
+            <div id="instruction-area" class="instruction-area">
                 🔊 <span id="instruction-text">Listen...</span>
             </div>
-            <div id="listening-grid" style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;"></div>
+            <div id="listening-grid" class="listening-grid"></div>
         </div>
     `;
 
@@ -51,9 +51,8 @@ function startListeningRound() {
 
     options.forEach(item => {
         const card = document.createElement('div');
-        card.className = 'item droppable'; // Reuse styling
-        card.style.cursor = 'pointer';
-        card.innerHTML = `<div class="content" style="font-size: 4rem;">${item.e}</div>`;
+        card.className = 'item droppable listening-card'; // Reuse styling
+        card.innerHTML = `<div class="content listening-content">${item.e}</div>`;
         card.setAttribute('role', 'button');
         card.setAttribute('aria-label', item.n);
 
