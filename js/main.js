@@ -160,8 +160,12 @@ function startGame() {
 
 function setDifficulty(level, btn) {
     gameState.mathDifficulty = level;
-    document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.diff-btn').forEach(b => {
+        b.classList.remove('active');
+        b.setAttribute('aria-pressed', 'false');
+    });
     btn.classList.add('active');
+    btn.setAttribute('aria-pressed', 'true');
 
     // Restart round if applicable
     if (gameState.currentMode === 'math' || gameState.currentMode === 'memory') {
