@@ -2865,3 +2865,135 @@ body {
         align-content: center;
     }
 }
+
+/* --- Music Maker Game --- */
+#music-stage {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 800px;
+    height: 100%;
+    justify-content: center;
+    padding-bottom: 20px;
+    padding-top: 20px;
+}
+
+#music-stage.active {
+    display: flex;
+}
+
+.music-instruction {
+    font-size: 2rem;
+    color: #ff4081;
+    background: white;
+    padding: 10px 25px;
+    border-radius: 50px;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 0 rgba(0,0,0,0.1);
+    font-weight: 900;
+}
+
+.xylophone-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end; /* Align bottom */
+    gap: 10px;
+    padding: 20px;
+    background: rgba(255,255,255,0.5);
+    border-radius: 20px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.xylophone-key {
+    width: 60px;
+    border-radius: 10px;
+    border: 3px solid rgba(0,0,0,0.1);
+    box-shadow: 0 5px 0 rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    padding-bottom: 10px;
+    cursor: pointer;
+    transition: transform 0.1s, height 0.3s;
+    user-select: none;
+    position: relative;
+}
+
+.xylophone-key:active, .xylophone-key.active {
+    transform: translateY(5px) scale(0.98);
+    box-shadow: 0 0 0 rgba(0,0,0,0.2);
+    filter: brightness(1.2);
+}
+
+.key-animal {
+    font-size: 30px;
+    margin-bottom: 5px;
+    pointer-events: none;
+}
+
+.key-note {
+    font-size: 20px;
+    font-weight: bold;
+    color: rgba(255,255,255,0.9);
+    pointer-events: none;
+    text-shadow: 1px 1px 0 rgba(0,0,0,0.2);
+}
+
+.music-controls {
+    margin-top: 20px;
+}
+
+.action-btn {
+    background: #ff4081;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 1.2rem;
+    border-radius: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 5px 0 #c2185b;
+    transition: transform 0.1s;
+    font-family: inherit;
+}
+
+.action-btn:active {
+    transform: translateY(4px);
+    box-shadow: 0 1px 0 #c2185b;
+}
+
+/* Landscape Mode for Xylophone */
+@media (orientation: landscape) and (max-height: 600px) {
+    .xylophone-container {
+        gap: 15px;
+    }
+    .xylophone-key {
+        width: 70px; /* Wider keys */
+    }
+}
+
+@media (max-width: 600px) {
+    .xylophone-container {
+        gap: 2px;
+        padding: 4px;
+        width: 100%;
+        box-sizing: border-box;
+        overflow: hidden;
+    }
+    .xylophone-key {
+        width: auto;
+        flex: 1 1 0px;
+        min-width: 0;
+        box-sizing: border-box;
+        border-width: 2px;
+    }
+    .key-animal {
+        font-size: 16px;
+        margin-bottom: 2px;
+    }
+    .key-note {
+        font-size: 12px;
+    }
+}

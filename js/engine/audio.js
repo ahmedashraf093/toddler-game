@@ -1,7 +1,7 @@
 let selectedVoice = null;
 let lastSpokenText = '';
 let lastSpokenTime = 0;
-let audioCtx = null;
+export let audioCtx = null;
 // Removed Oscillator BGM variables
 let bgmAudio = new Audio('background_happy.mp3');
 bgmAudio.loop = true;
