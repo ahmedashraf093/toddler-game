@@ -14,7 +14,8 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    min-height: 100dvh;
+    height: 100dvh;
+    max-height: 100dvh;
     margin: 0;
     /* Disable text selection to prevent accidental highlighting during drag/touch */
     -webkit-user-select: none;
@@ -32,6 +33,7 @@ body {
     overflow: hidden;
     /* Disable global scroll */
     position: fixed;
+    bottom: 0;
     /* Lock body in place */
 }
 
