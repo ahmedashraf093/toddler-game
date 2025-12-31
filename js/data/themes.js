@@ -14,7 +14,8 @@ export const themes = {
     pattern: { primary: '#e056fd', bg: '#fae3ff', dots: '#f4c4ff' },
     sorting: { primary: '#ff9f43', bg: '#fff2e6', dots: '#ffe0b3' },
     oddoneout: { primary: '#9b59b6', bg: '#f5eef8', dots: '#e8daef' },
-    sentences: { primary: '#3498db', bg: '#e8f6f3', dots: '#a2d9ce' }
+    sentences: { primary: '#3498db', bg: '#e8f6f3', dots: '#a2d9ce' },
+    music: { primary: '#ff4081', bg: '#fff0f5', dots: '#f48fb1' }
 };
 
 // Appended theme for Listening Game
