@@ -1,4 +1,4 @@
-import { initAudio, resumeAudioContext, toggleMute, getMuteState } from './engine/audio.js';
+import { initAudio, resumeAudioContext, toggleMute, getMuteState, setMusicAllowed } from './engine/audio.js';
 import { gameState } from './engine/state.js';
 import { showLoader, toggleMenu, setTheme, populateGamesMenu } from './engine/ui.js';
 import { initInput } from './engine/input.js';
@@ -180,6 +180,14 @@ function setMode(mode) {
     gameState.currentMode = mode;
     toggleMenu(true); // Close menu
     setTheme(mode);
+
+    // Disable BGM for Listening and Music games
+    if (mode === 'listening' || mode === 'music') {
+        setMusicAllowed(false);
+    } else {
+        setMusicAllowed(true);
+    }
+
     initRound();
 }
 
