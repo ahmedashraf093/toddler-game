@@ -90,7 +90,7 @@
             <div class="score-group">
                 <div class="sticker-bar-container" id="sticker-bar-container" role="button" tabindex="0"
                     aria-label="Sticker Progress">
-                    <div class="sticker-icon-small">⭐</div>
+                    <div class="sticker-icon-small" aria-hidden="true">⭐</div>
                     <div class="progress-track">
                         <div class="progress-fill" id="sticker-progress-fill" style="width: 0%"></div>
                     </div>
@@ -102,9 +102,9 @@
         </div>
 
         <div id="difficulty-bar">
-            <button class="diff-btn diff-easy active">Easy</button>
-            <button class="diff-btn diff-med">Med</button>
-            <button class="diff-btn diff-hard">Hard</button>
+            <button class="diff-btn diff-easy active" aria-label="Easy Difficulty">Easy</button>
+            <button class="diff-btn diff-med" aria-label="Medium Difficulty">Med</button>
+            <button class="diff-btn diff-hard" aria-label="Hard Difficulty">Hard</button>
         </div>
     </div>
 
