@@ -8,6 +8,7 @@ bgmAudio.loop = true;
 bgmAudio.volume = 0.1; // Keep it background level
 
 let isMuted = false;
+let isMusicAllowed = true; // New flag for Game Mode logic
 let isBgmPlaying = false;
 
 // Audio Sprites
@@ -229,8 +230,17 @@ async function decodeSprites() {
 
 // --- Music ---
 
+export function setMusicAllowed(allowed) {
+    isMusicAllowed = allowed;
+    if (allowed && !isMuted) {
+        playBackgroundMusic();
+    } else {
+        stopBackgroundMusic();
+    }
+}
+
 export function playBackgroundMusic() {
-    if (isMuted) return;
+    if (isMuted || !isMusicAllowed) return;
 
     // Using HTML5 Audio for new mp3 file
     bgmAudio.play().then(() => {
