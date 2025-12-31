@@ -14,7 +14,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    min-height: 100vh;
+    min-height: 100dvh;
     margin: 0;
     /* Disable text selection to prevent accidental highlighting during drag/touch */
     -webkit-user-select: none;
@@ -2640,117 +2640,6 @@ body {
         margin-bottom: 0;
     }
 }
-/* --- Emotions Game --- */
-#emotions-stage {
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    max-width: 600px;
-    flex-grow: 1;
-    padding-bottom: 120px;
-    min-height: 0;
-    overflow-y: auto;
-    padding-top: 20px;
-}
-
-#emotions-stage.active {
-    display: flex;
-}
-
-.emotion-instruction {
-    font-size: 24px;
-    font-weight: bold;
-    color: #555;
-    text-align: center;
-    margin-bottom: 20px;
-    background: white;
-    padding: 10px 20px;
-    border-radius: 20px;
-    box-shadow: 0 4px 0 rgba(0,0,0,0.1);
-}
-
-.target-emoji {
-    font-size: 50px;
-    display: block;
-    margin-bottom: 5px;
-}
-
-.face-container {
-    width: 280px;
-    height: 320px;
-    background: #ffdbac; /* Skin tone approx */
-    border: 5px solid #e0b084;
-    border-radius: 120px; /* Oval */
-    position: relative;
-    box-shadow: 0 10px 0 rgba(0,0,0,0.1);
-    margin-bottom: 20px;
-    transition: transform 0.2s;
-}
-
-.face-container.correct-pulse {
-    animation: pulse 0.5s ease-in-out;
-    box-shadow: 0 0 20px #4CAF50;
-    border-color: #4CAF50;
-}
-
-.drop-zone {
-    position: absolute;
-    border: 3px dashed rgba(0,0,0,0.2);
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-    left: 50%;
-}
-
-.zone-eyes {
-    top: 35%;
-    width: 160px;
-    height: 80px;
-    border-radius: 40px;
-}
-
-.zone-mouth {
-    top: 75%;
-    width: 120px;
-    height: 70px;
-    border-radius: 35px;
-}
-
-.parts-palette {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
-    background: rgba(255,255,255,0.6);
-    padding: 15px;
-    border-radius: 20px;
-    width: 90%;
-}
-
-.part-item {
-    width: 80px;
-    height: 60px;
-    background: white;
-    border: 2px solid #ddd;
-    border-radius: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: grab;
-    box-shadow: 0 4px 0 rgba(0,0,0,0.05);
-    transition: transform 0.1s;
-}
-
-.part-item:active {
-    cursor: grabbing;
-    transform: scale(0.95);
-}
-
-.placed-part {
-    position: absolute;
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-}
 
 /* --- Listening Game --- */
 .listening-stage {
@@ -2803,45 +2692,6 @@ body {
     /* 2. Feed Lion Stage: Side-by-Side */
     /* Updated previously */
 
-    /* 6. Emotions Game: Row Layout */
-    #emotions-stage {
-        flex-direction: row !important;
-        justify-content: space-evenly;
-        align-items: center;
-        height: 100%;
-        padding-top: 0;
-        overflow: hidden;
-    }
-
-    #emotions-stage .emotion-instruction {
-        position: absolute;
-        top: 10px;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 10;
-        width: auto;
-        padding: 5px 20px;
-        font-size: 18px;
-    }
-
-    #emotions-stage .target-emoji {
-        font-size: 30px;
-        display: inline-block;
-        margin: 0 5px;
-    }
-
-    #emotions-stage .face-container {
-        margin-bottom: 0;
-        transform: scale(0.9); /* Scale down slightly to fit */
-    }
-
-    #emotions-stage .parts-palette {
-        width: 40%;
-        height: 80%;
-        overflow-y: auto;
-        align-content: flex-start;
-        padding: 10px;
-    }
 
     /* 7. Listening Game: Row Layout */
     .listening-stage {
