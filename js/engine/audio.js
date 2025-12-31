@@ -181,9 +181,8 @@ export function resumeAudioContext() {
     }
 
     // Try to play BGM on interaction if not playing
-    if (!isMuted && bgmAudio.paused) {
-        bgmAudio.play().catch(e => console.log("BGM play failed", e));
-        isBgmPlaying = true;
+    if (!isMuted && isMusicAllowed && bgmAudio.paused) {
+        playBackgroundMusic();
     }
 
     if (audioCtx.state === 'suspended') {
