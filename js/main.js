@@ -13,6 +13,7 @@ import { initFeedLionGame } from './games/feed-lion.js';
 import { initSentenceGame } from './games/sentences.js';
 import { initListeningGame } from './games/listening.js';
 import { initBubblePopGame } from './games/bubble-pop.js';
+import { initMusicGame } from './games/music.js';
 import { initChallenges, toggleChallengeMenu, isContentUnlocked } from './challenges/manager.js';
 import { initStickers, toggleStickerBook } from './engine/stickers.js';
 import { initEmotionGame } from './games/emotions.js';
@@ -36,6 +37,7 @@ const gameModes = [
     // Learning
     { id: 'letter', name: 'Letters', icon: 'assets/images/game_icons/icon_letters.png', category: 'learning' },
     { id: 'bubblepop', name: 'Bubble Pop', icon: 'assets/images/game_icons/icon_bubble.png', category: 'basics' },
+    { id: 'music', name: 'Music', icon: '🎹', category: 'basics' },
     { id: 'emotions', name: 'Emotions', icon: '🦁', category: 'learning' },
     { id: 'math', name: 'Math Party', icon: 'assets/images/game_icons/icon_math.png', category: 'learning' },
     { id: 'sentences', name: 'Story', icon: 'assets/images/game_icons/icon_story.png', category: 'learning' },
@@ -75,7 +77,16 @@ window.addEventListener('load', () => {
 
     // Also make the progress bar clickable
     const stickerBar = document.getElementById('sticker-bar-container');
-    if (stickerBar) stickerBar.onclick = () => toggleStickerBook(true);
+    if (stickerBar) {
+        stickerBar.onclick = () => toggleStickerBook(true);
+        // 🎨 Palette: Keyboard accessibility for sticker bar
+        stickerBar.onkeydown = (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleStickerBook(true);
+            }
+        };
+    }
 
     const muteBtn = document.getElementById('mute-btn');
     if (muteBtn) {
@@ -187,6 +198,7 @@ function initRound() {
     else if (mode === 'sentences') initSentenceGame();
     else if (mode === 'listening') initListeningGame();
     else if (mode === 'bubblepop') initBubblePopGame();
+    else if (mode === 'music') initMusicGame();
     else if (mode === 'emotions') initEmotionGame();
     else initStandardGame();
 }
