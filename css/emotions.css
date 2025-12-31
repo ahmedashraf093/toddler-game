@@ -2,38 +2,40 @@
 #emotions-stage {
     display: flex;
     flex-direction: column;
-    /* Mobile first: Stacked */
     align-items: center;
-    justify-content: center;
-    height: 100%;
+    justify-content: flex-start; /* Start from top to avoid squishing */
+    flex-grow: 1; /* Allow filling remaining space */
+    min-height: 0; /* Enable internal scrolling */
     width: 100%;
-    padding: 10px;
-    padding-top: 100px;
-    /* Clear the floating header */
+    padding: 20px;
+    padding-top: 100px; /* Clear header */
+    padding-bottom: 100px; /* Reduced to provide more space */
     box-sizing: border-box;
-    gap: 20px;
+    gap: 15px;
+    overflow-y: auto;
 }
 
-@media (min-width: 768px) {
-    #emotions-stage {
-        flex-direction: row;
-        /* Desktop: Side by side */
-        align-items: flex-start;
-        /* Align top */
-    }
+#emotions-stage.hidden {
+    display: none !important;
 }
 
-/* The Face Canvas */
+/* The Face Canvas - Responsive! */
 .face-container {
-    width: 300px;
-    height: 300px;
+    /* Responsive sizing based on viewport min dimension */
+    width: 80vmin;
+    height: 80vmin;
+    max-width: 350px;
+    max-height: 350px;
+
     background: #FFD54F;
-    /* Nice yellow */
     border-radius: 50%;
     border: 8px solid #FFC107;
     position: relative;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s;
+
+    /* Ensure it doesn't shrink to nothing */
+    flex-shrink: 0;
 }
 
 .face-container.correct-pulse {
@@ -57,118 +59,151 @@
     }
 }
 
-/* Drop Zones (Guides) */
+/* Drop Zones (Guides) - Percentage Based */
 .drop-zone {
     position: absolute;
-    border: 2px dashed rgba(0, 0, 0, 0.1);
+    border: 2px dashed rgba(0, 0, 0, 0.15);
     border-radius: 50%;
     transform: translate(-50%, -50%);
     background: rgba(255, 255, 255, 0.2);
     transition: background 0.2s, border-color 0.2s;
 }
 
-/* Positions for drop zones relative to 300x300 face (center is 150,150) */
 .zone-eyes {
-    width: 200px;
-    height: 80px;
-    top: 100px;
-    left: 150px;
+    width: 70%;
+    height: 30%;
+    top: 35%;
+    left: 50%;
+    border-radius: 60px;
 }
 
 .zone-mouth {
-    width: 120px;
-    height: 80px;
-    top: 220px;
-    left: 150px;
+    width: 50%;
+    height: 25%;
+    top: 75%;
+    left: 50%;
+    border-radius: 40px;
 }
 
 .drop-zone.hovered {
     background: rgba(255, 255, 255, 0.5);
-    border-color: #aaa;
+    border-color: #888;
+}
+
+/* Placed Parts on Face */
+.placed-part {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    /* SVG sizing handled by container */
+}
+
+/* Scale SVGs inside placed parts */
+.placed-part svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* Instruction Text */
+.emotion-instruction {
+    background: white;
+    padding: 8px 20px;
+    border-radius: 25px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 3px solid #FFC107;
+    flex-shrink: 0;
+    max-width: 90%;
+}
+
+.emotion-instruction .target-emoji {
+    font-size: 2.5rem;
+    line-height: 1;
+    filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.1));
 }
 
 /* Parts Palette */
 .parts-palette {
     background: white;
     border-radius: 20px;
-    padding: 15px;
-    width: 100%;
-    max-width: 400px;
+    padding: 10px;
+    width: 95%;
+    max-width: 450px;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 15px;
+    gap: 10px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    border: 3px solid #eee;
+    flex-shrink: 1; /* Allow shrinking if needed, but wrapping handles it */
 }
 
 .part-item {
-    font-size: 4rem;
-    /* Bigger size */
+    width: 70px;
+    height: 60px;
     cursor: grab;
     user-select: none;
-    transition: transform 0.2s, box-shadow 0.2s;
-    width: 80px;
-    /* Bigger touch target */
-    height: 80px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    transition: transform 0.2s;
     background: #ffffff;
-    border-radius: 15px;
-    border: 3px solid #eee;
-    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    border: 2px solid #ddd;
+    box-shadow: 0 3px 0 rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.part-item:hover {
-    border-color: #FFD54F;
-    transform: translateY(-2px);
+.part-item svg {
+    width: 90%;
+    height: 90%;
 }
 
 .part-item:active {
     cursor: grabbing;
-    transform: scale(1.1);
+    transform: scale(0.95);
+    border-color: #FFD54F;
 }
 
-.part-item.dragging {
-    opacity: 0.5;
-}
+/* --- Media Query: Desktop / Landscape --- */
+@media (min-width: 768px), (orientation: landscape) and (min-height: 500px) {
+    #emotions-stage {
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        padding-top: 80px;
+        gap: 40px;
+        overflow: hidden; /* No scroll on desktop usually */
+    }
 
-/* Placed Parts on Face */
-.placed-part {
-    position: absolute;
-    font-size: 4rem;
-    /* Bigger on face */
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-    /* Let clicks pass through if needed, or allow re-drag? */
-}
+    .emotion-instruction {
+        position: absolute;
+        top: 90px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 1.5rem;
+    }
 
-/* Instruction Text */
-.emotion-instruction {
-    /* Removed absolute positioning to flow with flex container */
-    background: white;
-    padding: 10px 25px;
-    border-radius: 25px;
-    font-size: 1.5rem;
-    font-weight: bold;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
-    white-space: nowrap;
-    z-index: 10;
+    .face-container {
+        width: 400px;
+        height: 400px;
+        max-width: none;
+        max-height: none;
+    }
 
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 5px;
-    border: 3px solid #FFC107;
-}
-
-.emotion-instruction .target-emoji {
-    font-size: 4rem;
-    line-height: 1;
-    margin-bottom: 5px;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
-}
-
-#emotions-stage.hidden {
-    display: none !important;
+    .parts-palette {
+        width: 200px;
+        flex-direction: row; /* Keep grid but vertical container */
+        align-content: flex-start;
+        max-height: 80vh;
+        overflow-y: auto;
+    }
 }
