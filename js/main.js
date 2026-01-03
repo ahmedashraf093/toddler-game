@@ -17,6 +17,7 @@ import { initMusicGame } from './games/music.js';
 import { initChallenges, toggleChallengeMenu, isContentUnlocked } from './challenges/manager.js';
 import { initStickers, toggleStickerBook } from './engine/stickers.js';
 import { initEmotionGame } from './games/emotions.js';
+import { initConnectDotsGame } from './games/connect-dots.js';
 import { ParentalGate } from './engine/parental-gate.js';
 
 const GAME_VERSION = 'v2.0';
@@ -49,6 +50,7 @@ const gameModes = [
     { id: 'puzzle', name: 'Puzzle', icon: 'assets/images/game_icons/icon_puzzle.png', category: 'logic' },
     { id: 'memory', name: 'Memory', icon: 'assets/images/game_icons/icon_memory.png', category: 'logic' },
     { id: 'oddoneout', name: 'Odd One', icon: 'assets/images/game_icons/icon_oddoneout.png', category: 'logic' },
+    { id: 'connectdots', name: 'Connect', icon: 'assets/images/game_icons/icon_numbers.png', category: 'basics' },
 
 ];
 
@@ -212,6 +214,7 @@ function initRound() {
     else if (mode === 'bubblepop') initBubblePopGame();
     else if (mode === 'music') initMusicGame();
     else if (mode === 'emotions') initEmotionGame();
+    else if (mode === 'connectdots') initConnectDotsGame();
     else initStandardGame();
 }
 
