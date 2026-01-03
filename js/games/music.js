@@ -42,6 +42,11 @@ export function initMusicGame() {
         key.style.backgroundColor = n.color;
         key.style.height = `${100 + (index * 10)}px`; // Staggered height visual
 
+        // 🎨 Palette: Accessibility Attributes
+        key.setAttribute('role', 'button');
+        key.setAttribute('tabindex', '0');
+        key.setAttribute('aria-label', `Play note ${n.note}, ${n.animal}`);
+
         // Content
         key.innerHTML = `
             <span class="key-animal">${n.animal}</span>
@@ -58,6 +63,13 @@ export function initMusicGame() {
         // Touch and Mouse events
         key.addEventListener('mousedown', playHandler);
         key.addEventListener('touchstart', playHandler);
+
+        // Keyboard Support
+        key.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                playHandler(e);
+            }
+        });
 
         xylophone.appendChild(key);
     });
