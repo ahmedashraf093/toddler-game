@@ -9,10 +9,10 @@ const levels = [
         id: 'triangle',
         name: 'Triangle',
         points: [
-            { x: 50, y: 20 }, // 1 Top
-            { x: 80, y: 80 }, // 2 Right Bottom
-            { x: 20, y: 80 }, // 3 Left Bottom
-            { x: 50, y: 20 }  // 4 Top (Close)
+            { x: 50, y: 25 }, // Top (shifted down)
+            { x: 80, y: 85 }, // Right Bottom
+            { x: 20, y: 85 }, // Left Bottom
+            { x: 50, y: 25 }  // Top
         ],
         rewardEmoji: '🔺',
         rewardSound: 'noun_triangle'
@@ -21,11 +21,11 @@ const levels = [
         id: 'square',
         name: 'Square',
         points: [
-            { x: 20, y: 20 }, // 1 TL
-            { x: 80, y: 20 }, // 2 TR
-            { x: 80, y: 80 }, // 3 BR
-            { x: 20, y: 80 }, // 4 BL
-            { x: 20, y: 20 }  // 5 TL
+            { x: 20, y: 25 }, // TL (shifted down)
+            { x: 80, y: 25 }, // TR
+            { x: 80, y: 85 }, // BR
+            { x: 20, y: 85 }, // BL
+            { x: 20, y: 25 }  // TL
         ],
         rewardEmoji: '🟩',
         rewardSound: 'noun_square'
@@ -34,17 +34,17 @@ const levels = [
         id: 'star',
         name: 'Star',
         points: [
-            { x: 50, y: 10 }, // 1 Top
-            { x: 65, y: 40 }, // 2
-            { x: 95, y: 40 }, // 3 Right arm
-            { x: 70, y: 60 }, // 4
-            { x: 80, y: 95 }, // 5 Right leg
-            { x: 50, y: 75 }, // 6 Bottom mid
-            { x: 20, y: 95 }, // 7 Left leg
-            { x: 30, y: 60 }, // 8
-            { x: 5,  y: 40 }, // 9 Left arm
-            { x: 35, y: 40 }, // 10
-            { x: 50, y: 10 }  // 11 Back to top
+            { x: 50, y: 25 }, // Top (shifted from 10)
+            { x: 65, y: 45 }, // Arms (shifted from 40)
+            { x: 95, y: 45 },
+            { x: 70, y: 65 }, // Inner (shifted from 60)
+            { x: 80, y: 90 }, // Legs (shifted from 95)
+            { x: 50, y: 75 }, // Bottom mid (kept same)
+            { x: 20, y: 90 }, // Left leg
+            { x: 30, y: 65 },
+            { x: 5,  y: 45 }, // Left arm
+            { x: 35, y: 45 },
+            { x: 50, y: 25 }  // Top
         ],
         rewardEmoji: '⭐',
         rewardSound: 'noun_star'
@@ -53,12 +53,12 @@ const levels = [
         id: 'house',
         name: 'House',
         points: [
-            { x: 20, y: 40 }, // 1
-            { x: 50, y: 10 }, // 2 Roof Top
-            { x: 80, y: 40 }, // 3
-            { x: 80, y: 90 }, // 4
-            { x: 20, y: 90 }, // 5
-            { x: 20, y: 40 }  // 6
+            { x: 20, y: 45 }, // Walls Top (shifted from 40)
+            { x: 50, y: 25 }, // Roof Top (shifted from 10)
+            { x: 80, y: 45 },
+            { x: 80, y: 90 }, // Floor (kept 90)
+            { x: 20, y: 90 },
+            { x: 20, y: 45 }
         ],
         rewardEmoji: '🏠',
         rewardSound: 'noun_house'
