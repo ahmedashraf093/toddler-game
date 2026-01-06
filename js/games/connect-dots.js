@@ -62,6 +62,79 @@ const levels = [
         ],
         rewardEmoji: '🏠',
         rewardSound: 'noun_house'
+    },
+    {
+        id: 'rectangle',
+        name: 'Rectangle',
+        points: [
+            { x: 15, y: 35 },
+            { x: 85, y: 35 },
+            { x: 85, y: 65 },
+            { x: 15, y: 65 },
+            { x: 15, y: 35 }
+        ],
+        rewardEmoji: '🟦',
+        rewardSound: 'noun_rectangle'
+    },
+    {
+        id: 'diamond',
+        name: 'Diamond',
+        points: [
+            { x: 50, y: 15 },
+            { x: 85, y: 50 },
+            { x: 50, y: 85 },
+            { x: 15, y: 50 },
+            { x: 50, y: 15 }
+        ],
+        rewardEmoji: '🔷',
+        rewardSound: 'noun_diamond'
+    },
+    {
+        id: 'kite',
+        name: 'Kite',
+        points: [
+            { x: 50, y: 15 },
+            { x: 80, y: 40 },
+            { x: 50, y: 85 },
+            { x: 20, y: 40 },
+            { x: 50, y: 15 }
+        ],
+        rewardEmoji: '🪁',
+        rewardSound: 'noun_kite'
+    },
+    {
+        id: 'tree',
+        name: 'Tree',
+        points: [
+            { x: 45, y: 90 }, // Trunk bottom left
+            { x: 55, y: 90 }, // Trunk bottom right
+            { x: 55, y: 70 }, // Trunk top right
+            { x: 85, y: 70 }, // Leaves right
+            { x: 50, y: 10 }, // Top
+            { x: 15, y: 70 }, // Leaves left
+            { x: 45, y: 70 }, // Trunk top left
+            { x: 45, y: 90 }  // Close
+        ],
+        rewardEmoji: '🌲',
+        rewardSound: 'noun_tree'
+    },
+    {
+        id: 'rocket',
+        name: 'Rocket',
+        points: [
+            { x: 50, y: 10 }, // Tip
+            { x: 70, y: 30 }, // Body Right
+            { x: 70, y: 70 }, // Fin Right Top
+            { x: 90, y: 90 }, // Fin Right Tip
+            { x: 60, y: 90 }, // Body Bottom Right
+            { x: 40, y: 90 }, // Body Bottom Left
+            { x: 10, y: 90 }, // Fin Left Tip
+            { x: 30, y: 70 }, // Fin Left Top
+            { x: 30, y: 30 }, // Body Left
+            { x: 50, y: 10 }  // Tip
+        ],
+        rewardEmoji: '🚀',
+        rewardSound: 'noun_rocket'
     }
 ];
 
@@ -264,7 +337,6 @@ function onPointerUp(e) {
 }
 
 function completeConnection() {
-    isDragging = false;
     currentDotIndex++;
 
     // Speak next number
@@ -275,12 +347,10 @@ function completeConnection() {
 
     // Check Level Complete
     if (currentDotIndex >= currentPoints.length - 1) {
+        isDragging = false;
         levelComplete();
     } else {
-        // Continue... user needs to click next dot to start next line?
-        // Or should we auto-start dragging if they are still holding?
-        // For simplicity, let's require a new click/drag or valid chaining.
-        // But chaining is hard to implement robustly. Let's reset drag.
+        // Continue dragging seamlessly
         draw();
     }
 }
