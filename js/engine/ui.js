@@ -444,7 +444,12 @@ export function populateGamesMenu(gameModes, setModeCallback) {
         }
 
         const card = document.createElement('div');
-        card.className = `game-select-card ${game.id === gameState.currentMode ? 'active' : ''} ${isLocked ? 'locked' : ''}`;
+        const isActive = game.id === gameState.currentMode;
+        card.className = `game-select-card ${isActive ? 'active' : ''} ${isLocked ? 'locked' : ''}`;
+
+        if (isActive) {
+            card.setAttribute('aria-current', 'true');
+        }
 
         if (isLocked) {
             card.onclick = () => {
