@@ -41,7 +41,7 @@ body {
 :focus-visible {
     outline: 4px dashed var(--primary-color);
     outline-offset: 4px;
-    border-radius: 4px;
+    /* Do not force border-radius here, let it follow the element's shape */
 }
 
 #start-btn:focus-visible {

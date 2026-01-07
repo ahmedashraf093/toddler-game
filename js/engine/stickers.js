@@ -148,7 +148,13 @@ export function updateStickerUI() {
     if (grid) {
         grid.innerHTML = '';
         if (stickerState.collection.length === 0) {
-            grid.innerHTML = '<div class="empty-state">No stickers yet! Play games to earn them!</div>';
+            // 🎨 Palette: Engaging empty state
+            grid.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon" aria-hidden="true">🕸️</div>
+                    <div class="empty-text">Your sticker book is empty!</div>
+                    <div class="empty-hint">Play games to fill it up! 🎮</div>
+                </div>`;
         } else {
             stickerState.collection.forEach(s => {
                 const el = document.createElement('div');
