@@ -20,3 +20,4 @@ export const themes = {
 
 // Appended theme for Listening Game
 themes.listening = { primary: '#9b59b6', bg: '#f5eef8', dots: '#e8daef' };
+themes.hideseek = { primary: '#2ecc71', bg: '#eafaf1', dots: '#d5f5e3' };
