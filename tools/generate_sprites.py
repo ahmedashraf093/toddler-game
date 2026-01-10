@@ -33,7 +33,11 @@ content = {
         {'id': 'loading', 'text': 'Loading...'},
         {'id': 'daily_quest', 'text': 'Daily Quest'},
         {'id': 'feed_the_lion', 'text': 'Feed the Lion!'},
-        {'id': 'complete_the_story', 'text': 'Complete the story!'}
+        {'id': 'complete_the_story', 'text': 'Complete the story!'},
+        {'id': 'peek_a_boo', 'text': 'Peek-a-boo!'},
+        {'id': 'you_found_me', 'text': 'You found me!'},
+        {'id': 'where_am_i', 'text': 'Where am I?'},
+        {'id': 'find_the', 'text': 'Find the'}
     ],
     'number': [
         {'id': '1', 'text': 'One'}, {'id': '2', 'text': 'Two'}, {'id': '3', 'text': 'Three'},
@@ -89,6 +93,7 @@ content = {
         'Ball', 'House', 'Kite', 'Nose', 'Queen', 'Sun', 'Tree', 'Umbrella', 'Violin',
         'Xylophone', 'Yellow', 'Clock', 'Gift', 'Door', 'Sunglasses', 'Scarf', 'Gloves',
         'Leaf', 'Flower', 'Bus', 'Train', 'Helicopter', 'Crayon', 'Teddy Bear', 'Balloon',
+        'Bush', 'Box',
         # Shapes
         'Triangle', 'Circle', 'Square', 'Rectangle', 'Oval', 'Diamond', 'Pizza Slice',
         'Sunny', 'Snowy', 'Rainy', 'Cold', 'Night', 'Windy', 'Ocean', 'Spring',
@@ -97,7 +102,6 @@ content = {
         'Shoe', 'Star', 'Ladybug', 'Cookie', 'Balloon', 'Crayon', 'Teddy Bear', 'Strawberry',
         'Car', 'Bus', 'Train', 'Helicopter',
         'Police', 'Fireman', 'Doctor', 'Astronaut', 'Chef', 'Farmer', 'Artist',
-        'Mechanic', 'Teacher', 'Pilot', 'Builder', 'Scientist', 'Duck'
         'Mechanic', 'Teacher', 'Pilot', 'Builder', 'Scientist', 'Duck'
     ],
     'emotions': [
