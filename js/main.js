@@ -13,6 +13,7 @@ import { initFeedLionGame } from './games/feed-lion.js';
 import { initSentenceGame } from './games/sentences.js';
 import { initListeningGame } from './games/listening.js';
 import { initBubblePopGame } from './games/bubble-pop.js';
+import { initAlphabetPopGame } from './games/alphabet-pop.js';
 import { initMusicGame } from './games/music.js';
 import { initChallenges, toggleChallengeMenu, isContentUnlocked } from './challenges/manager.js';
 import { initStickers, toggleStickerBook } from './engine/stickers.js';
@@ -39,6 +40,7 @@ const gameModes = [
 
     // Learning
     { id: 'letter', name: 'Letters', icon: 'assets/images/game_icons/icon_letters.png', category: 'learning' },
+    { id: 'alphabetpop', name: 'Alphabet Pop', icon: 'assets/images/game_icons/icon_letters.png', category: 'learning' },
     { id: 'bubblepop', name: 'Bubble Pop', icon: 'assets/images/game_icons/icon_bubble.png', category: 'basics' },
     { id: 'music', name: 'Music', icon: '🎹', category: 'basics' },
     { id: 'emotions', name: 'Emotions', icon: '🦁', category: 'learning' },
@@ -214,6 +216,7 @@ function initRound() {
     else if (mode === 'sentences') initSentenceGame();
     else if (mode === 'listening') initListeningGame();
     else if (mode === 'bubblepop') initBubblePopGame();
+    else if (mode === 'alphabetpop') initAlphabetPopGame();
     else if (mode === 'music') initMusicGame();
     else if (mode === 'emotions') initEmotionGame();
     else if (mode === 'connectdots') initConnectDotsGame();
