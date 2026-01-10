@@ -370,6 +370,7 @@ export function setTheme(mode) {
     const oddOneStage = document.getElementById('odd-one-stage');
     // New stages
     const bubbleStage = document.getElementById('bubble-stage');
+    const alphabetStage = document.getElementById('alphabet-stage');
     const emotionsStage = document.getElementById('emotions-stage');
     const listeningStage = document.getElementById('listening-stage');
 
@@ -382,6 +383,7 @@ export function setTheme(mode) {
     if (diffBar) diffBar.style.display = 'none';
     if (emotionsStage) emotionsStage.classList.add('hidden');
     if (bubbleStage) bubbleStage.classList.add('hidden');
+    if (alphabetStage) alphabetStage.classList.add('hidden');
     if (listeningStage) listeningStage.classList.add('hidden');
 
     if (mode === 'math') {
