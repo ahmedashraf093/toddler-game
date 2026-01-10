@@ -118,7 +118,7 @@ function startRound(spotElements, banner) {
         // 4. Hiding Animation
         // Pick a random spot
         const targetIndex = Math.floor(Math.random() * spotElements.length);
-        const target = spotElements[targetIndex];
+        const target = spotElements[targetIndex]; // Target Object
 
         // Calculate target position relative to stage
         const targetRect = target.wrapper.getBoundingClientRect();
@@ -135,28 +135,85 @@ function startRound(spotElements, banner) {
             // Hide animal behind the spot (z-index)
             animalEl.style.zIndex = 1;
             animalEl.style.opacity = 0; // Fade out slightly or fully?
-            // Better: just put it physically behind. But emojis are flat.
-            // Let's fade it out to simulate going "in" or "behind"
-            // And play a "whoosh" sound if we had one.
 
-            // Enable clicking
-            enableInteraction(spotElements, targetIndex, animalEl, animalName, animalKey, banner);
+            // 5. Shuffle Animation
+            shuffleAnimation(spotElements, target.wrapper, animalEl, () => {
+                 enableInteraction(spotElements, target.wrapper, animalEl, animalName, animalKey, banner);
+            });
+
         }, 1000);
 
     }, 2000);
 }
 
-function enableInteraction(spotElements, correctIndex, animalEl, animalName, animalKey, banner) {
-    let attempted = false;
+function shuffleAnimation(spotElements, targetWrapper, animalEl, onComplete) {
+    const container = spotElements[0].wrapper.parentNode;
 
-    spotElements.forEach((item, index) => {
+    // 1. Record First positions
+    const firstRects = new Map();
+    spotElements.forEach(item => {
+        firstRects.set(item.wrapper, item.wrapper.getBoundingClientRect());
+    });
+
+    // 2. Shuffle Array and Update DOM (Last)
+    // Create a shuffled copy to avoid messing up original references if needed, but we want to reorder DOM
+    // Actually, shuffle modifies in place.
+    shuffle(spotElements);
+
+    // Re-append in new order
+    spotElements.forEach(item => {
+        container.appendChild(item.wrapper);
+    });
+
+    // 3. Invert
+    spotElements.forEach(item => {
+        const first = firstRects.get(item.wrapper);
+        const last = item.wrapper.getBoundingClientRect();
+
+        const deltaX = first.left - last.left;
+        const deltaY = first.top - last.top; // Should be 0 if horizontal only
+
+        // Apply transform to put it back at First
+        item.wrapper.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+        item.wrapper.style.transition = 'transform 0s';
+    });
+
+    // Force Layout
+    void container.offsetHeight;
+
+    // 4. Play
+    requestAnimationFrame(() => {
+        spotElements.forEach(item => {
+            item.wrapper.style.transform = '';
+            item.wrapper.style.transition = 'transform 1s ease-in-out';
+        });
+    });
+
+    // 5. On Finish
+    setTimeout(() => {
+        // Snap animal to new target position
+        const targetRect = targetWrapper.getBoundingClientRect();
+        const stageRect = document.getElementById('hide-seek-stage').getBoundingClientRect();
+
+        const moveX = (targetRect.left + targetRect.width / 2) - (stageRect.left + stageRect.width / 2);
+        const moveY = (targetRect.top + targetRect.height / 2) - (stageRect.top + stageRect.height * 0.2);
+
+        animalEl.style.transition = 'none'; // Instant snap
+        animalEl.style.transform = `translate(${moveX}px, ${moveY}px) scale(0.5)`;
+
+        onComplete();
+    }, 1000);
+}
+
+function enableInteraction(spotElements, targetWrapper, animalEl, animalName, animalKey, banner) {
+    spotElements.forEach((item) => {
         const clickHandler = () => {
             if (item.el.classList.contains('revealed')) return; // Already clicked
 
             // Animate Spot lifting/moving
             item.el.style.transform = "translateY(-50px) scale(1.1)";
 
-            if (index === correctIndex) {
+            if (item.wrapper === targetWrapper) {
                 // Correct!
                 banner.textContent = `Found: ${animalName}!`;
 
