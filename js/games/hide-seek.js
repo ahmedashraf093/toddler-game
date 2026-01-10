@@ -1,9 +1,10 @@
-
 import { gameState, updateScore, incrementCorrect } from '../engine/state.js';
 import { speakText, speakSequence } from '../engine/audio.js';
 import { triggerConfetti, showLoader } from '../engine/ui.js';
 import { objectPool, shadowLibrary } from '../data/content.js';
 import { shuffle } from '../engine/utils.js';
+
+const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 export function initHideSeekGame() {
     const board = document.getElementById('game-board');
@@ -51,7 +52,7 @@ export function initHideSeekGame() {
 
     // Create Spot Elements
     const spotElements = [];
-    spots.forEach(spotData => {
+    spots.forEach((spotData, i) => {
         const wrapper = document.createElement('div');
         wrapper.className = 'hiding-spot-wrapper';
         wrapper.style.cssText = `
@@ -62,6 +63,7 @@ export function initHideSeekGame() {
             align-items: flex-end;
             justify-content: center;
             cursor: pointer;
+            order: ${i};
         `;
 
         const spotEl = document.createElement('div');
@@ -86,12 +88,11 @@ export function initHideSeekGame() {
     startRound(spotElements, banner);
 }
 
-function startRound(spotElements, banner) {
+async function startRound(spotElements, banner) {
     // 1. Pick an animal
-    // Use shadowLibrary as it has animals with good audio keys
     const animalData = shadowLibrary[Math.floor(Math.random() * shadowLibrary.length)];
-    const animalEmoji = animalData.e; // e.g. 🦁
-    const animalName = animalData.n;  // e.g. Lion
+    const animalEmoji = animalData.e; 
+    const animalName = animalData.n;  
     const animalKey = `noun_${animalName.toLowerCase().replace(' ', '_')}`;
 
     // 2. Create Animal Element (Hidden initially)
@@ -109,69 +110,140 @@ function startRound(spotElements, banner) {
     document.getElementById('hide-seek-stage').appendChild(animalEl);
 
     // 3. Intro Sequence
-    // "Look! A Lion!"
-    speakSequence(['conn_looks_like_a', animalKey], `Look! A ${animalName}!`); // Using "looks like a" as "look!" substitute or just say name
-    // Actually, let's just say the name clearly first.
     speakText(animalName, animalKey);
+    await wait(2000);
 
-    setTimeout(() => {
-        // 4. Hiding Animation
-        // Pick a random spot
-        const targetIndex = Math.floor(Math.random() * spotElements.length);
-        const target = spotElements[targetIndex];
+    // 4. Hiding Animation
+    // Pick a random spot
+    const targetIndex = Math.floor(Math.random() * spotElements.length);
+    const targetSpot = spotElements[targetIndex];
 
-        // Calculate target position relative to stage
-        const targetRect = target.wrapper.getBoundingClientRect();
-        const stageRect = document.getElementById('hide-seek-stage').getBoundingClientRect();
+    // Calculate target position relative to stage
+    const stage = document.getElementById('hide-seek-stage');
+    const targetRect = targetSpot.wrapper.getBoundingClientRect();
+    const stageRect = stage.getBoundingClientRect();
 
-        // Move animal to the spot (behind it)
-        // We need to move it to the center of the target wrapper
-        const moveX = (targetRect.left + targetRect.width / 2) - (stageRect.left + stageRect.width / 2);
-        const moveY = (targetRect.top + targetRect.height / 2) - (stageRect.top + stageRect.height * 0.2); // 0.2 is the initial top: 20%
+    const moveX = (targetRect.left + targetRect.width / 2) - (stageRect.left + stageRect.width / 2);
+    const moveY = (targetRect.top + targetRect.height / 2) - (stageRect.top + stageRect.height * 0.2);
 
-        animalEl.style.transform = `translate(${moveX}px, ${moveY}px) scale(0.5)`;
+    animalEl.style.transform = `translate(${moveX}px, ${moveY}px) scale(0.5)`;
+    
+    await wait(1000);
 
-        setTimeout(() => {
-            // Hide animal behind the spot (z-index)
-            animalEl.style.zIndex = 1;
-            animalEl.style.opacity = 0; // Fade out slightly or fully?
-            // Better: just put it physically behind. But emojis are flat.
-            // Let's fade it out to simulate going "in" or "behind"
-            // And play a "whoosh" sound if we had one.
+    // Hide animal behind the spot
+    animalEl.style.zIndex = 1;
+    animalEl.style.opacity = 0;
 
-            // Enable clicking
-            enableInteraction(spotElements, targetIndex, animalEl, animalName, animalKey, banner);
-        }, 1000);
+    // 5. SHUFFLE PHASE
+    await wait(500);
+    
+    await shuffleSpots(spotElements);
 
-    }, 2000);
+    // 6. Enable Interaction
+    // We need to find where the targetSpot ended up
+    const newTargetIndex = spotElements.indexOf(targetSpot);
+    
+    enableInteraction(spotElements, newTargetIndex, animalEl, animalName, animalKey, banner);
+}
+
+async function shuffleSpots(spotElements) {
+    const moves = 5;
+    const speed = 400; // ms per swap
+
+    for (let i = 0; i < moves; i++) {
+        // Pick two distinct indices
+        const idx1 = Math.floor(Math.random() * spotElements.length);
+        let idx2 = Math.floor(Math.random() * spotElements.length);
+        while (idx1 === idx2) idx2 = Math.floor(Math.random() * spotElements.length);
+
+        const el1 = spotElements[idx1].wrapper;
+        const el2 = spotElements[idx2].wrapper;
+
+        // FLIP Animation
+        // First
+        const rect1 = el1.getBoundingClientRect();
+        const rect2 = el2.getBoundingClientRect();
+
+        // Swap logical order in array (to keep track)
+        [spotElements[idx1], spotElements[idx2]] = [spotElements[idx2], spotElements[idx1]];
+
+        // Swap DOM order using 'order' style
+        const order1 = el1.style.order;
+        const order2 = el2.style.order;
+        el1.style.order = order2;
+        el2.style.order = order1;
+
+        // Last (Wait for layout update? No, order change forces layout)
+        // Invert
+        const newRect1 = el1.getBoundingClientRect();
+        const newRect2 = el2.getBoundingClientRect();
+
+        const x1 = rect1.left - newRect1.left;
+        const x2 = rect2.left - newRect2.left;
+
+        // Apply transforms to make them appear at old positions
+        el1.style.transition = 'none';
+        el2.style.transition = 'none';
+        el1.style.transform = `translateX(${x1}px)`;
+        el2.style.transform = `translateX(${x2}px)`;
+
+        // Force reflow
+        el1.offsetHeight;
+
+        // Play
+        el1.style.transition = `transform ${speed}ms ease-in-out`;
+        el2.style.transition = `transform ${speed}ms ease-in-out`;
+        el1.style.transform = '';
+        el2.style.transform = '';
+        
+        // Audio
+        speakText('Pop', 'generic_pop');
+
+        await wait(speed + 100);
+    }
 }
 
 function enableInteraction(spotElements, correctIndex, animalEl, animalName, animalKey, banner) {
-    let attempted = false;
+    let revealed = false;
 
     spotElements.forEach((item, index) => {
+        // Clear previous
+        item.el.onclick = null;
+        item.el.onkeydown = null;
+
         const clickHandler = () => {
-            if (item.el.classList.contains('revealed')) return; // Already clicked
+            if (revealed) return; // Game over for this round
+            if (item.el.classList.contains('revealed')) return;
 
             // Animate Spot lifting/moving
             item.el.style.transform = "translateY(-50px) scale(1.1)";
 
             if (index === correctIndex) {
+                revealed = true;
                 // Correct!
                 banner.textContent = `Found: ${animalName}!`;
 
-                // Show animal
-                animalEl.style.opacity = 1;
-                animalEl.style.zIndex = 10;
-                animalEl.style.transform += " scale(2)"; // Pop out
+                // RE-CALCULATE POSITION for Animal Reveal
+                 const rect = item.wrapper.getBoundingClientRect();
+                 const stageRect = document.getElementById('hide-seek-stage').getBoundingClientRect();
+                 const newX = (rect.left + rect.width / 2) - (stageRect.left + stageRect.width / 2);
+                 const newY = (rect.top + rect.height / 2) - (stageRect.top + stageRect.height * 0.2);
+
+                 animalEl.style.transition = 'none';
+                 animalEl.style.transform = `translate(${newX}px, ${newY}px) scale(0.5)`;
+                 animalEl.offsetHeight; // reflow
+                 
+                 animalEl.style.transition = 'all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                 animalEl.style.opacity = 1;
+                 animalEl.style.zIndex = 10;
+                 animalEl.style.transform = `translate(${newX}px, ${newY}px) scale(2)`;
 
                 // Audio
-                // "Peek-a-boo! You found me!" + Animal Name
                 speakSequence(['sys_peek_a_boo', 'sys_you_found_me', animalKey], `Peek-a-boo! It's a ${animalName}!`);
 
                 triggerConfetti();
                 updateScore(10);
-                incrementCorrect(); // Might trigger round end if we used standard logic, but here we run endless or custom
+                incrementCorrect();
 
                 // Reset for next round after delay
                 setTimeout(() => {
