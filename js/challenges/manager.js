@@ -112,8 +112,14 @@ function checkDayCompletion(config) {
 // UI Handling for Challenges
 export function toggleChallengeMenu() {
     const overlay = document.getElementById('challenges-overlay');
-    if (overlay) overlay.classList.toggle('hidden');
-    updateChallengeUI();
+    if (overlay) {
+        const isHidden = overlay.classList.toggle('hidden');
+        if (!isHidden) {
+            updateChallengeUI();
+            const closeBtn = overlay.querySelector('.close-menu-btn');
+            if (closeBtn) setTimeout(() => closeBtn.focus(), 50); // Small delay for rendering
+        }
+    }
 }
 
 function updateChallengeUI() {

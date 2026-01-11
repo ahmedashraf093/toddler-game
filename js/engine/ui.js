@@ -346,7 +346,12 @@ export function toggleMenu(forceHide = false) {
     if (forceHide) {
         overlay.classList.add('hidden');
     } else {
-        overlay.classList.toggle('hidden');
+        const isHidden = overlay.classList.toggle('hidden');
+        if (!isHidden) {
+            // Focus on the close button or header for accessibility
+            const closeBtn = overlay.querySelector('.close-menu-btn');
+            if (closeBtn) closeBtn.focus();
+        }
     }
 }
 

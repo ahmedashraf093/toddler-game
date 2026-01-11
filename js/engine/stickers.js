@@ -172,6 +172,8 @@ export function toggleStickerBook(show) {
 
         if (!overlay.classList.contains('hidden')) {
             updateStickerUI(); // Refresh content
+            const closeBtn = overlay.querySelector('.close-menu-btn');
+            if (closeBtn) setTimeout(() => closeBtn.focus(), 50); // Small delay for rendering
         }
     }
 }
