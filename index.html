@@ -160,9 +160,9 @@
     </div>
 
     <!-- Full Screen Games Menu -->
-    <div id="games-menu-overlay" class="overlay-full hidden">
+    <div id="games-menu-overlay" class="overlay-full hidden" role="dialog" aria-modal="true" aria-labelledby="games-menu-title">
         <div class="menu-header">
-            <h2>Choose a Game! 🎮</h2>
+            <h2 id="games-menu-title">Choose a Game! 🎮</h2>
             <button class="close-menu-btn" aria-label="Close menu">❌</button>
         </div>
         <div class="games-grid">
@@ -171,18 +171,18 @@
     </div>
 
     <!-- Challenges Overlay -->
-    <div id="challenges-overlay" class="overlay-full hidden">
+    <div id="challenges-overlay" class="overlay-full hidden" role="dialog" aria-modal="true" aria-labelledby="challenges-title">
         <div class="menu-header">
-            <h2>Daily Quest 🏆</h2>
+            <h2 id="challenges-title">Daily Quest 🏆</h2>
             <button class="close-menu-btn" aria-label="Close menu">❌</button>
         </div>
         <div id="challenges-list"></div>
     </div>
 
     <!-- Sticker Book Overlay -->
-    <div id="sticker-book-overlay" class="overlay-full hidden">
+    <div id="sticker-book-overlay" class="overlay-full hidden" role="dialog" aria-modal="true" aria-labelledby="sticker-book-title">
         <div class="menu-header">
-            <h2>My Sticker Book 📒</h2>
+            <h2 id="sticker-book-title">My Sticker Book 📒</h2>
             <button class="close-menu-btn" aria-label="Close book">❌</button>
         </div>
         <div id="sticker-grid" class="sticker-grid">
@@ -198,11 +198,11 @@
     </div>
 
     <!-- Parental Gate Overlay -->
-    <div id="parental-gate-overlay" class="hidden">
+    <div id="parental-gate-overlay" class="hidden" role="dialog" aria-modal="true" aria-labelledby="pg-title">
         <div class="pg-content">
             <button class="close-menu-btn" onclick="toggleParentalGate(false)"
-                style="position: absolute; top: -20px; right: -20px;">❌</button>
-            <h2>🔐 Parents Only</h2>
+                style="position: absolute; top: -20px; right: -20px;" aria-label="Close Parental Gate">❌</button>
+            <h2 id="pg-title">🔐 Parents Only</h2>
             <div id="pg-question"></div>
             <div id="pg-input-container">
                 <span id="pg-input">_</span>
