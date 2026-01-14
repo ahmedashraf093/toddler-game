@@ -96,12 +96,19 @@ window.addEventListener('load', () => {
 
     const muteBtn = document.getElementById('mute-btn');
     if (muteBtn) {
+        const updateMuteBtn = (isMuted) => {
+            muteBtn.textContent = isMuted ? '🔇' : '🔊';
+            muteBtn.setAttribute('aria-label', isMuted ? 'Unmute Sound' : 'Mute Sound');
+            muteBtn.title = isMuted ? 'Unmute Sound' : 'Mute Sound';
+        };
+
         muteBtn.onclick = () => {
             const muted = toggleMute();
-            muteBtn.textContent = muted ? '🔇' : '🔊';
+            updateMuteBtn(muted);
         };
+
         // Set initial state
-        if (getMuteState()) muteBtn.textContent = '🔇';
+        updateMuteBtn(getMuteState());
     }
 
     const menuBtn = document.getElementById('menu-btn');
