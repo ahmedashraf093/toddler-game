@@ -36,6 +36,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    transition: all 0.3s ease;
 }
 
 .traffic-pole {
@@ -137,4 +138,40 @@
 @keyframes bounce-hint {
     0%, 100% { transform: translateX(-50%) translateY(0); }
     50% { transform: translateX(-50%) translateY(-10px); }
+}
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+    .traffic-stage {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .traffic-light-container {
+        top: 20px; /* Stick to top */
+        transform: translateX(-50%) scale(0.7); /* Scale down */
+        transform-origin: top center;
+    }
+
+    .traffic-pole {
+        height: 50px; /* Shorter pole */
+    }
+
+    .road {
+        bottom: 0; /* Road at very bottom */
+        height: 40%; /* Taller road for easier visibility */
+    }
+
+    .vehicle {
+        bottom: 5%; /* Align with new road position */
+        font-size: 60px; /* Slightly smaller cars */
+    }
+
+    .traffic-hint {
+        top: auto;
+        bottom: 45%; /* Position above the road, below the light area */
+        font-size: 1.2rem;
+        padding: 8px 16px;
+    }
 }
