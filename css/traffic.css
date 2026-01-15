@@ -52,6 +52,7 @@
     padding: 15px;
     display: flex;
     flex-direction: column;
+    align-items: center; /* Ensure circles are centered horizontally */
     gap: 15px;
     box-shadow: 5px 5px 15px rgba(0,0,0,0.3);
     cursor: pointer;
@@ -106,10 +107,11 @@
 
 @keyframes drive {
     from {
-        transform: translateX(-150px);
+        /* Flip to face right (if native emoji faces left) */
+        transform: translateX(-150px) scaleX(-1);
     }
     to {
-        transform: translateX(110vw);
+        transform: translateX(110vw) scaleX(-1);
     }
 }
 
@@ -119,12 +121,20 @@
     top: 55%;
     left: 50%;
     transform: translateX(-50%);
-    font-size: 1.5rem;
+    font-size: 1.8rem; /* Larger text */
     color: #333;
-    background: rgba(255,255,255,0.8);
-    padding: 5px 15px;
-    border-radius: 20px;
+    background: #ffffff; /* Solid white for better contrast */
+    padding: 10px 20px;
+    border: 3px solid #333; /* Strong border */
+    border-radius: 50px; /* Pill shape */
     pointer-events: none;
-    font-weight: bold;
-    opacity: 0.8;
+    font-weight: 900; /* Boldest */
+    z-index: 20; /* Above everything */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    animation: bounce-hint 2s infinite;
+}
+
+@keyframes bounce-hint {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(-10px); }
 }
