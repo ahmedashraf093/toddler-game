@@ -1,7 +1,7 @@
 import { gameState, updateScore } from '../engine/state.js';
 import { objectPool } from '../data/content.js';
 import { speakText } from '../engine/audio.js';
-import { launchModal, updateScoreUI, triggerConfetti } from '../engine/ui.js';
+import { launchModal, updateScoreUI, triggerConfetti, showNextRoundButton } from '../engine/ui.js';
 import { shuffle } from '../engine/utils.js';
 import { checkOverallProgress } from '../challenges/manager.js';
 
@@ -183,7 +183,7 @@ function disableCards() {
             // "You found all the pairs!" -> Missing.
             // Use "Good Job!"
             speakText("Good Job!", "generic_good_job");
-            document.getElementById('reset-btn').style.display = 'inline-block';
+            showNextRoundButton();
             checkOverallProgress('memory');
         }, 500);
     }

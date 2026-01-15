@@ -143,6 +143,22 @@ const CELEB_CHARACTERS = {
 
 const CELEB_MESSAGES = ["Amazing!", "Great Job!", "Fantastic!", "You Win!", "Awesome!", "Perfect!"];
 
+export function showNextRoundButton() {
+    const btn = document.getElementById('reset-btn');
+    if (btn) {
+        btn.style.display = 'inline-block';
+        // Reset animation to allow re-triggering
+        btn.style.animation = 'none';
+        btn.offsetHeight; /* trigger reflow */
+        btn.style.animation = 'popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards';
+
+        // 🎨 Palette: Accessibility - Move focus to primary action
+        setTimeout(() => {
+            btn.focus();
+        }, 100);
+    }
+}
+
 export function showLoader(show = true, text = "Loading Fun...") {
     const loader = document.getElementById('loading-screen');
     if (!loader) return;
