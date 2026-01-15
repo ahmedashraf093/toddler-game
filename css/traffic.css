@@ -119,7 +119,7 @@
 /* Instruction Hint */
 .traffic-hint {
     position: absolute;
-    top: 55%;
+    top: 75%; /* Moved down on desktop */
     left: 50%;
     transform: translateX(-50%);
     font-size: 1.8rem; /* Larger text */
@@ -170,7 +170,7 @@
 
     .traffic-hint {
         top: auto;
-        bottom: 45%; /* Position above the road, below the light area */
+        bottom: 20px; /* Moved to bottom on mobile */
         font-size: 1.2rem;
         padding: 8px 16px;
     }
