@@ -428,6 +428,7 @@ body {
     /* Hidden by default */
     gap: 10px;
     margin-top: 5px;
+    pointer-events: auto;
 }
 
 .diff-btn {
