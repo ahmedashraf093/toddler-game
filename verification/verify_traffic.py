@@ -66,10 +66,6 @@ def run():
             stage = page.locator("#traffic-stage")
             expect(stage).to_be_visible()
 
-            # Debug: Check visibility of board
-            visible = page.evaluate("document.getElementById('game-board').style.display")
-            print(f"Game Board Display: {visible}")
-
             page.click(".traffic-light-box", force=True)
             page.wait_for_timeout(3000)
             page.screenshot(path="verification/traffic_light.png")
