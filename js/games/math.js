@@ -2,7 +2,7 @@ import { gameState, updateScore } from '../engine/state.js';
 import { objectPool } from '../data/content.js';
 import { makeDraggable, makeDroppable, setDropCallback } from '../engine/input.js';
 import { speakText, speakSequence } from '../engine/audio.js';
-import { launchModal, updateScoreUI } from '../engine/ui.js';
+import { launchModal, updateScoreUI, showNextRoundButton } from '../engine/ui.js';
 import { shuffle } from '../engine/utils.js';
 import { checkOverallProgress } from '../challenges/manager.js';
 
@@ -40,7 +40,7 @@ export function initMathGame() {
 
 function loadMathQuestion() {
     if (currentMathIndex >= mathQuestions.length) {
-        document.getElementById('reset-btn').style.display = 'inline-block';
+        showNextRoundButton();
         speakText("All done! Good job!", "good_job");
         return;
     }

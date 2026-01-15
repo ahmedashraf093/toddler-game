@@ -6,7 +6,7 @@ import {
 import { smartSelect, shuffle } from '../engine/utils.js';
 import { makeDraggable, makeDroppable, setDropCallback } from '../engine/input.js';
 import { speakText, speakSequence } from '../engine/audio.js'; // Imported speakSequence
-import { launchModal, updateScoreUI, showLoader, triggerConfetti } from '../engine/ui.js';
+import { launchModal, updateScoreUI, showLoader, triggerConfetti, showNextRoundButton } from '../engine/ui.js';
 import { checkOverallProgress } from '../challenges/manager.js';
 
 const roundSize = 5;
@@ -216,7 +216,7 @@ function handleDrop(targetBox, draggedVal, draggedElId) {
 
     const currentCorrect = incrementCorrect();
     if (currentCorrect === roundSize) {
-        document.getElementById('reset-btn').style.display = 'inline-block';
+        showNextRoundButton();
         setTimeout(() => speakText("Good Job!", "generic_good_job"), 1000);
         checkOverallProgress(mode);
     }
