@@ -20,6 +20,7 @@ import { initStickers, toggleStickerBook } from './engine/stickers.js';
 import { initEmotionGame } from './games/emotions.js';
 import { initConnectDotsGame } from './games/connect-dots.js';
 import { initHideSeekGame } from './games/hide-seek.js';
+import { initTrafficLightGame } from './games/traffic-light.js';
 import { ParentalGate } from './engine/parental-gate.js';
 
 const GAME_VERSION = 'v2.0';
@@ -28,6 +29,7 @@ const GAME_VERSION = 'v2.0';
 const gameModes = [
     // World
     { id: 'hideseek', name: 'Hide & Seek', icon: '🌳', category: 'world' },
+    { id: 'traffic', name: 'Traffic', icon: '🚦', category: 'world' },
     { id: 'feedlion', name: 'Feed Lion', icon: 'assets/images/game_icons/icon_feed.png', category: 'world' },
     { id: 'weather', name: 'Weather', icon: 'assets/images/game_icons/icon_weather.png', category: 'world' },
     { id: 'nature', name: 'Nature', icon: 'assets/images/game_icons/icon_nature.png', category: 'world' },
@@ -228,6 +230,7 @@ function initRound() {
     else if (mode === 'emotions') initEmotionGame();
     else if (mode === 'connectdots') initConnectDotsGame();
     else if (mode === 'hideseek') initHideSeekGame();
+    else if (mode === 'traffic') initTrafficLightGame();
     else initStandardGame();
 }
 

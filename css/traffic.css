@@ -1,0 +1,130 @@
+.traffic-stage {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background: linear-gradient(to bottom, #87CEEB 0%, #87CEEB 60%, #90EE90 60%, #90EE90 100%);
+    overflow: hidden;
+    touch-action: none;
+}
+
+.road {
+    position: absolute;
+    bottom: 10%;
+    width: 100%;
+    height: 30%;
+    background-color: #555;
+    border-top: 5px solid #333;
+    border-bottom: 5px solid #333;
+    z-index: 1;
+}
+
+.road-lines {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    height: 0;
+    border-top: 5px dashed #FFEB3B;
+    transform: translateY(-50%);
+}
+
+.traffic-light-container {
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.traffic-pole {
+    width: 15px;
+    height: 100px;
+    background-color: #333;
+    margin-bottom: -5px;
+}
+
+.traffic-light-box {
+    width: 120px;
+    background-color: #333;
+    border-radius: 20px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    box-shadow: 5px 5px 15px rgba(0,0,0,0.3);
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+
+.traffic-light-box:active {
+    transform: scale(0.95);
+}
+
+.light-circle {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background-color: #222;
+    border: 3px solid #111;
+    transition: all 0.3s;
+    opacity: 0.3;
+}
+
+.light-red.active {
+    background-color: #FF5252;
+    box-shadow: 0 0 30px #FF5252;
+    opacity: 1;
+    border-color: #D32F2F;
+}
+
+.light-green.active {
+    background-color: #69F0AE;
+    box-shadow: 0 0 30px #69F0AE;
+    opacity: 1;
+    border-color: #388E3C;
+}
+
+/* Vehicles */
+.vehicle {
+    position: absolute;
+    bottom: 20%; /* Aligned with road */
+    font-size: 80px;
+    z-index: 5;
+    user-select: none;
+    will-change: transform;
+    /* Animation defined in JS or here? Let's define keyframes here */
+    animation-name: drive;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+}
+
+.vehicle.stopped {
+    animation-play-state: paused;
+}
+
+@keyframes drive {
+    from {
+        transform: translateX(-150px);
+    }
+    to {
+        transform: translateX(110vw);
+    }
+}
+
+/* Instruction Hint */
+.traffic-hint {
+    position: absolute;
+    top: 55%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.5rem;
+    color: #333;
+    background: rgba(255,255,255,0.8);
+    padding: 5px 15px;
+    border-radius: 20px;
+    pointer-events: none;
+    font-weight: bold;
+    opacity: 0.8;
+}
