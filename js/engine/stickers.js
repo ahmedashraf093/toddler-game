@@ -163,15 +163,27 @@ export function updateStickerUI() {
     }
 }
 
+let stickerLastFocus = null;
+
 export function toggleStickerBook(show) {
     const overlay = document.getElementById('sticker-book-overlay');
     if (overlay) {
-        if (show === undefined) overlay.classList.toggle('hidden');
-        else if (show) overlay.classList.remove('hidden');
-        else overlay.classList.add('hidden');
+        const currentlyHidden = overlay.classList.contains('hidden');
 
-        if (!overlay.classList.contains('hidden')) {
-            updateStickerUI(); // Refresh content
+        let shouldShow = show;
+        if (show === undefined) shouldShow = currentlyHidden;
+
+        if (shouldShow) {
+            if (currentlyHidden) stickerLastFocus = document.activeElement;
+            overlay.classList.remove('hidden');
+            updateStickerUI();
+            const closeBtn = overlay.querySelector('.close-menu-btn');
+            if (closeBtn) setTimeout(() => closeBtn.focus(), 50);
+        } else {
+            overlay.classList.add('hidden');
+            if (stickerLastFocus && document.body.contains(stickerLastFocus)) {
+                stickerLastFocus.focus();
+            }
         }
     }
 }

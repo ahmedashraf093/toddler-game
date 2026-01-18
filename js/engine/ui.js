@@ -357,12 +357,26 @@ export function triggerConfetti(x, y) {
     }
 }
 
+let menuLastFocus = null;
+
 export function toggleMenu(forceHide = false) {
     const overlay = document.getElementById('games-menu-overlay');
+    const isHidden = overlay.classList.contains('hidden');
+
     if (forceHide) {
         overlay.classList.add('hidden');
     } else {
-        overlay.classList.toggle('hidden');
+        if (isHidden) {
+            menuLastFocus = document.activeElement;
+            overlay.classList.remove('hidden');
+            const closeBtn = overlay.querySelector('.close-menu-btn');
+            if (closeBtn) setTimeout(() => closeBtn.focus(), 50);
+        } else {
+            overlay.classList.add('hidden');
+            if (menuLastFocus && document.body.contains(menuLastFocus)) {
+                menuLastFocus.focus();
+            }
+        }
     }
 }
 

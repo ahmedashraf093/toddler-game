@@ -110,10 +110,27 @@ function checkDayCompletion(config) {
 }
 
 // UI Handling for Challenges
+let challengeLastFocus = null;
+
 export function toggleChallengeMenu() {
     const overlay = document.getElementById('challenges-overlay');
-    if (overlay) overlay.classList.toggle('hidden');
-    updateChallengeUI();
+    if (!overlay) return;
+
+    const isHidden = overlay.classList.contains('hidden');
+
+    if (isHidden) {
+        challengeLastFocus = document.activeElement;
+        overlay.classList.remove('hidden');
+        updateChallengeUI();
+        const closeBtn = overlay.querySelector('.close-menu-btn');
+        if (closeBtn) setTimeout(() => closeBtn.focus(), 50);
+    } else {
+        overlay.classList.add('hidden');
+        updateChallengeUI();
+        if (challengeLastFocus && document.body.contains(challengeLastFocus)) {
+            challengeLastFocus.focus();
+        }
+    }
 }
 
 function updateChallengeUI() {
