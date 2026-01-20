@@ -157,6 +157,27 @@ export function updateStickerUI() {
                     <div class="sticker-icon">${s.icon}</div>
                     <div class="sticker-name">${s.name}</div>
                 `;
+
+                // 🎨 Palette: Accessibility & Delight
+                el.setAttribute('role', 'button');
+                el.setAttribute('tabindex', '0');
+                el.setAttribute('aria-label', `${s.name} Sticker`);
+
+                const activate = () => {
+                    speakText(s.name, "generic_happy");
+                    el.classList.remove('sticker-pop');
+                    void el.offsetWidth; // trigger reflow
+                    el.classList.add('sticker-pop');
+                };
+
+                el.onclick = activate;
+                el.onkeydown = (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        activate();
+                    }
+                };
+
                 grid.appendChild(el);
             });
         }

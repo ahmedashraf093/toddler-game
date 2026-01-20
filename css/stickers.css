@@ -98,11 +98,32 @@
     justify-content: center;
     transition: transform 0.2s;
     border: 2px solid #f0f0f0;
+    cursor: pointer; /* Now interactive */
 }
 
 .sticker-item:hover {
     transform: translateY(-5px) rotate(2deg);
     border-color: #FFD700;
+}
+
+.sticker-item:focus-visible {
+    transform: translateY(-5px);
+    border-color: var(--primary-color, #4facfe);
+    outline: 4px dashed var(--primary-color, #4facfe);
+    outline-offset: 4px;
+    z-index: 10;
+}
+
+/* 🎨 Palette: Delightful interaction animation */
+.sticker-item.sticker-pop {
+    animation: stickerPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border-color: #FFD700;
+}
+
+@keyframes stickerPop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.15) rotate(3deg); }
+    100% { transform: scale(1); }
 }
 
 .sticker-icon {
