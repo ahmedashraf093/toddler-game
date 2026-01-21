@@ -122,9 +122,44 @@ window.addEventListener('load', () => {
     // Close menu buttons
     document.querySelectorAll('.close-menu-btn').forEach(btn => {
         btn.onclick = (e) => {
-            const overlay = e.target.closest('.overlay-full');
-            if (overlay) overlay.classList.add('hidden');
+            const overlay = e.target.closest('.overlay-full') || e.target.closest('#parental-gate-overlay');
+            if (!overlay) return;
+
+            if (overlay.id === 'games-menu-overlay') toggleMenu(true);
+            else if (overlay.id === 'challenges-overlay') toggleChallengeMenu();
+            else if (overlay.id === 'sticker-book-overlay') toggleStickerBook(false);
+            else if (overlay.id === 'parental-gate-overlay') ParentalGate.toggle(false);
+            else overlay.classList.add('hidden');
         };
+    });
+
+    // 🎨 Palette: Global Escape key to close modals
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            const pg = document.getElementById('parental-gate-overlay');
+            if (pg && !pg.classList.contains('hidden')) {
+                ParentalGate.toggle(false);
+                return;
+            }
+
+            const gamesMenu = document.getElementById('games-menu-overlay');
+            if (gamesMenu && !gamesMenu.classList.contains('hidden')) {
+                toggleMenu(true);
+                return;
+            }
+
+            const challenges = document.getElementById('challenges-overlay');
+            if (challenges && !challenges.classList.contains('hidden')) {
+                toggleChallengeMenu();
+                return;
+            }
+
+            const stickerBook = document.getElementById('sticker-book-overlay');
+            if (stickerBook && !stickerBook.classList.contains('hidden')) {
+                toggleStickerBook(false);
+                return;
+            }
+        }
     });
 
     // Difficulty buttons
@@ -237,4 +272,4 @@ function initRound() {
 // Expose some globals for debugging if needed, but try to avoid it
 window.gameState = gameState;
 // Make available globally for HTML onclick
-window.toggleParentalGate = ParentalGate.toggle;
+window.toggleParentalGate = ParentalGate.toggle.bind(ParentalGate);

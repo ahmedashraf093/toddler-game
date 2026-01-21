@@ -12,6 +12,15 @@ export const ParentalGate = {
         this.bindEvents();
     },
 
+    toggle(forceState) {
+        if (forceState === false) {
+            // Closing the gate resets the timer to prevent immediate re-triggering (loop).
+            this.unlock();
+        } else {
+            this.show();
+        }
+    },
+
     startSession() {
         // Called when 'Play' is clicked.
         // If no start time exists, set it.

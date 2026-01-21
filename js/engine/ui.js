@@ -4,6 +4,7 @@ import { speakText, playVictoryMusic } from './audio.js';
 import { isContentUnlocked } from '../challenges/manager.js';
 
 let modalTimeout = null;
+let menuTriggerBtn = null;
 
 const CELEB_CHARACTERS = {
     sun: {
@@ -359,10 +360,32 @@ export function triggerConfetti(x, y) {
 
 export function toggleMenu(forceHide = false) {
     const overlay = document.getElementById('games-menu-overlay');
-    if (forceHide) {
-        overlay.classList.add('hidden');
+    if (!overlay) return;
+
+    const isHidden = overlay.classList.contains('hidden');
+    // If forceHide is true, we hide. If it's false, we toggle (hide if shown, show if hidden)
+    const shouldShow = forceHide ? false : isHidden;
+
+    if (shouldShow) {
+        // Open Menu
+        menuTriggerBtn = document.activeElement;
+        overlay.classList.remove('hidden');
+
+        // Move focus to close button for accessibility
+        const closeBtn = overlay.querySelector('.close-menu-btn');
+        if (closeBtn) {
+            // Small timeout to allow visibility transition/rendering
+            setTimeout(() => closeBtn.focus(), 50);
+        }
     } else {
-        overlay.classList.toggle('hidden');
+        // Close Menu
+        overlay.classList.add('hidden');
+
+        // Restore focus to trigger
+        if (menuTriggerBtn && document.body.contains(menuTriggerBtn)) {
+            menuTriggerBtn.focus();
+            menuTriggerBtn = null;
+        }
     }
 }
 
