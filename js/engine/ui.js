@@ -357,12 +357,28 @@ export function triggerConfetti(x, y) {
     }
 }
 
+let lastFocus = null;
+
 export function toggleMenu(forceHide = false) {
     const overlay = document.getElementById('games-menu-overlay');
-    if (forceHide) {
-        overlay.classList.add('hidden');
+    // If forcing hide, we want to hide.
+    // If NOT forcing hide, we check current state: if hidden, we show. If shown, we hide.
+    const willShow = forceHide ? false : overlay.classList.contains('hidden');
+
+    if (willShow) {
+        lastFocus = document.activeElement;
+        overlay.classList.remove('hidden');
+        // 🎨 Palette: Accessibility - Focus management
+        setTimeout(() => {
+            const closeBtn = overlay.querySelector('.close-menu-btn');
+            if (closeBtn) closeBtn.focus();
+        }, 50);
     } else {
-        overlay.classList.toggle('hidden');
+        overlay.classList.add('hidden');
+        if (lastFocus && document.body.contains(lastFocus)) {
+            lastFocus.focus();
+        }
+        lastFocus = null;
     }
 }
 

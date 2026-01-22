@@ -120,5 +120,10 @@ export const ParentalGate = {
                 this.handleInput(val);
             };
         });
+    },
+
+    toggle(show) {
+        if (show) this.show();
+        else this.unlock();
     }
 };
