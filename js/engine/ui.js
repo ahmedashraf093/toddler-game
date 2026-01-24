@@ -4,6 +4,7 @@ import { speakText, playVictoryMusic } from './audio.js';
 import { isContentUnlocked } from '../challenges/manager.js';
 
 let modalTimeout = null;
+let lastFocus = null;
 
 const CELEB_CHARACTERS = {
     sun: {
@@ -359,10 +360,35 @@ export function triggerConfetti(x, y) {
 
 export function toggleMenu(forceHide = false) {
     const overlay = document.getElementById('games-menu-overlay');
+
+    // 🎨 Palette: Accessibility - Focus Management
     if (forceHide) {
+        const wasVisible = !overlay.classList.contains('hidden');
         overlay.classList.add('hidden');
+
+        if (wasVisible && lastFocus) {
+            lastFocus.focus();
+            lastFocus = null;
+        }
     } else {
+        const isHidden = overlay.classList.contains('hidden');
         overlay.classList.toggle('hidden');
+
+        if (isHidden) {
+            // Opening
+            lastFocus = document.activeElement;
+            // Small delay to ensure visibility
+            setTimeout(() => {
+                const closeBtn = overlay.querySelector('.close-menu-btn');
+                if (closeBtn) closeBtn.focus();
+            }, 50);
+        } else {
+            // Closing
+            if (lastFocus) {
+                lastFocus.focus();
+                lastFocus = null;
+            }
+        }
     }
 }
 
