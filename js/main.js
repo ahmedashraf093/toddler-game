@@ -123,7 +123,18 @@ window.addEventListener('load', () => {
     document.querySelectorAll('.close-menu-btn').forEach(btn => {
         btn.onclick = (e) => {
             const overlay = e.target.closest('.overlay-full');
-            if (overlay) overlay.classList.add('hidden');
+            if (overlay) {
+                if (overlay.id === 'games-menu-overlay') {
+                    toggleMenu(true);
+                } else if (overlay.id === 'challenges-overlay') {
+                    toggleChallengeMenu();
+                } else if (overlay.id === 'sticker-book-overlay') {
+                    toggleStickerBook(false);
+                } else {
+                    // Fallback for others (e.g. Parental Gate handled separately via global onclick)
+                    overlay.classList.add('hidden');
+                }
+            }
         };
     });
 

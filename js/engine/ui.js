@@ -357,12 +357,30 @@ export function triggerConfetti(x, y) {
     }
 }
 
+let lastFocus = null;
+
 export function toggleMenu(forceHide = false) {
     const overlay = document.getElementById('games-menu-overlay');
-    if (forceHide) {
+    const isHidden = overlay.classList.contains('hidden');
+
+    // 🎨 Palette: Accessibility - Focus Management
+    if (forceHide || !isHidden) {
+        // Closing
         overlay.classList.add('hidden');
+        if (lastFocus && document.body.contains(lastFocus)) {
+            lastFocus.focus();
+            lastFocus = null;
+        }
     } else {
-        overlay.classList.toggle('hidden');
+        // Opening
+        lastFocus = document.activeElement;
+        overlay.classList.remove('hidden');
+        // Wait for visibility if needed, or focus immediately
+        const closeBtn = overlay.querySelector('.close-menu-btn');
+        if (closeBtn) {
+            // setTimeout ensures the element is visible/interactive
+            setTimeout(() => closeBtn.focus(), 50);
+        }
     }
 }
 
