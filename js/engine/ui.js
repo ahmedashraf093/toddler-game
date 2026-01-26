@@ -4,6 +4,7 @@ import { speakText, playVictoryMusic } from './audio.js';
 import { isContentUnlocked } from '../challenges/manager.js';
 
 let modalTimeout = null;
+let lastFocus = null;
 
 const CELEB_CHARACTERS = {
     sun: {
@@ -357,12 +358,22 @@ export function triggerConfetti(x, y) {
     }
 }
 
-export function toggleMenu(forceHide = false) {
+export function toggleMenu(forceHide = false, shouldRestoreFocus = true) {
     const overlay = document.getElementById('games-menu-overlay');
-    if (forceHide) {
+    const isHidden = overlay.classList.contains('hidden');
+    const shouldClose = forceHide || !isHidden;
+
+    if (shouldClose) {
         overlay.classList.add('hidden');
+        if (shouldRestoreFocus && lastFocus) {
+            lastFocus.focus();
+            lastFocus = null;
+        }
     } else {
-        overlay.classList.toggle('hidden');
+        lastFocus = document.activeElement;
+        overlay.classList.remove('hidden');
+        const closeBtn = overlay.querySelector('.close-menu-btn');
+        if (closeBtn) setTimeout(() => closeBtn.focus(), 50);
     }
 }
 

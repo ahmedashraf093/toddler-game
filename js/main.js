@@ -123,7 +123,12 @@ window.addEventListener('load', () => {
     document.querySelectorAll('.close-menu-btn').forEach(btn => {
         btn.onclick = (e) => {
             const overlay = e.target.closest('.overlay-full');
-            if (overlay) overlay.classList.add('hidden');
+            if (overlay) {
+                if (overlay.id === 'games-menu-overlay') toggleMenu(true, true);
+                else if (overlay.id === 'challenges-overlay') toggleChallengeMenu();
+                else if (overlay.id === 'sticker-book-overlay') toggleStickerBook(false);
+                else overlay.classList.add('hidden');
+            }
         };
     });
 
@@ -193,7 +198,7 @@ function setDifficulty(level, btn) {
 function setMode(mode) {
     console.log("setMode called with:", mode);
     gameState.currentMode = mode;
-    toggleMenu(true); // Close menu
+    toggleMenu(true, false); // Close menu without restoring focus
     setTheme(mode);
 
     // Disable BGM for Listening and Music games
