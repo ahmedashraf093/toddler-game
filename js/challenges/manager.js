@@ -146,7 +146,7 @@ function updateChallengeUI() {
                 const done = prog >= t.count;
                 // Add click handler via data attribute or onclick if safe, 
                 // but since we are generating HTML string, we'll add event listeners after rendering
-                html += `<div class="task-row" data-type="${t.type}" style="cursor: pointer; padding: 5px; background: rgba(255,255,255,0.5); border-radius: 5px; margin-top: 5px;">
+                html += `<div class="task-row" data-type="${t.type}" role="button" tabindex="0" aria-label="Play ${t.type} game" style="cursor: pointer; padding: 5px; background: rgba(255,255,255,0.5); border-radius: 5px; margin-top: 5px;">
                             <span>${done ? '✅' : '👉'} ${t.type.toUpperCase()}: ${prog}/${t.count}</span>
                          </div>`;
             });
@@ -160,12 +160,22 @@ function updateChallengeUI() {
         if (isCurrent) {
             const tasks = el.querySelectorAll('.task-row');
             tasks.forEach(taskEl => {
-                taskEl.onclick = (e) => {
+                const handleAction = (e) => {
                     const type = taskEl.dataset.type;
                     if (gameSelectContext && type) {
                         e.stopPropagation();
                         toggleChallengeMenu(); // Close menu
                         gameSelectContext(type); // Switch game
+                    }
+                };
+
+                taskEl.onclick = handleAction;
+
+                // 🎨 Palette: Keyboard accessibility
+                taskEl.onkeydown = (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault(); // Prevent scroll
+                        handleAction(e);
                     }
                 };
             });
