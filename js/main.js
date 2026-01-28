@@ -21,6 +21,7 @@ import { initEmotionGame } from './games/emotions.js';
 import { initConnectDotsGame } from './games/connect-dots.js';
 import { initHideSeekGame } from './games/hide-seek.js';
 import { initTrafficLightGame } from './games/traffic-light.js';
+import { initSimonGame } from './games/simon.js';
 import { ParentalGate } from './engine/parental-gate.js';
 
 const GAME_VERSION = 'v2.0';
@@ -52,6 +53,7 @@ const gameModes = [
     { id: 'listening', name: 'Listening', icon: 'assets/images/game_icons/icon_listening.png', category: 'learning' },
 
     // Logic
+    { id: 'simon', name: 'Simon', icon: '💡', category: 'logic' },
     { id: 'pattern', name: 'Pattern', icon: 'assets/images/game_icons/icon_pattern.png', category: 'logic' },
     { id: 'puzzle', name: 'Puzzle', icon: 'assets/images/game_icons/icon_puzzle.png', category: 'logic' },
     { id: 'memory', name: 'Memory', icon: 'assets/images/game_icons/icon_memory.png', category: 'logic' },
@@ -251,6 +253,7 @@ function initRound() {
     else if (mode === 'connectdots') initConnectDotsGame();
     else if (mode === 'hideseek') initHideSeekGame();
     else if (mode === 'traffic') initTrafficLightGame();
+    else if (mode === 'simon') initSimonGame();
     else initStandardGame();
 }
 

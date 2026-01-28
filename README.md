@@ -40,6 +40,7 @@ We have over 15 distinct game modes categorized to help your child develop key s
 *   **🧠 Memory:** Classic card flipping memory game.
 *   **❓ Odd One Out:** Find the item that doesn't belong (e.g., a car in a group of fruit).
 *   **🔶 Patterns:** Complete the sequence (Red, Blue, Red, ...?).
+*   **💡 Simon:** Watch the colors light up and repeat the pattern!
 
 ---
 
