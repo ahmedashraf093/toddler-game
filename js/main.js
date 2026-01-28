@@ -126,12 +126,7 @@ window.addEventListener('load', () => {
             if (overlay) {
                 if (overlay.id === 'games-menu-overlay') {
                     toggleMenu(true);
-                } else if (overlay.id === 'challenges-overlay') {
-                    toggleChallengeMenu();
-                } else if (overlay.id === 'sticker-book-overlay') {
-                    toggleStickerBook(false);
                 } else {
-                    // Fallback for others (e.g. Parental Gate handled separately via global onclick)
                     overlay.classList.add('hidden');
                 }
             }

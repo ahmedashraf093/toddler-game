@@ -6,6 +6,6 @@
 **Learning:** I initially planned to add accessibility attributes to the Game Selection Menu, but discovered `js/engine/ui.js` already implemented them (`role="button"`, `tabindex="0"`, keydown). This highlights the importance of verifying the current code state (especially if it differs from initial assumptions or outdated memory) before implementing changes.
 **Action:** Always verify the specific implementation details of a feature in the latest code before committing to a plan. If a feature seems "missing" based on UI inspection (or lack of obvious indicators), deep-dive into the code responsible for generating that UI first.
 
-## 2025-12-26 - Centralizing Focus Management
-**Learning:** The application used a generic event listener for closing overlays that bypassed the specific `toggleMenu` logic. This made implementing focus restoration difficult without refactoring the close listener to delegate back to the specific toggle functions.
-**Action:** When implementing focus management for modals, ensure all close triggers (buttons, keys, background clicks) route through a central function that handles focus restoration to guarantee a consistent keyboard experience.
+## 2025-12-25 - Generic Event Listeners Bypassing Logic
+**Learning:** Generic event listeners (like `close-menu-btn` handlers in `js/main.js`) can bypass specific module logic (like `toggleMenu`'s focus restoration). This creates accessibility gaps where features like focus management work when triggered programmatically but fail when triggered by the UI.
+**Action:** When implementing global UI patterns, ensure the generic handler delegates to the specific module function (e.g., `toggleMenu(true)`) instead of manipulating the DOM directly, or ensure the specific function is the *only* way to change state.

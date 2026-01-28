@@ -362,25 +362,34 @@ let lastFocus = null;
 
 export function toggleMenu(forceHide = false) {
     const overlay = document.getElementById('games-menu-overlay');
-    const isHidden = overlay.classList.contains('hidden');
 
     // 🎨 Palette: Accessibility - Focus Management
-    if (forceHide || !isHidden) {
-        // Closing
+    if (forceHide) {
+        const wasVisible = !overlay.classList.contains('hidden');
         overlay.classList.add('hidden');
-        if (lastFocus && document.body.contains(lastFocus)) {
+
+        if (wasVisible && lastFocus) {
             lastFocus.focus();
             lastFocus = null;
         }
     } else {
-        // Opening
-        lastFocus = document.activeElement;
-        overlay.classList.remove('hidden');
-        // Wait for visibility if needed, or focus immediately
-        const closeBtn = overlay.querySelector('.close-menu-btn');
-        if (closeBtn) {
-            // setTimeout ensures the element is visible/interactive
-            setTimeout(() => closeBtn.focus(), 50);
+        const isHidden = overlay.classList.contains('hidden');
+        overlay.classList.toggle('hidden');
+
+        if (isHidden) {
+            // Opening
+            lastFocus = document.activeElement;
+            // Small delay to ensure visibility
+            setTimeout(() => {
+                const closeBtn = overlay.querySelector('.close-menu-btn');
+                if (closeBtn) closeBtn.focus();
+            }, 50);
+        } else {
+            // Closing
+            if (lastFocus) {
+                lastFocus.focus();
+                lastFocus = null;
+            }
         }
     }
 }
