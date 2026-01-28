@@ -362,35 +362,24 @@ let lastFocus = null;
 
 export function toggleMenu(forceHide = false) {
     const overlay = document.getElementById('games-menu-overlay');
+    // If forcing hide, we want to hide.
+    // If NOT forcing hide, we check current state: if hidden, we show. If shown, we hide.
+    const willShow = forceHide ? false : overlay.classList.contains('hidden');
 
-    // 🎨 Palette: Accessibility - Focus Management
-    if (forceHide) {
-        const wasVisible = !overlay.classList.contains('hidden');
-        overlay.classList.add('hidden');
-
-        if (wasVisible && lastFocus) {
-            lastFocus.focus();
-            lastFocus = null;
-        }
+    if (willShow) {
+        lastFocus = document.activeElement;
+        overlay.classList.remove('hidden');
+        // 🎨 Palette: Accessibility - Focus management
+        setTimeout(() => {
+            const closeBtn = overlay.querySelector('.close-menu-btn');
+            if (closeBtn) closeBtn.focus();
+        }, 50);
     } else {
-        const isHidden = overlay.classList.contains('hidden');
-        overlay.classList.toggle('hidden');
-
-        if (isHidden) {
-            // Opening
-            lastFocus = document.activeElement;
-            // Small delay to ensure visibility
-            setTimeout(() => {
-                const closeBtn = overlay.querySelector('.close-menu-btn');
-                if (closeBtn) closeBtn.focus();
-            }, 50);
-        } else {
-            // Closing
-            if (lastFocus) {
-                lastFocus.focus();
-                lastFocus = null;
-            }
+        overlay.classList.add('hidden');
+        if (lastFocus && document.body.contains(lastFocus)) {
+            lastFocus.focus();
         }
+        lastFocus = null;
     }
 }
 

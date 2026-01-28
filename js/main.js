@@ -124,13 +124,27 @@ window.addEventListener('load', () => {
         btn.onclick = (e) => {
             const overlay = e.target.closest('.overlay-full');
             if (overlay) {
-                if (overlay.id === 'games-menu-overlay') {
-                    toggleMenu(true);
-                } else {
-                    overlay.classList.add('hidden');
-                }
+                if (overlay.id === 'games-menu-overlay') toggleMenu(true);
+                else if (overlay.id === 'challenges-overlay') toggleChallengeMenu();
+                else if (overlay.id === 'sticker-book-overlay') toggleStickerBook(false);
+                else overlay.classList.add('hidden');
             }
         };
+    });
+
+    // 🎨 Palette: Accessibility - Global Escape Key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            const gamesMenu = document.getElementById('games-menu-overlay');
+            const challengesMenu = document.getElementById('challenges-overlay');
+            const stickerBook = document.getElementById('sticker-book-overlay');
+            const parentalGate = document.getElementById('parental-gate-overlay');
+
+            if (gamesMenu && !gamesMenu.classList.contains('hidden')) toggleMenu(true);
+            else if (challengesMenu && !challengesMenu.classList.contains('hidden')) toggleChallengeMenu();
+            else if (stickerBook && !stickerBook.classList.contains('hidden')) toggleStickerBook(false);
+            else if (parentalGate && !parentalGate.classList.contains('hidden')) ParentalGate.toggle(false);
+        }
     });
 
     // Difficulty buttons
@@ -243,4 +257,4 @@ function initRound() {
 // Expose some globals for debugging if needed, but try to avoid it
 window.gameState = gameState;
 // Make available globally for HTML onclick
-window.toggleParentalGate = (s) => ParentalGate.toggle(s);
+window.toggleParentalGate = (show) => ParentalGate.toggle(show);
