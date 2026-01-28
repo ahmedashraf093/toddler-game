@@ -1,3 +1,5 @@
 temp_speech/
 venv/*
 venv
+server.log
+verification/*
