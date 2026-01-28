@@ -213,7 +213,7 @@ function setDifficulty(level, btn) {
 function setMode(mode) {
     console.log("setMode called with:", mode);
     gameState.currentMode = mode;
-    toggleMenu(true); // Close menu
+    toggleMenu(true, false); // Close menu without restoring focus
     setTheme(mode);
 
     // Disable BGM for Listening and Music games

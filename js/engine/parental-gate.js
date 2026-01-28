@@ -6,8 +6,10 @@ export const ParentalGate = {
     THRESHOLD_MS: 15 * 60 * 1000, // 15 minutes
     currentAnswer: 0,
     inputBuffer: '',
+    boundHandleKeyDown: null,
 
     init() {
+        this.boundHandleKeyDown = this.handleKeyDown.bind(this);
         // Bind UI events once
         this.bindEvents();
     },
@@ -61,6 +63,64 @@ export const ParentalGate = {
 
         // Show Overlay
         overlay.classList.remove('hidden');
+
+        // 🎨 Palette: Add keyboard support
+        document.addEventListener('keydown', this.boundHandleKeyDown);
+    },
+
+    hide() {
+        const overlay = document.getElementById('parental-gate-overlay');
+        if (overlay) overlay.classList.add('hidden');
+
+        // Remove keyboard support
+        if (this.boundHandleKeyDown) {
+            document.removeEventListener('keydown', this.boundHandleKeyDown);
+        }
+    },
+
+    toggle(show) {
+        if (show) {
+            this.show();
+        } else {
+            // User cancelled/closed the gate.
+            // Do NOT unlock (do not reset timer).
+            // Stop the check loop to prevent immediate reopening.
+            if (this.checkInterval) {
+                clearInterval(this.checkInterval);
+                this.checkInterval = null;
+            }
+            this.hide();
+
+            // Redirect to start screen (kick out)
+            const startScreen = document.getElementById('start-screen');
+            if (startScreen) startScreen.style.display = 'flex';
+        }
+    },
+
+    handleKeyDown(e) {
+        // Numbers
+        if (e.key >= '0' && e.key <= '9') {
+            this.handleInput(e.key);
+        }
+        // Backspace
+        else if (e.key === 'Backspace') {
+            if (this.inputBuffer.length > 0) {
+                this.inputBuffer = this.inputBuffer.slice(0, -1);
+                this.updateInputDisplay();
+            }
+        }
+        // Clear
+        else if (e.key === 'Delete' || e.key.toLowerCase() === 'c') {
+            this.handleInput('clear');
+        }
+        // Enter
+        else if (e.key === 'Enter') {
+            this.handleInput('enter');
+        }
+        // Escape
+        else if (e.key === 'Escape') {
+            this.toggle(false);
+        }
     },
 
     handleInput(val) {
@@ -103,7 +163,7 @@ export const ParentalGate = {
         localStorage.setItem(this.storageKey, Date.now());
 
         // Hide overlay
-        document.getElementById('parental-gate-overlay').classList.add('hidden');
+        this.hide();
     },
 
     shake() {
