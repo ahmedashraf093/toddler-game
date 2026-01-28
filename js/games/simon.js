@@ -217,7 +217,7 @@ function handlePlayerInput(id) {
 
 function playTone(freq) {
     let ctx = audioCtx;
-    if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+    if (!ctx) return;
 
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
