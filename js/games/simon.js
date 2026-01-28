@@ -113,7 +113,7 @@ export function initSimonGame() {
 
 function startNextRound() {
     // Add random step
-    const nextId = Math.floor(Math.random() * 4);
+    const nextId = Math.floor(Math.random() * buttons.length);
     sequence.push(nextId);
     playerStep = 0;
 
