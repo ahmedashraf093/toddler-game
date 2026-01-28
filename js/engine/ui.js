@@ -358,6 +358,8 @@ export function triggerConfetti(x, y) {
     }
 }
 
+let lastFocus = null;
+
 export function toggleMenu(forceHide = false) {
     const overlay = document.getElementById('games-menu-overlay');
 
