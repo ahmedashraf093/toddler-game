@@ -9,3 +9,7 @@
 ## 2025-12-25 - Generic Event Listeners Bypassing Logic
 **Learning:** Generic event listeners (like `close-menu-btn` handlers in `js/main.js`) can bypass specific module logic (like `toggleMenu`'s focus restoration). This creates accessibility gaps where features like focus management work when triggered programmatically but fail when triggered by the UI.
 **Action:** When implementing global UI patterns, ensure the generic handler delegates to the specific module function (e.g., `toggleMenu(true)`) instead of manipulating the DOM directly, or ensure the specific function is the *only* way to change state.
+
+## 2025-12-25 - Type Casting in Programmatic Logic
+**Learning:** Game logic often relies on strict equality checks against DOM `dataset` values (which are always strings). When triggering this logic programmatically (e.g., via a helper function for accessibility), failing to explicitly cast numbers to strings causes silent failures.
+**Action:** Always verify data types when interfacing with existing game logic, especially when bypassing the standard input methods (like Drag and Drop) that might handle conversion implicitly.

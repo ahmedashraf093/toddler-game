@@ -95,8 +95,29 @@ function loadMathQuestion() {
         el.dataset.label = val.toString();
         el.dataset.audioKey = 'num_' + val;
         makeDraggable(el, val, el.id);
+
+        // 🎨 Palette: Accessibility Improvements
+        el.setAttribute('role', 'button');
+        el.setAttribute('tabindex', '0');
+        el.setAttribute('aria-label', `Number ${val}`);
+
+        const handleAction = (e) => {
+            if (e.type === 'keydown' && e.key !== 'Enter' && e.key !== ' ') return;
+            if (e.type === 'keydown') e.preventDefault();
+            handleSelect(val);
+        };
+
+        el.onclick = handleAction;
+        el.onkeydown = handleAction;
+
         optionsRow.appendChild(el);
     });
+}
+
+function handleSelect(val) {
+    const target = document.getElementById('math-target-zone');
+    // dropMath expects a string for strict equality check against dataset
+    dropMath(target, String(val));
 }
 
 function dropMath(targetBox, draggedVal) {
