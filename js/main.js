@@ -71,8 +71,6 @@ window.addEventListener('load', () => {
 
     initAudio();
     initInput(); // Start Idle Tracking
-    initAudio();
-    initInput(); // Start Idle Tracking
     initChallenges(setMode);
     initStickers(); // Load stickers
 

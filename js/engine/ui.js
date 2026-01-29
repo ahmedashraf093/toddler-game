@@ -405,29 +405,31 @@ export function setTheme(mode) {
     const alphabetStage = document.getElementById('alphabet-stage');
     const emotionsStage = document.getElementById('emotions-stage');
     const listeningStage = document.getElementById('listening-stage');
+    const simonStage = document.getElementById('simon-stage');
 
     // Reset visibility (Hide ALL)
     if (standardBoard) standardBoard.style.display = 'none';
-    if (mathStage) mathStage.classList.remove('active');
+    if (mathStage) mathStage.classList.add('hidden');
     if (puzzleStage) puzzleStage.classList.add('hidden');
-    if (memoryStage) memoryStage.classList.remove('active');
-    if (oddOneStage) oddOneStage.classList.remove('active');
+    if (memoryStage) memoryStage.classList.add('hidden');
+    if (oddOneStage) oddOneStage.classList.add('hidden');
     if (diffBar) diffBar.style.display = 'none';
     if (emotionsStage) emotionsStage.classList.add('hidden');
     if (bubbleStage) bubbleStage.classList.add('hidden');
     if (alphabetStage) alphabetStage.classList.add('hidden');
     if (listeningStage) listeningStage.classList.add('hidden');
+    if (simonStage) simonStage.classList.add('hidden');
 
     if (mode === 'math') {
-        if (mathStage) mathStage.classList.add('active');
+        if (mathStage) mathStage.classList.remove('hidden');
         if (diffBar) diffBar.style.display = 'flex';
     } else if (mode === 'memory') {
-        if (memoryStage) memoryStage.classList.add('active');
+        if (memoryStage) memoryStage.classList.remove('hidden');
         if (diffBar) diffBar.style.display = 'flex';
     } else if (mode === 'puzzle') {
         if (puzzleStage) puzzleStage.classList.remove('hidden');
     } else if (mode === 'oddoneout') {
-        if (oddOneStage) oddOneStage.classList.add('active');
+        if (oddOneStage) oddOneStage.classList.remove('hidden');
     } else if (mode === 'emotions') {
         if (emotionsStage) emotionsStage.classList.remove('hidden');
     } else if (mode === 'bubblepop') {
@@ -437,6 +439,8 @@ export function setTheme(mode) {
             standardBoard.style.display = 'flex';
             standardBoard.className = 'game-board ' + mode + '-mode';
         }
+    } else if (mode === 'simon') {
+        if (simonStage) simonStage.classList.remove('hidden');
     } else {
         // Standard modes (shadow, letter, number, etc)
         if (standardBoard) {

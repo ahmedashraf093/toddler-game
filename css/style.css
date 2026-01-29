@@ -395,25 +395,18 @@ body {
 
 /* --- Math Step-by-Step Board --- */
 #math-stage {
-    display: none;
+    display: flex;
     flex-direction: column;
     align-items: center;
     width: 95%;
     max-width: 600px;
     flex-grow: 1;
     justify-content: flex-start;
-    /* Was center, caused clipping when scrolling */
     gap: 20px;
     padding-bottom: 120px;
-    /* Fix scrolling for math game */
     min-height: 0;
-    /* Let flexbox calculate height */
     overflow-y: auto;
     padding-top: 20px;
-}
-
-#math-stage.active {
-    display: flex;
 }
 
 .math-question-box {
@@ -1432,7 +1425,7 @@ body {
 
 /* --- Memory Game --- */
 #memory-stage {
-    display: none;
+    display: flex;
     flex-direction: column;
     align-items: center;
     width: 100%;
@@ -1440,10 +1433,6 @@ body {
     flex-grow: 1;
     padding-top: 20px;
     padding-bottom: 120px;
-}
-
-#memory-stage.active {
-    display: flex;
 }
 
 .memory-grid {
@@ -1869,7 +1858,7 @@ body {
 
 /* --- Odd One Out Game --- */
 #odd-one-stage {
-    display: none;
+    display: flex;
     flex-direction: column;
     align-items: center;
     width: 100%;
@@ -1879,10 +1868,6 @@ body {
     min-height: 0;
     overflow-y: auto;
     padding-top: 20px;
-}
-
-#odd-one-stage.active {
-    display: flex;
 }
 
 .odd-one-grid {
@@ -2284,4 +2269,121 @@ body {
 
 #start-screen.hidden {
     display: none !important;
+}
+
+/* --- Emotions Game Mobile Fixes --- */
+@media (max-width: 600px) {
+    #emotions-stage {
+        padding-top: 50px;
+        padding-bottom: 70px;
+        gap: 8px;
+    }
+
+    .face-container {
+        width: 65vmin;
+        height: 65vmin;
+        max-width: 280px;
+        max-height: 280px;
+    }
+}
+
+/* --- Connect Dots Game Styles --- */
+#connect-dots-stage {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+    touch-action: none;
+}
+
+#dots-instruction {
+    background: white;
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #4facfe;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 10px;
+    z-index: 10;
+}
+
+#dots-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    touch-action: none;
+}
+
+#dots-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+}
+
+.dot {
+    position: absolute;
+    width: 50px;
+    /* Bigger for toddlers */
+    height: 50px;
+    background: white;
+    border: 3px solid #eee;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 20px;
+    color: #555;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    pointer-events: auto;
+    transition: all 0.2s;
+    user-select: none;
+    z-index: 3;
+}
+
+.dot.active {
+    border-color: #4facfe;
+    background-color: #e3f2fd;
+    transform: translate(-50%, -50%) scale(1.15);
+    z-index: 5;
+    animation: dotPulse 1.5s infinite;
+}
+
+.dot.next {
+    border-color: #ff9800;
+    border-style: dashed;
+}
+
+.dot.completed {
+    background: #4facfe;
+    border-color: #4facfe;
+    color: white;
+    opacity: 0.2;
+}
+
+@keyframes dotPulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(79, 172, 254, 0.7);
+    }
+
+    70% {
+        box-shadow: 0 0 0 20px rgba(79, 172, 254, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(79, 172, 254, 0);
+    }
+}
 }

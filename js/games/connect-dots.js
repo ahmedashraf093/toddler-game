@@ -42,7 +42,7 @@ const levels = [
             { x: 50, y: 75 }, // Bottom mid (kept same)
             { x: 20, y: 90 }, // Left leg
             { x: 30, y: 65 },
-            { x: 5,  y: 45 }, // Left arm
+            { x: 5, y: 45 }, // Left arm
             { x: 35, y: 45 },
             { x: 50, y: 25 }  // Top
         ],
@@ -280,11 +280,8 @@ function bindInputEvents() {
 }
 
 function onPointerDown(e) {
-    // Check if we clicked ON the active dot
-    const target = document.elementFromPoint(
-        e.touches ? e.touches[0].clientX : e.clientX,
-        e.touches ? e.touches[0].clientY : e.clientY
-    );
+    // Check if we clicked ON a dot or its child
+    const target = e.target.closest('.dot');
 
     if (target && target.classList.contains('dot')) {
         const idx = parseInt(target.dataset.index);
@@ -317,9 +314,9 @@ function onPointerMove(e) {
             const ptrX = e.touches ? e.touches[0].clientX : e.clientX;
             const ptrY = e.touches ? e.touches[0].clientY : e.clientY;
 
-            // Simple expansion of hit area
-            if (ptrX >= rect.left - 10 && ptrX <= rect.right + 10 &&
-                ptrY >= rect.top - 10 && ptrY <= rect.bottom + 10) {
+            // Simple expansion of hit area (Toddler friendly)
+            if (ptrX >= rect.left - 30 && ptrX <= rect.right + 30 &&
+                ptrY >= rect.top - 30 && ptrY <= rect.bottom + 30) {
                 // Connected!
                 completeConnection();
             }
