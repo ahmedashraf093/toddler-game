@@ -4,7 +4,6 @@ import { speakText, playVictoryMusic } from './audio.js';
 import { isContentUnlocked } from '../challenges/manager.js';
 
 let modalTimeout = null;
-let lastFocus = null;
 
 const CELEB_CHARACTERS = {
     sun: {
@@ -358,7 +357,6 @@ export function triggerConfetti(x, y) {
     }
 }
 
-let lastFocus = null;
 
 export function toggleMenu(forceHide = false) {
     const overlay = document.getElementById('games-menu-overlay');
