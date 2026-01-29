@@ -4,6 +4,7 @@ import { speakText, playVictoryMusic } from './audio.js';
 import { isContentUnlocked } from '../challenges/manager.js';
 
 let modalTimeout = null;
+let lastFocus = null;
 
 const CELEB_CHARACTERS = {
     sun: {
