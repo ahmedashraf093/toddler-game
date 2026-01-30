@@ -9,3 +9,7 @@
 ## 2025-12-25 - Generic Event Listeners Bypassing Logic
 **Learning:** Generic event listeners (like `close-menu-btn` handlers in `js/main.js`) can bypass specific module logic (like `toggleMenu`'s focus restoration). This creates accessibility gaps where features like focus management work when triggered programmatically but fail when triggered by the UI.
 **Action:** When implementing global UI patterns, ensure the generic handler delegates to the specific module function (e.g., `toggleMenu(true)`) instead of manipulating the DOM directly, or ensure the specific function is the *only* way to change state.
+
+## 2025-01-30 - Interactive Sticker Elements
+**Learning:** The sticker book was visually appealing but completely inaccessible to keyboard users and screen readers (divs with no roles). Adding `role="button"` and `tabindex="0"` instantly made it navigable. Adding a "speak on click" interaction not only improved accessibility but also added a delight factor for all users.
+**Action:** When auditing "collection" or "gallery" interfaces, always check if the items are interactive. If they are just images, consider making them interactive (e.g. speak name) to justify the focus stop and enhance engagement.

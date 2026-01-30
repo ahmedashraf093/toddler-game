@@ -31,27 +31,15 @@ def verify_menu_a11y():
             window.SpeechSynthesisUtterance = function() {};
         """)
 
-        # Stop animations and hide start screen persistently
-        page.add_init_script("""
-            const style = document.createElement('style');
-            style.innerHTML = `
-                * { animation: none !important; transition: none !important; }
-                #start-screen { display: none !important; }
-                #loading-screen { display: none !important; }
-            `;
-            document.addEventListener('DOMContentLoaded', () => {
-                document.head.appendChild(style);
-            });
-        """)
-
-        # Block Service Workers to prevent reloads/caching issues
-        context.route("**/sw-register.js", lambda route: route.abort())
-        context.route("**/sw.js", lambda route: route.abort())
+        # Stop animations
+        page.add_style_tag(content="* { animation: none !important; transition: none !important; }")
 
         page.goto("http://localhost:8080/index.html")
 
         # Handle Loading and Start Screens
-        # (Handled by init script styles now)
+        page.wait_for_selector("#loading-screen", state="hidden")
+        page.evaluate("document.getElementById('loading-screen').remove()")
+        page.evaluate("document.getElementById('start-screen').style.display = 'none'")
 
         page.wait_for_selector("#menu-btn")
 

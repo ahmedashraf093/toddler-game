@@ -153,23 +153,6 @@ export function updateStickerUI() {
             stickerState.collection.forEach(s => {
                 const el = document.createElement('div');
                 el.className = 'sticker-item';
-
-                // 🎨 Palette: Accessibility & Interaction
-                el.setAttribute('role', 'button');
-                el.setAttribute('tabindex', '0');
-                el.setAttribute('aria-label', s.name);
-
-                el.onclick = () => {
-                    speakText(s.name, s.id);
-                };
-
-                el.onkeydown = (e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        el.click();
-                    }
-                };
-
                 el.innerHTML = `
                     <div class="sticker-icon">${s.icon}</div>
                     <div class="sticker-name">${s.name}</div>
