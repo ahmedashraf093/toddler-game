@@ -9,3 +9,7 @@
 ## 2025-12-25 - Generic Event Listeners Bypassing Logic
 **Learning:** Generic event listeners (like `close-menu-btn` handlers in `js/main.js`) can bypass specific module logic (like `toggleMenu`'s focus restoration). This creates accessibility gaps where features like focus management work when triggered programmatically but fail when triggered by the UI.
 **Action:** When implementing global UI patterns, ensure the generic handler delegates to the specific module function (e.g., `toggleMenu(true)`) instead of manipulating the DOM directly, or ensure the specific function is the *only* way to change state.
+
+## 2025-12-25 - Dynamic Game Elements Accessibility Gap
+**Learning:** Dynamically created game elements in `js/games/*.js` (like Xylophone keys) often lack `role`, `tabindex`, and `keydown` handlers, making them inaccessible to keyboard users, unlike the main UI components in `js/engine/ui.js` which are better accessible.
+**Action:** systematically audit `js/games/*.js` modules for `document.createElement` usage and ensure all interactive elements receive accessibility attributes and keyboard event listeners (Enter/Space) to match the visual interaction.
