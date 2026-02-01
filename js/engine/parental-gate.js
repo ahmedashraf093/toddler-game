@@ -127,10 +127,11 @@ export const ParentalGate = {
     },
 
     highlightKey(val) {
+        const HIGHLIGHT_DURATION_MS = 100;
         const btn = document.querySelector(`.pg-key[data-val="${val}"]`);
         if (btn) {
             btn.classList.add('active');
-            setTimeout(() => btn.classList.remove('active'), 100);
+            setTimeout(() => btn.classList.remove('active'), HIGHLIGHT_DURATION_MS);
         }
     },
 
