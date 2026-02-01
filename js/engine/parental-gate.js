@@ -100,6 +100,7 @@ export const ParentalGate = {
     handleKeyDown(e) {
         // Numbers
         if (e.key >= '0' && e.key <= '9') {
+            this.highlightKey(e.key);
             this.handleInput(e.key);
         }
         // Backspace
@@ -111,15 +112,25 @@ export const ParentalGate = {
         }
         // Clear
         else if (e.key === 'Delete' || e.key.toLowerCase() === 'c') {
+            this.highlightKey('clear');
             this.handleInput('clear');
         }
         // Enter
         else if (e.key === 'Enter') {
+            this.highlightKey('enter');
             this.handleInput('enter');
         }
         // Escape
         else if (e.key === 'Escape') {
             this.toggle(false);
+        }
+    },
+
+    highlightKey(val) {
+        const btn = document.querySelector(`.pg-key[data-val="${val}"]`);
+        if (btn) {
+            btn.classList.add('active');
+            setTimeout(() => btn.classList.remove('active'), 100);
         }
     },
 
@@ -182,8 +193,4 @@ export const ParentalGate = {
         });
     },
 
-    toggle(show) {
-        if (show) this.show();
-        else this.unlock();
-    }
 };
