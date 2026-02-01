@@ -1810,7 +1810,8 @@ body {
     transition: background 0.2s;
 }
 
-.pg-key:active {
+.pg-key:active,
+.pg-key.active {
     background: #b3d9ff;
     transform: scale(0.95);
 }

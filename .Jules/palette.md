@@ -9,3 +9,7 @@
 ## 2025-12-25 - Generic Event Listeners Bypassing Logic
 **Learning:** Generic event listeners (like `close-menu-btn` handlers in `js/main.js`) can bypass specific module logic (like `toggleMenu`'s focus restoration). This creates accessibility gaps where features like focus management work when triggered programmatically but fail when triggered by the UI.
 **Action:** When implementing global UI patterns, ensure the generic handler delegates to the specific module function (e.g., `toggleMenu(true)`) instead of manipulating the DOM directly, or ensure the specific function is the *only* way to change state.
+
+## 2025-12-25 - Duplicate Method Definitions in Object Literals
+**Learning:** Duplicate method definitions in object literals (like `toggle` in `ParentalGate`) silently overwrite previous ones in JavaScript. This can lead to confusing bugs where the "logic looks right" at the top of the file, but the behavior is different because of a redefined method at the bottom.
+**Action:** When debugging unexpected behavior in large object literals, always check the *entire* file for redefinitions, especially at the end.
