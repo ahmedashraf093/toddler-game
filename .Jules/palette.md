@@ -13,3 +13,7 @@
 ## 2025-12-25 - Duplicate Method Definitions in Object Literals
 **Learning:** Duplicate method definitions in object literals (like `toggle` in `ParentalGate`) silently overwrite previous ones in JavaScript. This can lead to confusing bugs where the "logic looks right" at the top of the file, but the behavior is different because of a redefined method at the bottom.
 **Action:** When debugging unexpected behavior in large object literals, always check the *entire* file for redefinitions, especially at the end.
+
+## 2025-05-22 - Reduced Motion vs Game Mechanics
+**Learning:** Using global wildcard resets (`* { animation: none !important }`) for `prefers-reduced-motion` breaks core game mechanics (e.g., `bubble-pop` bubbles floating).
+**Action:** Implement motion reduction via specific selectors targeting decorative elements (e.g., `.confetti`, `.balloon`) rather than blanket bans, ensuring accessibility without breaking gameplay.
