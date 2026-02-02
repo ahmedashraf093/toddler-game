@@ -2387,4 +2387,40 @@ body {
         box-shadow: 0 0 0 0 rgba(79, 172, 254, 0);
     }
 }
+/* 🎨 Palette: Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+    /* Hide celebration flying elements */
+    #celebration-overlay .confetti,
+    #celebration-overlay .balloon,
+    #celebration-overlay .star-anim,
+    #celebration-overlay .emoji-bounce,
+    #celebration-overlay .bubble,
+    .confetti-mini {
+        display: none !important;
+    }
+
+    /* Stop background movement */
+    .bg-decoration, .start-logo {
+        animation: none !important;
+    }
+
+    /* Stop gradient flashing */
+    #celebration-overlay {
+        animation: none !important;
+        background: rgba(255, 255, 255, 0.95);
+    }
+
+    /* Instant UI appearance */
+    .modal-card, .overlay-full, #loading-screen {
+        transition: none !important;
+        animation: none !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        transform: none !important;
+    }
+
+    /* Ensure hidden things stay hidden if they have class 'hidden' */
+    .hidden {
+        display: none !important;
+    }
 }
