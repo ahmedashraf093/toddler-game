@@ -1,7 +1,7 @@
 import { gameState, updateScore } from '../engine/state.js';
 import { objectPool } from '../data/content.js';
 import { makeDraggable, makeDroppable, setDropCallback } from '../engine/input.js';
-import { speakText, speakSequence } from '../engine/audio.js';
+import { speakText, speakSequence, playErrorSound } from '../engine/audio.js';
 import { launchModal, updateScoreUI, showNextRoundButton } from '../engine/ui.js';
 import { shuffle } from '../engine/utils.js';
 import { checkOverallProgress } from '../challenges/manager.js';
@@ -94,9 +94,43 @@ function loadMathQuestion() {
         el.id = 'math-opt-' + val;
         el.dataset.label = val.toString();
         el.dataset.audioKey = 'num_' + val;
+
+        // 🎨 Palette: Accessibility & Click Support
+        el.setAttribute('role', 'button');
+        el.setAttribute('tabindex', '0');
+        el.setAttribute('aria-label', 'Answer ' + val);
+        el.onclick = handleSelect;
+        el.onkeydown = (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleSelect(e);
+            }
+        };
+
         makeDraggable(el, val, el.id);
         optionsRow.appendChild(el);
     });
+}
+
+function handleSelect(e) {
+    const el = e.currentTarget;
+    // Use dataset.label which is explicitly set for the option
+    const val = el.dataset.label;
+
+    const target = document.getElementById('math-target-zone');
+    if (!target) return;
+
+    // Check match (compare strings)
+    if (target.dataset.match === val) {
+        dropMath(target, val);
+    } else {
+        // Error feedback
+        if (!el.classList.contains('wiggle-error')) {
+            el.classList.add('wiggle-error');
+            playErrorSound();
+            setTimeout(() => el.classList.remove('wiggle-error'), 400);
+        }
+    }
 }
 
 function dropMath(targetBox, draggedVal) {
