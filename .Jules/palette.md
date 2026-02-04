@@ -13,3 +13,7 @@
 ## 2025-12-25 - Duplicate Method Definitions in Object Literals
 **Learning:** Duplicate method definitions in object literals (like `toggle` in `ParentalGate`) silently overwrite previous ones in JavaScript. This can lead to confusing bugs where the "logic looks right" at the top of the file, but the behavior is different because of a redefined method at the bottom.
 **Action:** When debugging unexpected behavior in large object literals, always check the *entire* file for redefinitions, especially at the end.
+
+## 2025-10-27 - Drag & Drop Accessibility Alternatives
+**Learning:** Drag and Drop interfaces are inherently inaccessible to keyboard-only and switch users. Simply making the element focusable isn't enough; an alternative interaction method (like "Click to Select") is required.
+**Action:** When implementing Drag & Drop, always attach a parallel `click`/`keydown` handler that mimics the drop logic programmatically (verifying the match and triggering the success state) to ensure the game is playable without a pointing device.
