@@ -1,7 +1,7 @@
 import { gameState, updateScore } from '../engine/state.js';
 import { objectPool } from '../data/content.js';
 import { makeDraggable, makeDroppable, setDropCallback } from '../engine/input.js';
-import { speakText, speakSequence } from '../engine/audio.js';
+import { speakText, speakSequence, playErrorSound } from '../engine/audio.js';
 import { launchModal, updateScoreUI, showNextRoundButton } from '../engine/ui.js';
 import { shuffle } from '../engine/utils.js';
 import { checkOverallProgress } from '../challenges/manager.js';
@@ -94,9 +94,37 @@ function loadMathQuestion() {
         el.id = 'math-opt-' + val;
         el.dataset.label = val.toString();
         el.dataset.audioKey = 'num_' + val;
+
+        // 🎨 Palette: Accessibility - Click/Keyboard support
+        el.setAttribute('role', 'button');
+        el.setAttribute('tabindex', '0');
+        el.setAttribute('aria-label', `Select ${val}`);
+        el.onclick = () => handleSelect(val, el);
+        el.onkeydown = (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleSelect(val, el);
+            }
+        };
+
         makeDraggable(el, val, el.id);
         optionsRow.appendChild(el);
     });
+}
+
+function handleSelect(val, el) {
+    const targetBox = document.getElementById('math-target-zone');
+    if (!targetBox) return;
+
+    // Strict string comparison as dataset values are strings
+    if (String(val) === targetBox.dataset.match) {
+        dropMath(targetBox, String(val));
+    } else {
+        playErrorSound();
+        el.classList.add('wiggle-error');
+        setTimeout(() => el.classList.remove('wiggle-error'), 400);
+        speakText("Try again", "generic_try_again");
+    }
 }
 
 function dropMath(targetBox, draggedVal) {
