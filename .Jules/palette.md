@@ -13,3 +13,7 @@
 ## 2025-12-25 - Duplicate Method Definitions in Object Literals
 **Learning:** Duplicate method definitions in object literals (like `toggle` in `ParentalGate`) silently overwrite previous ones in JavaScript. This can lead to confusing bugs where the "logic looks right" at the top of the file, but the behavior is different because of a redefined method at the bottom.
 **Action:** When debugging unexpected behavior in large object literals, always check the *entire* file for redefinitions, especially at the end.
+
+## 2026-02-05 - Ambiguous Interactive Elements
+**Learning:** The sticker progress bar was interactive (clickable) but lacked visual or semantic cues (like a tooltip or descriptive label) explaining its function. Users might miss the "Sticker Book" feature entirely because it looked like a static display.
+**Action:** When designing "dashboard" style elements that double as navigation, always include a `title` tooltip and a descriptive `aria-label` that explicitly states the interactive action (e.g., "Click to open...").

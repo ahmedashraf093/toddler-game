@@ -143,6 +143,14 @@ export function updateStickerUI() {
         bar.style.width = `${stickerState.progress}%`;
     }
 
+    // 🎨 Palette: Accessibility & Tooltip
+    const container = document.getElementById('sticker-bar-container');
+    if (container) {
+        const statusText = `Sticker Progress: ${stickerState.progress}%. Click to open your sticker book!`;
+        container.setAttribute('aria-label', statusText);
+        container.setAttribute('title', statusText);
+    }
+
     // Update Sticker Book Grid if open
     const grid = document.getElementById('sticker-grid');
     if (grid) {
