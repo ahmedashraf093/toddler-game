@@ -1,7 +1,7 @@
 import { gameState, updateScore } from '../engine/state.js';
 import { objectPool } from '../data/content.js';
 import { makeDraggable, makeDroppable, setDropCallback } from '../engine/input.js';
-import { speakText, speakSequence } from '../engine/audio.js';
+import { speakText, speakSequence, playErrorSound } from '../engine/audio.js';
 import { launchModal, updateScoreUI, showNextRoundButton } from '../engine/ui.js';
 import { shuffle } from '../engine/utils.js';
 import { checkOverallProgress } from '../challenges/manager.js';
@@ -95,6 +95,33 @@ function loadMathQuestion() {
         el.dataset.label = val.toString();
         el.dataset.audioKey = 'num_' + val;
         makeDraggable(el, val, el.id);
+
+        // 🎨 Palette: Accessibility & Click Support
+        el.setAttribute('role', 'button');
+        el.setAttribute('tabindex', '0');
+        el.setAttribute('aria-label', val.toString());
+
+        const handleSelect = () => {
+            const targetBox = document.getElementById('math-target-zone');
+            // Check if matches
+            if (targetBox && targetBox.dataset.match === val.toString()) {
+                dropMath(targetBox, val.toString());
+            } else {
+                // Error feedback
+                playErrorSound();
+                el.classList.add('wiggle-error');
+                setTimeout(() => el.classList.remove('wiggle-error'), 400);
+            }
+        };
+
+        el.onclick = handleSelect;
+        el.onkeydown = (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleSelect();
+            }
+        };
+
         optionsRow.appendChild(el);
     });
 }
