@@ -2388,3 +2388,80 @@ body {
     }
 }
 }
+/* --- Music Game (Xylophone) --- */
+@keyframes keyPress {
+    0% { transform: scale(1); }
+    50% { transform: scale(0.9); }
+    100% { transform: scale(1); }
+}
+
+.xylophone-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end; /* Align bottom so height difference grows upwards */
+    gap: 8px;
+    padding: 20px;
+    flex-wrap: wrap;
+    min-height: 300px;
+}
+
+.xylophone-key {
+    width: 60px;
+    /* Height and Color set by JS */
+    border-radius: 15px;
+    border: 3px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    padding-bottom: 10px;
+    cursor: pointer;
+    transition: transform 0.1s, filter 0.1s;
+    user-select: none;
+    color: white;
+    font-weight: bold;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    position: relative;
+    /* Ensure keyboard focus outline is visible */
+    outline: none;
+}
+
+.xylophone-key:active {
+    transform: scale(0.95);
+}
+
+.xylophone-key.active {
+    animation: keyPress 0.2s ease-in-out;
+    filter: brightness(1.2);
+}
+
+.xylophone-key:focus-visible {
+    outline: 4px dashed #333;
+    outline-offset: 4px;
+    z-index: 10;
+}
+
+.key-animal {
+    font-size: 28px;
+    margin-bottom: 5px;
+    filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2));
+}
+
+.key-note {
+    font-size: 20px;
+    opacity: 0.9;
+}
+
+@media (max-width: 600px) {
+    .xylophone-key {
+        width: 40px;
+        border-radius: 10px;
+    }
+    .key-animal {
+        font-size: 20px;
+    }
+    .key-note {
+        font-size: 16px;
+    }
+}
