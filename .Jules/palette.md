@@ -13,3 +13,7 @@
 ## 2025-12-25 - Duplicate Method Definitions in Object Literals
 **Learning:** Duplicate method definitions in object literals (like `toggle` in `ParentalGate`) silently overwrite previous ones in JavaScript. This can lead to confusing bugs where the "logic looks right" at the top of the file, but the behavior is different because of a redefined method at the bottom.
 **Action:** When debugging unexpected behavior in large object literals, always check the *entire* file for redefinitions, especially at the end.
+
+## 2025-05-22 - Math Game Accessibility
+**Learning:** Adding keyboard accessibility to drag-and-drop games can be done by simulating the drop logic via a click handler. However, ensuring feedback (like error wiggles) requires verifying that the CSS classes used in JS actually exist in the CSS files.
+**Action:** Always `grep` for CSS class definitions referenced in JS before assuming they work.
