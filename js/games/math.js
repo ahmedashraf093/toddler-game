@@ -1,7 +1,7 @@
 import { gameState, updateScore } from '../engine/state.js';
 import { objectPool } from '../data/content.js';
 import { makeDraggable, makeDroppable, setDropCallback } from '../engine/input.js';
-import { speakText, speakSequence } from '../engine/audio.js';
+import { speakText, speakSequence, playErrorSound } from '../engine/audio.js';
 import { launchModal, updateScoreUI, showNextRoundButton } from '../engine/ui.js';
 import { shuffle } from '../engine/utils.js';
 import { checkOverallProgress } from '../challenges/manager.js';
@@ -94,9 +94,38 @@ function loadMathQuestion() {
         el.id = 'math-opt-' + val;
         el.dataset.label = val.toString();
         el.dataset.audioKey = 'num_' + val;
+
+        // 🎨 Palette: Accessibility
+        el.setAttribute('role', 'button');
+        el.setAttribute('tabindex', '0');
+        el.setAttribute('aria-label', `Number ${val}`);
+
+        el.onclick = () => handleSelect(el);
+        el.onkeydown = (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleSelect(el);
+            }
+        };
+
         makeDraggable(el, val, el.id);
         optionsRow.appendChild(el);
     });
+}
+
+function handleSelect(el) {
+    const val = el.dataset.label;
+    const target = document.getElementById('math-target-zone');
+
+    // Check match
+    if (target && target.dataset.match === val) {
+        dropMath(target, val);
+    } else {
+        // Error feedback
+        el.classList.add('wiggle-error');
+        playErrorSound();
+        setTimeout(() => el.classList.remove('wiggle-error'), 400);
+    }
 }
 
 function dropMath(targetBox, draggedVal) {
