@@ -518,6 +518,15 @@ body {
     touch-action: none;
 }
 
+/* 🎨 Palette: Keyboard Selection State */
+.keyboard-selected {
+    border-color: #ffd700 !important;
+    background-color: #ffffe0 !important;
+    transform: scale(1.05);
+    box-shadow: 0 0 0 4px #ffd700, 0 10px 20px rgba(0, 0, 0, 0.15) !important;
+    z-index: 100;
+}
+
 .draggable:active {
     transform: scale(1.1) rotate(5deg);
     z-index: 100;
