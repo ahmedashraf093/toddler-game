@@ -3,6 +3,7 @@ import { speakText, resumeAudioContext, playErrorSound } from './audio.js';
 let activeTouchEl = null;
 let draggedVal = null;
 let draggedElId = null;
+let keyboardDragItem = null; // 🎨 Palette: Keyboard state
 let hintTimer = null; // For drag-over hints
 // Idle Hint Logic
 let idleTimer = null;
@@ -105,6 +106,18 @@ export function makeDraggable(el, val, id) {
     // If id is not provided, we rely on el.id, but it's better to be explicit if unique ID logic differs
     if (id) el.id = id;
 
+    // 🎨 Palette: Keyboard Accessibility
+    if (!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '0');
+    el.setAttribute('role', 'button');
+    el.setAttribute('aria-description', 'Press Enter to select for moving');
+
+    el.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleKeyboardDragStart(el);
+        }
+    });
+
     el.addEventListener('dragstart', dragStart);
     el.addEventListener('dragend', dragEnd);
     el.addEventListener('touchstart', touchStart, { passive: false });
@@ -115,6 +128,18 @@ export function makeDraggable(el, val, id) {
 export function makeDroppable(el, matchVal) {
     el.classList.add('droppable');
     if (matchVal) el.dataset.match = matchVal;
+
+    // 🎨 Palette: Keyboard Accessibility
+    if (!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '0');
+    el.setAttribute('role', 'button');
+    el.setAttribute('aria-description', 'Press Enter to drop item here');
+
+    el.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleKeyboardDrop(el);
+        }
+    });
 
     el.addEventListener('dragover', e => e.preventDefault());
     el.addEventListener('drop', drop);
@@ -328,4 +353,73 @@ function touchEnd(e) {
     toggleOtherDraggables(null, false); // Restore pointer events AFTER finding target
 
     activeTouchEl = null;
+}
+
+// --- 🎨 Palette: Keyboard Logic ---
+function handleKeyboardDragStart(el) {
+    // If same item, cancel
+    if (keyboardDragItem === el) {
+        cancelKeyboardDrag();
+        speakText("Cancelled selection.", null, true);
+        return;
+    }
+
+    // If another item was selected, deselect it first
+    if (keyboardDragItem) {
+        keyboardDragItem.classList.remove('keyboard-selected');
+    }
+
+    keyboardDragItem = el;
+    draggedVal = el.dataset.val;
+    draggedElId = el.id;
+
+    el.classList.add('keyboard-selected');
+
+    // Announce
+    const label = el.dataset.label || "Item";
+    speakText(`Selected ${label}. Navigate to a target and press Enter to drop.`, null, true);
+
+    // Hinting
+    startHintTimer(draggedVal);
+
+    if (onDragStartCallback) onDragStartCallback(el);
+}
+
+function handleKeyboardDrop(targetBox) {
+    if (!keyboardDragItem) {
+        // Optional: speakText("Select an item first.");
+        return;
+    }
+
+    // Logic similar to drop()
+    clearHint();
+
+    if (onDropCallback) {
+        // Pass null for event, onDropCallback must handle it (checked: standard.js ignores e)
+        onDropCallback(targetBox, draggedVal, draggedElId, null, keyboardDragItem);
+    }
+
+    // Visual feedback handled by callback usually (hiding source)
+    // But if failed (still visible), wiggle?
+    // We must reset state regardless
+    const prevItem = keyboardDragItem;
+    cancelKeyboardDrag(); // Clears state and class
+
+    // Check success (heuristic: if item hidden)
+    if (prevItem && prevItem.style.visibility !== 'hidden' && prevItem.style.display !== 'none') {
+        prevItem.classList.add('wiggle-error');
+        playErrorSound();
+        setTimeout(() => prevItem.classList.remove('wiggle-error'), 400);
+        speakText("Try again.", null, true);
+    }
+}
+
+function cancelKeyboardDrag() {
+    if (keyboardDragItem) {
+        keyboardDragItem.classList.remove('keyboard-selected');
+        keyboardDragItem = null;
+        draggedVal = null;
+        draggedElId = null;
+        clearHint();
+    }
 }
