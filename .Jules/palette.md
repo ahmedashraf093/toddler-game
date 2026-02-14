@@ -13,3 +13,11 @@
 ## 2025-12-25 - Duplicate Method Definitions in Object Literals
 **Learning:** Duplicate method definitions in object literals (like `toggle` in `ParentalGate`) silently overwrite previous ones in JavaScript. This can lead to confusing bugs where the "logic looks right" at the top of the file, but the behavior is different because of a redefined method at the bottom.
 **Action:** When debugging unexpected behavior in large object literals, always check the *entire* file for redefinitions, especially at the end.
+
+## 2025-12-25 - Absolute Positioning in Fixed Overlays
+**Learning:** Elements with `position: absolute` inside a container without `position: relative` (or other non-static positioning) will align themselves to the nearest positioned ancestor. In `position: fixed` overlays, this means they align to the viewport, which can push controls (like a close button with `top: -20px`) off-screen.
+**Action:** Always ensure modal content containers have `position: relative` if they contain absolutely positioned children, especially for UI controls like close buttons.
+
+## 2025-12-25 - Instant State Changes vs. Perceived Performance
+**Learning:** Instant `display: none` transitions on large overlays (like the Start Screen) feel abrupt and "broken". Adding a simple CSS fade-out transition, while keeping the underlying game initialization instant, creates a much smoother perceived experience without adding actual loading time.
+**Action:** When hiding major UI overlays, prefer a short CSS transition (with `pointer-events: none` to prevent blocking) over instant removal.

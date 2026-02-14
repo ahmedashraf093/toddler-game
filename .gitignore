@@ -3,3 +3,5 @@ venv/*
 venv
 server.log
 verification/*
+__pycache__/
+*.pyc
