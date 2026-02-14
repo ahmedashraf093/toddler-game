@@ -1755,6 +1755,7 @@ body {
     width: 90%;
     max-width: 400px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    position: relative; /* 🎨 Palette: Fix close button positioning */
 }
 
 .pg-content h2 {
