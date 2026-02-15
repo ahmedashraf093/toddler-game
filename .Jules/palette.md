@@ -13,3 +13,7 @@
 ## 2025-12-25 - Duplicate Method Definitions in Object Literals
 **Learning:** Duplicate method definitions in object literals (like `toggle` in `ParentalGate`) silently overwrite previous ones in JavaScript. This can lead to confusing bugs where the "logic looks right" at the top of the file, but the behavior is different because of a redefined method at the bottom.
 **Action:** When debugging unexpected behavior in large object literals, always check the *entire* file for redefinitions, especially at the end.
+
+## 2026-02-15 - Inline Styles vs CSS Classes
+**Learning:** The 'Music Maker' game uses inline styles for key properties (height, color) but references a CSS class `xylophone-key` which appears to be missing from the codebase. Despite this, the element renders as a block (default div behavior). This reinforces that accessibility enhancements (aria roles, keyboard handling) can and should be applied regardless of the visual styling implementation.
+**Action:** When working with legacy or simple components where CSS might be missing or minimal, prioritize semantic HTML and keyboard interaction as they function independently of visual styles.
