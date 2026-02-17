@@ -13,3 +13,7 @@
 ## 2025-12-25 - Duplicate Method Definitions in Object Literals
 **Learning:** Duplicate method definitions in object literals (like `toggle` in `ParentalGate`) silently overwrite previous ones in JavaScript. This can lead to confusing bugs where the "logic looks right" at the top of the file, but the behavior is different because of a redefined method at the bottom.
 **Action:** When debugging unexpected behavior in large object literals, always check the *entire* file for redefinitions, especially at the end.
+
+## 2025-12-25 - Missing Styles and A11y in JS-Generated UI
+**Learning:** The Music Maker game was generating UI elements purely via JavaScript without corresponding CSS classes or accessibility attributes, rendering it visually unpolished and inaccessible to keyboard users. This pattern of "logic-first, style-later" can easily lead to forgotten UX requirements.
+**Action:** When encountering JS-generated UI components, immediately check for corresponding CSS rules and accessibility attributes (role, tabindex, aria-label). If absent, prioritize adding them to ensure a baseline level of usability and accessibility.
