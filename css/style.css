@@ -2388,3 +2388,16 @@ body {
     }
 }
 }
+/* --- Music Maker Game --- */
+.music-stage { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 800px; flex-grow: 1; padding: 20px 0 120px; gap: 20px; }
+.music-instruction { background: white; padding: 10px 30px; border-radius: 30px; font-size: 1.5rem; font-weight: 900; color: #9C27B0; box-shadow: 0 5px 0 rgba(0,0,0,0.1); border: 3px solid #E1BEE7; text-align: center; animation: popIn 0.5s; }
+.xylophone-container { display: flex; justify-content: center; align-items: flex-end; gap: 10px; padding: 20px; background: rgba(255,255,255,0.5); border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); overflow-x: auto; max-width: 100%; min-height: 250px; }
+.xylophone-key { width: 60px; border-radius: 10px 10px 0 0; border: 3px solid rgba(0,0,0,0.1); box-shadow: inset -5px -5px 10px rgba(0,0,0,0.1), 0 5px 10px rgba(0,0,0,0.2); cursor: pointer; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding-bottom: 15px; transition: transform 0.1s, filter 0.1s; position: relative; user-select: none; flex-shrink: 0; }
+.xylophone-key:active, .xylophone-key.active { transform: translateY(5px) scale(0.98); box-shadow: inset -2px -2px 5px rgba(0,0,0,0.1); filter: brightness(1.2); }
+.key-animal { font-size: 28px; margin-bottom: 5px; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2)); }
+.key-note { font-size: 20px; font-weight: bold; color: rgba(255,255,255,0.95); text-shadow: 1px 1px 0 rgba(0,0,0,0.3); }
+.music-controls { display: flex; gap: 10px; margin-top: 20px; }
+.action-btn { background: #FF9800; color: white; border: none; border-radius: 50px; padding: 12px 30px; font-size: 1.2rem; font-weight: bold; box-shadow: 0 5px 0 #F57C00; cursor: pointer; transition: transform 0.1s; font-family: inherit; }
+.action-btn:active { transform: translateY(4px); box-shadow: 0 1px 0 #F57C00; }
+.xylophone-key:focus-visible { outline: 4px dashed #333; outline-offset: 4px; z-index: 10; }
+@media (max-width: 600px) { .xylophone-key { width: 40px; } .key-animal { font-size: 20px; } .key-note { font-size: 14px; } }
