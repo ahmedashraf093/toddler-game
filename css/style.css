@@ -2388,3 +2388,21 @@ body {
     }
 }
 }
+/* --- Music Maker Game --- */
+/* 🎨 Palette: Accessibility Focus Styles */
+.xylophone-container .xylophone-key:focus-visible {
+    outline: 4px solid #fff;
+    box-shadow: 0 0 0 4px var(--primary-color);
+    z-index: 10;
+    transform: scale(1.05);
+}
+
+.xylophone-key {
+    cursor: pointer;
+    transition: transform 0.1s, filter 0.1s;
+}
+
+.xylophone-key:active, .xylophone-key.active {
+    transform: scale(0.95);
+    filter: brightness(1.2);
+}

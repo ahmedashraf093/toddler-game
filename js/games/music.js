@@ -48,9 +48,14 @@ export function initMusicGame() {
             <span class="key-note">${n.note}</span>
         `;
 
+        // 🎨 Palette: Accessibility
+        key.setAttribute('role', 'button');
+        key.setAttribute('tabindex', '0');
+        key.setAttribute('aria-label', `Play ${n.note} note, ${n.animal} sound`);
+
         // Interaction
         const playHandler = (e) => {
-            e.preventDefault(); // Prevent scroll/drag
+            if (e.cancelable) e.preventDefault(); // Prevent scroll/drag but allow keydown bubble if needed
             playTone(n.freq);
             animateKey(key);
         };
@@ -58,6 +63,13 @@ export function initMusicGame() {
         // Touch and Mouse events
         key.addEventListener('mousedown', playHandler);
         key.addEventListener('touchstart', playHandler);
+
+        // Keyboard Support
+        key.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                playHandler(e);
+            }
+        });
 
         xylophone.appendChild(key);
     });
