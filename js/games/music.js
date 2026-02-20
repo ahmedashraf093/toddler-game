@@ -1,4 +1,4 @@
-import { resetRoundState } from '../engine/state.js';
+import { resetRoundState, gameState } from '../engine/state.js';
 import { resumeAudioContext, audioCtx } from '../engine/audio.js';
 
 const notes = [
@@ -11,6 +11,22 @@ const notes = [
     { note: 'B', freq: 493.88, color: '#9C27B0', animal: '🐻' },
     { note: 'C', freq: 523.25, color: '#E040FB', animal: '🐭' }
 ];
+
+// 🎨 Palette: Global Keyboard Support (1-8)
+document.addEventListener('keydown', (e) => {
+    if (gameState.currentMode !== 'music') return;
+
+    const key = parseInt(e.key);
+    if (!isNaN(key) && key >= 1 && key <= 8) {
+        const index = key - 1;
+        const note = notes[index];
+        if (note) {
+            playTone(note.freq);
+            const keys = document.querySelectorAll('.xylophone-key');
+            if (keys[index]) animateKey(keys[index]);
+        }
+    }
+});
 
 export function initMusicGame() {
     resetRoundState();
@@ -42,6 +58,11 @@ export function initMusicGame() {
         key.style.backgroundColor = n.color;
         key.style.height = `${100 + (index * 10)}px`; // Staggered height visual
 
+        // 🎨 Palette: Accessibility Attributes
+        key.setAttribute('role', 'button');
+        key.setAttribute('tabindex', '0');
+        key.setAttribute('aria-label', `Play ${n.note} Note, ${n.animal} Sound`);
+
         // Content
         key.innerHTML = `
             <span class="key-animal">${n.animal}</span>
@@ -50,7 +71,10 @@ export function initMusicGame() {
 
         // Interaction
         const playHandler = (e) => {
-            e.preventDefault(); // Prevent scroll/drag
+            // Prevent default only for non-keyboard events or Enter/Space
+            if (e.type !== 'keydown' || (e.key === 'Enter' || e.key === ' ')) {
+               if (e.cancelable) e.preventDefault();
+            }
             playTone(n.freq);
             animateKey(key);
         };
@@ -58,6 +82,13 @@ export function initMusicGame() {
         // Touch and Mouse events
         key.addEventListener('mousedown', playHandler);
         key.addEventListener('touchstart', playHandler);
+
+        // 🎨 Palette: Keyboard Accessibility
+        key.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                playHandler(e);
+            }
+        });
 
         xylophone.appendChild(key);
     });
