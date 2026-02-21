@@ -13,3 +13,7 @@
 ## 2025-12-25 - Duplicate Method Definitions in Object Literals
 **Learning:** Duplicate method definitions in object literals (like `toggle` in `ParentalGate`) silently overwrite previous ones in JavaScript. This can lead to confusing bugs where the "logic looks right" at the top of the file, but the behavior is different because of a redefined method at the bottom.
 **Action:** When debugging unexpected behavior in large object literals, always check the *entire* file for redefinitions, especially at the end.
+
+## 2025-12-25 - Custom Interactive Elements Accessibility
+**Learning:** Games implemented with `div` elements instead of native buttons (like the Music Game) require manual implementation of the accessibility quartet: `role`, `tabindex`, `aria-label`, and `keydown` handlers. Visual feedback functions must be explicitly called in keyboard handlers to match mouse/touch behavior.
+**Action:** When auditing custom game components, ensuring visual feedback (animations) is triggered by keyboard interaction is just as important as the functional action.
