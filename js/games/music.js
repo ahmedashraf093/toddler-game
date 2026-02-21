@@ -2,14 +2,14 @@ import { resetRoundState } from '../engine/state.js';
 import { resumeAudioContext, audioCtx } from '../engine/audio.js';
 
 const notes = [
-    { note: 'C', freq: 261.63, color: '#FF5252', animal: '🐶' },
-    { note: 'D', freq: 293.66, color: '#FF9800', animal: '🐱' },
-    { note: 'E', freq: 329.63, color: '#FFEB3B', animal: '🐸' },
-    { note: 'F', freq: 349.23, color: '#4CAF50', animal: '🐦' },
-    { note: 'G', freq: 392.00, color: '#2196F3', animal: '🦁' },
-    { note: 'A', freq: 440.00, color: '#3F51B5', animal: '🐮' },
-    { note: 'B', freq: 493.88, color: '#9C27B0', animal: '🐻' },
-    { note: 'C', freq: 523.25, color: '#E040FB', animal: '🐭' }
+    { note: 'C', freq: 261.63, color: '#FF5252', animal: '🐶', name: 'Dog' },
+    { note: 'D', freq: 293.66, color: '#FF9800', animal: '🐱', name: 'Cat' },
+    { note: 'E', freq: 329.63, color: '#FFEB3B', animal: '🐸', name: 'Frog' },
+    { note: 'F', freq: 349.23, color: '#4CAF50', animal: '🐦', name: 'Bird' },
+    { note: 'G', freq: 392.00, color: '#2196F3', animal: '🦁', name: 'Lion' },
+    { note: 'A', freq: 440.00, color: '#3F51B5', animal: '🐮', name: 'Cow' },
+    { note: 'B', freq: 493.88, color: '#9C27B0', animal: '🐻', name: 'Bear' },
+    { note: 'C', freq: 523.25, color: '#E040FB', animal: '🐭', name: 'Mouse' }
 ];
 
 export function initMusicGame() {
@@ -42,6 +42,11 @@ export function initMusicGame() {
         key.style.backgroundColor = n.color;
         key.style.height = `${100 + (index * 10)}px`; // Staggered height visual
 
+        // 🎨 Palette: Accessibility Attributes
+        key.setAttribute('role', 'button');
+        key.setAttribute('tabindex', '0');
+        key.setAttribute('aria-label', `Play ${n.note} Note, ${n.name} Sound`);
+
         // Content
         key.innerHTML = `
             <span class="key-animal">${n.animal}</span>
@@ -50,7 +55,8 @@ export function initMusicGame() {
 
         // Interaction
         const playHandler = (e) => {
-            e.preventDefault(); // Prevent scroll/drag
+            // Prevent default only for mouse/touch to avoid blocking valid key interactions if attached there
+            if (e.type !== 'keydown') e.preventDefault();
             playTone(n.freq);
             animateKey(key);
         };
@@ -58,6 +64,14 @@ export function initMusicGame() {
         // Touch and Mouse events
         key.addEventListener('mousedown', playHandler);
         key.addEventListener('touchstart', playHandler);
+
+        // Keyboard Accessibility
+        key.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault(); // Prevent scroll
+                playHandler(e);
+            }
+        });
 
         xylophone.appendChild(key);
     });
