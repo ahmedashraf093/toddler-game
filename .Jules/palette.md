@@ -13,3 +13,7 @@
 ## 2025-12-25 - Duplicate Method Definitions in Object Literals
 **Learning:** Duplicate method definitions in object literals (like `toggle` in `ParentalGate`) silently overwrite previous ones in JavaScript. This can lead to confusing bugs where the "logic looks right" at the top of the file, but the behavior is different because of a redefined method at the bottom.
 **Action:** When debugging unexpected behavior in large object literals, always check the *entire* file for redefinitions, especially at the end.
+
+## 2024-05-22 - CSS Class Assumptions
+**Learning:** I initially assumed `fade-out` might not exist or be a Tailwind class based on general patterns, but checking `css/style.css` confirmed it was a standard CSS animation class. This highlights the importance of verifying existing styles in the codebase rather than relying on external framework assumptions.
+**Action:** Always `grep` or search for CSS classes in the codebase to confirm their definition and behavior before using them or assuming they are missing.

@@ -186,13 +186,23 @@ window.addEventListener('load', () => {
 });
 
 function startGame() {
-    document.getElementById('start-screen').style.display = 'none';
+    const startScreen = document.getElementById('start-screen');
+    // 🎨 Palette: Smooth Fade Out
+    startScreen.classList.add('fade-out');
+    startScreen.style.pointerEvents = 'none';
+
     resumeAudioContext(); // Ensure audio context is ready
 
     // Start/Resume Parental Session
     ParentalGate.startSession();
 
     setMode('shadow');
+
+    setTimeout(() => {
+        startScreen.style.display = 'none';
+        startScreen.classList.remove('fade-out');
+        startScreen.style.pointerEvents = 'auto'; // Restore (though hidden)
+    }, 500);
 }
 
 function setDifficulty(level, btn) {
