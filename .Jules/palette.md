@@ -13,3 +13,7 @@
 ## 2025-12-25 - Duplicate Method Definitions in Object Literals
 **Learning:** Duplicate method definitions in object literals (like `toggle` in `ParentalGate`) silently overwrite previous ones in JavaScript. This can lead to confusing bugs where the "logic looks right" at the top of the file, but the behavior is different because of a redefined method at the bottom.
 **Action:** When debugging unexpected behavior in large object literals, always check the *entire* file for redefinitions, especially at the end.
+
+## 2025-05-22 - Accessibility Verification with Playwright
+**Learning:** When adding accessibility attributes dynamically via JavaScript (like `role="button"`, `tabindex="0"`), using `Playwright` to verify these attributes and simulate keyboard interaction (`page.keyboard.press("Enter")`) is highly effective and catches missing implementations (like missing `keydown` handlers) that static analysis might miss.
+**Action:** Continue to create specific verification scripts using Playwright for any dynamic UI changes to ensure they are accessible and interactive as intended.
