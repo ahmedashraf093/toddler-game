@@ -139,8 +139,16 @@ function showStickerUnlockModal(sticker) {
 export function updateStickerUI() {
     // Update progress bar
     const bar = document.getElementById('sticker-progress-fill');
+    const container = document.getElementById('sticker-bar-container');
     if (bar) {
-        bar.style.width = `${stickerState.progress}%`;
+        const pct = Math.round(stickerState.progress);
+        bar.style.width = `${pct}%`;
+        if (container) {
+            container.setAttribute('aria-label', `Sticker Progress: ${pct}%`);
+            container.setAttribute('aria-valuenow', pct);
+            container.setAttribute('aria-valuemin', '0');
+            container.setAttribute('aria-valuemax', '100');
+        }
     }
 
     // Update Sticker Book Grid if open
@@ -153,6 +161,26 @@ export function updateStickerUI() {
             stickerState.collection.forEach(s => {
                 const el = document.createElement('div');
                 el.className = 'sticker-item';
+                el.setAttribute('role', 'button');
+                el.setAttribute('tabindex', '0');
+                el.setAttribute('aria-label', s.name);
+                el.title = s.name;
+
+                // Interaction
+                const activate = () => {
+                    speakText(s.name);
+                    el.style.transform = "scale(1.1) rotate(5deg)";
+                    setTimeout(() => el.style.transform = "", 200);
+                };
+
+                el.onclick = activate;
+                el.onkeydown = (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        activate();
+                    }
+                };
+
                 el.innerHTML = `
                     <div class="sticker-icon">${s.icon}</div>
                     <div class="sticker-name">${s.name}</div>
