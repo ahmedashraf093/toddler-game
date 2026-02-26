@@ -2,6 +2,7 @@ import { challengesConfig } from './config.js';
 import { launchModal, showCelebration } from '../engine/ui.js';
 import { speakText } from '../engine/audio.js';
 import { gameState } from '../engine/state.js';
+import { trapFocus, releaseFocus } from '../engine/focus.js';
 
 const STORAGE_KEY = 'toddler_game_challenges_v1';
 
@@ -112,8 +113,19 @@ function checkDayCompletion(config) {
 // UI Handling for Challenges
 export function toggleChallengeMenu() {
     const overlay = document.getElementById('challenges-overlay');
-    if (overlay) overlay.classList.toggle('hidden');
+
+    // Update UI first to ensure focus trap sees fresh elements
     updateChallengeUI();
+
+    if (overlay) {
+        if (overlay.classList.contains('hidden')) {
+            overlay.classList.remove('hidden');
+            trapFocus(overlay);
+        } else {
+            overlay.classList.add('hidden');
+            releaseFocus(overlay);
+        }
+    }
 }
 
 function updateChallengeUI() {

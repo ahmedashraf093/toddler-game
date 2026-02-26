@@ -1,4 +1,5 @@
 import { speakText } from './audio.js';
+import { trapFocus, releaseFocus } from './focus.js';
 
 export const ParentalGate = {
     checkInterval: null,
@@ -66,11 +67,15 @@ export const ParentalGate = {
 
         // 🎨 Palette: Add keyboard support
         document.addEventListener('keydown', this.boundHandleKeyDown);
+        trapFocus(overlay);
     },
 
     hide() {
         const overlay = document.getElementById('parental-gate-overlay');
-        if (overlay) overlay.classList.add('hidden');
+        if (overlay) {
+            overlay.classList.add('hidden');
+            releaseFocus(overlay);
+        }
 
         // Remove keyboard support
         if (this.boundHandleKeyDown) {

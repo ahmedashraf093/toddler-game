@@ -2,9 +2,9 @@ import { gameState } from './state.js';
 import { themes } from '../data/themes.js';
 import { speakText, playVictoryMusic } from './audio.js';
 import { isContentUnlocked } from '../challenges/manager.js';
+import { trapFocus, releaseFocus } from './focus.js';
 
 let modalTimeout = null;
-let lastFocus = null;
 
 const CELEB_CHARACTERS = {
     sun: {
@@ -366,19 +366,12 @@ export function toggleMenu(forceHide = false) {
     const willShow = forceHide ? false : overlay.classList.contains('hidden');
 
     if (willShow) {
-        lastFocus = document.activeElement;
         overlay.classList.remove('hidden');
         // 🎨 Palette: Accessibility - Focus management
-        setTimeout(() => {
-            const closeBtn = overlay.querySelector('.close-menu-btn');
-            if (closeBtn) closeBtn.focus();
-        }, 50);
+        trapFocus(overlay);
     } else {
         overlay.classList.add('hidden');
-        if (lastFocus && document.body.contains(lastFocus)) {
-            lastFocus.focus();
-        }
-        lastFocus = null;
+        releaseFocus(overlay);
     }
 }
 
