@@ -2,6 +2,7 @@
 import { gameState } from './state.js';
 import { speakText, playVictoryMusic } from './audio.js';
 import { launchModal, showCelebration } from './ui.js';
+import { trapFocus, releaseFocus } from './focus.js';
 
 const STICKER_KEY = 'toddler_game_stickers_v1';
 
@@ -172,6 +173,9 @@ export function toggleStickerBook(show) {
 
         if (!overlay.classList.contains('hidden')) {
             updateStickerUI(); // Refresh content
+            trapFocus(overlay);
+        } else {
+            releaseFocus(overlay);
         }
     }
 }
