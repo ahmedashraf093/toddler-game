@@ -1,4 +1,4 @@
-import { resetRoundState } from '../engine/state.js';
+import { resetRoundState, gameState } from '../engine/state.js';
 import { resumeAudioContext, audioCtx } from '../engine/audio.js';
 
 const notes = [
@@ -12,6 +12,23 @@ const notes = [
     { note: 'C', freq: 523.25, color: '#E040FB', animal: '🐭' }
 ];
 
+// 🎨 Palette: Accessibility - Keyboard Support
+document.addEventListener('keydown', (e) => {
+    if (gameState.currentMode !== 'music') return;
+
+    // Keys 1-8
+    const num = parseInt(e.key);
+    if (!isNaN(num) && num >= 1 && num <= 8) {
+        const index = num - 1;
+        const note = notes[index];
+        if (note) {
+            playTone(note.freq);
+            const keys = document.querySelectorAll('.xylophone-key');
+            if (keys[index]) animateKey(keys[index]);
+        }
+    }
+});
+
 export function initMusicGame() {
     resetRoundState();
     const gameBoard = document.getElementById('game-board');
@@ -24,7 +41,7 @@ export function initMusicGame() {
 
     const stage = document.createElement('div');
     stage.id = 'music-stage';
-    stage.className = 'music-stage active';
+    stage.className = 'music-stage active'; // Matches CSS
 
     // Instruction Header
     const instruction = document.createElement('div');
@@ -35,12 +52,25 @@ export function initMusicGame() {
     // Xylophone Container
     const xylophone = document.createElement('div');
     xylophone.className = 'xylophone-container';
+    // Accessibility for the container
+    xylophone.setAttribute('role', 'region');
+    xylophone.setAttribute('aria-label', 'Xylophone Instrument');
 
     notes.forEach((n, index) => {
         const key = document.createElement('div');
         key.className = 'xylophone-key';
         key.style.backgroundColor = n.color;
-        key.style.height = `${100 + (index * 10)}px`; // Staggered height visual
+
+        // 🎨 Palette: Visual Logic Fix - Lower notes (index 0) should be longer/taller
+        // Total notes = 8. Longest (C) at index 0, Shortest (High C) at index 7.
+        // Base height 200px, decrease by 12px per step
+        const height = 200 - (index * 12);
+        key.style.height = `${height}px`;
+
+        // 🎨 Palette: Accessibility Attributes
+        key.setAttribute('role', 'button');
+        key.setAttribute('tabindex', '0');
+        key.setAttribute('aria-label', `Play Note ${n.note}`);
 
         // Content
         key.innerHTML = `
@@ -50,14 +80,27 @@ export function initMusicGame() {
 
         // Interaction
         const playHandler = (e) => {
-            e.preventDefault(); // Prevent scroll/drag
+            // Prevent default only for touch to avoid scrolling,
+            // but allow click focus for keyboard accessibility
+            if (e.type === 'touchstart') e.preventDefault();
+
             playTone(n.freq);
             animateKey(key);
+            key.focus(); // Ensure focus moves to clicked key
         };
 
         // Touch and Mouse events
         key.addEventListener('mousedown', playHandler);
-        key.addEventListener('touchstart', playHandler);
+        key.addEventListener('touchstart', playHandler, { passive: false });
+
+        // 🎨 Palette: Keyboard Accessibility (Enter/Space)
+        key.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                playTone(n.freq);
+                animateKey(key);
+            }
+        });
 
         xylophone.appendChild(key);
     });
@@ -71,7 +114,8 @@ export function initMusicGame() {
     // Play Song Button
     const songBtn = document.createElement('button');
     songBtn.className = 'action-btn';
-    songBtn.innerHTML = '✨ Play Song';
+    songBtn.innerHTML = '✨ Play Twinkle Twinkle';
+    songBtn.setAttribute('aria-label', 'Play demo song Twinkle Twinkle Little Star');
     songBtn.onclick = () => playTwinkleTwinkle();
 
     controls.appendChild(songBtn);
@@ -81,15 +125,11 @@ export function initMusicGame() {
 }
 
 function playTone(freq, type = 'sine', duration = 0.5) {
-    // Ensure we have a context (from generic audio module)
-    // If generic module ctx is null (shouldn't be if resume called), create temp one?
-    // We try to use the exported audioCtx
-
     let ctx = audioCtx;
     if (!ctx) {
-        // Fallback if not ready, though resumeAudioContext should fix this
         ctx = new (window.AudioContext || window.webkitAudioContext)();
     }
+    if (ctx.state === 'suspended') ctx.resume();
 
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
@@ -113,6 +153,11 @@ function animateKey(element) {
     element.classList.remove('active');
     void element.offsetWidth; // Trigger reflow
     element.classList.add('active');
+
+    // Auto remove active class for visual cleanup
+    setTimeout(() => {
+        element.classList.remove('active');
+    }, 200);
 }
 
 // Simple sequencer for Twinkle Twinkle

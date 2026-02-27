@@ -1,0 +1,138 @@
+/* Music Game Styles */
+
+.music-stage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+    gap: 20px;
+    background: linear-gradient(to bottom, #e0f7fa, #b2ebf2);
+    border-radius: 20px;
+}
+
+.music-instruction {
+    background: white;
+    padding: 10px 30px;
+    border-radius: 30px;
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: #0097a7;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    z-index: 10;
+}
+
+.xylophone-container {
+    display: flex;
+    align-items: flex-end; /* Align bottom */
+    justify-content: center;
+    gap: 8px;
+    padding: 20px;
+    background: #8d6e63; /* Wood color */
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    position: relative;
+    /* Wooden texture effect */
+    background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.05) 0px, rgba(255,255,255,0.05) 2px, transparent 2px, transparent 10px);
+}
+
+/* Nails/Bolts on the xylophone frame */
+.xylophone-container::before, .xylophone-container::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 95%;
+    height: 10px;
+    background: rgba(0,0,0,0.1);
+    left: 2.5%;
+    border-radius: 5px;
+    z-index: 0;
+}
+
+.xylophone-key {
+    width: 40px;
+    /* Height is set inline via JS */
+    border-radius: 10px;
+    box-shadow: 0 5px 0 rgba(0,0,0,0.2), inset 0 2px 5px rgba(255,255,255,0.4);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    padding-bottom: 10px;
+    transition: transform 0.1s, filter 0.1s;
+    position: relative;
+    z-index: 1;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.xylophone-key:hover {
+    filter: brightness(1.1);
+    transform: translateY(-2px);
+}
+
+.xylophone-key:active, .xylophone-key.active {
+    transform: translateY(4px);
+    box-shadow: 0 1px 0 rgba(0,0,0,0.2), inset 0 2px 5px rgba(255,255,255,0.4);
+    filter: brightness(1.2);
+}
+
+/* Focus styles for accessibility */
+.xylophone-key:focus-visible {
+    outline: 4px dashed #fff;
+    outline-offset: 2px;
+}
+
+.key-animal {
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+    pointer-events: none;
+}
+
+.key-note {
+    font-size: 1rem;
+    font-weight: bold;
+    color: rgba(255,255,255,0.9);
+    pointer-events: none;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.music-controls {
+    display: flex;
+    gap: 15px;
+}
+
+.action-btn {
+    background: #ffca28;
+    color: #5d4037;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 1.1rem;
+    cursor: pointer;
+    box-shadow: 0 4px 0 #ff6f00;
+    transition: transform 0.1s;
+}
+
+.action-btn:active {
+    transform: translateY(4px);
+    box-shadow: 0 0 0 #ff6f00;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .xylophone-key {
+        width: 30px;
+    }
+    .key-animal {
+        font-size: 1.2rem;
+    }
+    .key-note {
+        font-size: 0.8rem;
+    }
+}
