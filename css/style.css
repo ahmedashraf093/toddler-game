@@ -886,6 +886,35 @@ body {
     }
 }
 
+/* --- Accessibility: Reduced Motion --- */
+@media (prefers-reduced-motion: reduce) {
+    #start-btn,
+    .start-logo,
+    .loader-icon,
+    .bg-decoration,
+    .cloud-1,
+    .cloud-2,
+    .star-1,
+    .star-2,
+    .emoji-bounce,
+    .bubble,
+    .star-anim,
+    .balloon,
+    #celebration-overlay,
+    .celeb-head,
+    .celeb-mane,
+    .sun-rays,
+    .sun-face,
+    .star-body,
+    .math-target.hint-active,
+    .dot.active,
+    .food-wiggle,
+    .sentence-part.target-slot {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
 /* --- New Animations --- */
 
 /* 1. Balloons */

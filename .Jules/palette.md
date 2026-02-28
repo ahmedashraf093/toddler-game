@@ -13,3 +13,7 @@
 ## 2025-12-25 - Duplicate Method Definitions in Object Literals
 **Learning:** Duplicate method definitions in object literals (like `toggle` in `ParentalGate`) silently overwrite previous ones in JavaScript. This can lead to confusing bugs where the "logic looks right" at the top of the file, but the behavior is different because of a redefined method at the bottom.
 **Action:** When debugging unexpected behavior in large object literals, always check the *entire* file for redefinitions, especially at the end.
+
+## 2026-02-28 - Reduced Motion for Infinite Animations
+**Learning:** Infinite CSS animations on the start screen (like pulsing buttons and floating clouds) can cause issues for users with `prefers-reduced-motion` enabled. A global wildcard (`* { animation: none !important }`) breaks core game mechanics that rely on animation events, so specific selectors must be used instead.
+**Action:** When adding new animated elements, especially background decorations or persistent UI elements, explicitly add their classes to the `@media (prefers-reduced-motion: reduce)` block in `css/style.css`.
