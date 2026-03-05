@@ -75,6 +75,11 @@ function createBubble(stage, targetNum) {
     bubble.style.width = `${size}px`;
     bubble.style.height = `${size}px`;
 
+    // 🎨 Palette: Accessibility
+    bubble.setAttribute('role', 'button');
+    bubble.setAttribute('tabindex', '0');
+    bubble.setAttribute('aria-label', `Number ${val}`);
+
     // Random Color/Gradient handled in CSS or via inline var? Let's use a class
     const colors = ['bub-red', 'bub-blue', 'bub-green', 'bub-purple', 'bub-orange'];
     bubble.classList.add(colors[Math.floor(Math.random() * colors.length)]);
@@ -84,6 +89,12 @@ function createBubble(stage, targetNum) {
     bubble.style.animationDuration = `${duration}s`;
 
     bubble.onclick = (e) => handleBubbleClick(e, val, targetNum, bubble);
+    bubble.onkeydown = (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleBubbleClick(e, val, targetNum, bubble);
+        }
+    };
 
     // Auto-remove after animation
     bubble.addEventListener('animationend', () => {
