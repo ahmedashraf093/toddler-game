@@ -217,7 +217,26 @@ function loadLevel(idx) {
 
         // Accessibility
         dot.setAttribute('role', 'button');
+        dot.setAttribute('tabindex', '0');
         dot.setAttribute('aria-label', `Dot ${i + 1}`);
+
+        dot.onkeydown = (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                // Simulate a pointer down event if this is the active dot
+                if (i === currentDotIndex) {
+                    isDragging = true;
+                    dragCurrentPoint = pt; // Use the fixed point instead of screen coordinates
+                    draw();
+                    const num = i + 1;
+                    speakText(`${num}`, `num_${num}`);
+                } else if (i === currentDotIndex + 1 && isDragging) {
+                    // Simulate a pointer move/up to connect to the next dot
+                    completeConnection();
+                    draw();
+                }
+            }
+        };
 
         // Hide future dots? No, usually all visible.
         // Maybe hide dots that are not "next"?
