@@ -83,7 +83,17 @@ function createBubble(stage, targetNum) {
     const duration = Math.random() * 2 + 3; // 3-5s
     bubble.style.animationDuration = `${duration}s`;
 
+    bubble.setAttribute('role', 'button');
+    bubble.setAttribute('tabindex', '0');
+    bubble.setAttribute('aria-label', `Pop bubble with number ${val}`);
+
     bubble.onclick = (e) => handleBubbleClick(e, val, targetNum, bubble);
+    bubble.onkeydown = (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleBubbleClick(e, val, targetNum, bubble);
+        }
+    };
 
     // Auto-remove after animation
     bubble.addEventListener('animationend', () => {

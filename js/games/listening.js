@@ -54,9 +54,16 @@ function startListeningRound() {
         card.className = 'item droppable listening-card'; // Reuse styling
         card.innerHTML = `<div class="content listening-content">${item.e}</div>`;
         card.setAttribute('role', 'button');
+        card.setAttribute('tabindex', '0');
         card.setAttribute('aria-label', item.n);
 
         card.onclick = () => handleChoice(card, item, target);
+        card.onkeydown = (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleChoice(card, item, target);
+            }
+        };
 
         grid.appendChild(card);
     });
