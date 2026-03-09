@@ -47,16 +47,33 @@ function startListeningRound() {
     }, 500);
 
     // Setup Replay Button
-    document.getElementById('instruction-area').onclick = () => playPrompt(target);
+    const instrArea = document.getElementById('instruction-area');
+    instrArea.setAttribute('role', 'button');
+    instrArea.setAttribute('tabindex', '0');
+    instrArea.setAttribute('aria-label', 'Replay instruction');
+    instrArea.onclick = () => playPrompt(target);
+    instrArea.onkeydown = (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            playPrompt(target);
+        }
+    };
 
     options.forEach(item => {
         const card = document.createElement('div');
         card.className = 'item droppable listening-card'; // Reuse styling
         card.innerHTML = `<div class="content listening-content">${item.e}</div>`;
         card.setAttribute('role', 'button');
+        card.setAttribute('tabindex', '0');
         card.setAttribute('aria-label', item.n);
 
         card.onclick = () => handleChoice(card, item, target);
+        card.onkeydown = (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleChoice(card, item, target);
+            }
+        };
 
         grid.appendChild(card);
     });
