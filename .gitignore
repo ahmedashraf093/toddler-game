@@ -3,3 +3,4 @@ venv/*
 venv
 server.log
 verification/*
+node_modules/
