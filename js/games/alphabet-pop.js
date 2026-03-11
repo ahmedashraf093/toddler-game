@@ -58,6 +58,11 @@ function createBubble(stage, targetLetter) {
     bubble.textContent = val;
     bubble.dataset.value = val;
 
+    // 🎨 Palette: Accessibility improvements
+    bubble.setAttribute('role', 'button');
+    bubble.setAttribute('tabindex', '0');
+    bubble.setAttribute('aria-label', `Letter ${val}`);
+
     const left = Math.random() * 80 + 10;
     bubble.style.left = `${left}%`;
 
@@ -72,6 +77,12 @@ function createBubble(stage, targetLetter) {
     bubble.style.animationDuration = `${duration}s`;
 
     bubble.onclick = (e) => handleBubbleClick(e, val, targetLetter, bubble);
+    bubble.onkeydown = (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleBubbleClick(e, val, targetLetter, bubble);
+        }
+    };
 
     bubble.addEventListener('animationend', () => {
         if (bubble.parentNode) bubble.remove();
