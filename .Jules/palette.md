@@ -13,3 +13,7 @@
 ## 2025-12-25 - Duplicate Method Definitions in Object Literals
 **Learning:** Duplicate method definitions in object literals (like `toggle` in `ParentalGate`) silently overwrite previous ones in JavaScript. This can lead to confusing bugs where the "logic looks right" at the top of the file, but the behavior is different because of a redefined method at the bottom.
 **Action:** When debugging unexpected behavior in large object literals, always check the *entire* file for redefinitions, especially at the end.
+
+## 2025-12-25 - Dynamically Created Interactive Elements Lack Accessibility
+**Learning:** Interactive game elements generated dynamically via JavaScript (like the bubbles in Bubble Pop and Alphabet Pop) often rely purely on `onclick` handlers, omitting keyboard navigation attributes. This makes the game modes inaccessible to keyboard users and screen readers.
+**Action:** Always verify that newly created DOM nodes that act as interactive targets have explicit `role="button"`, `tabindex="0"`, `aria-label`, and `keydown` event listeners for the `Enter` and `Space` keys mapped to the core action.

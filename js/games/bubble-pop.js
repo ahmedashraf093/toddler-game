@@ -66,6 +66,11 @@ function createBubble(stage, targetNum) {
     bubble.textContent = val;
     bubble.dataset.value = val;
 
+    // 🎨 Palette: Accessibility improvements
+    bubble.setAttribute('role', 'button');
+    bubble.setAttribute('tabindex', '0');
+    bubble.setAttribute('aria-label', `Number ${val}`);
+
     // Random Position
     const left = Math.random() * 80 + 10; // 10% to 90%
     bubble.style.left = `${left}%`;
@@ -84,6 +89,12 @@ function createBubble(stage, targetNum) {
     bubble.style.animationDuration = `${duration}s`;
 
     bubble.onclick = (e) => handleBubbleClick(e, val, targetNum, bubble);
+    bubble.onkeydown = (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleBubbleClick(e, val, targetNum, bubble);
+        }
+    };
 
     // Auto-remove after animation
     bubble.addEventListener('animationend', () => {
