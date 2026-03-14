@@ -18,7 +18,7 @@ export function initListeningGame() {
 
     gameBoard.innerHTML = `
         <div id="listening-stage" class="listening-stage active">
-            <div id="instruction-area" class="instruction-area">
+            <div id="instruction-area" class="instruction-area" role="button" tabindex="0" aria-label="Replay instruction">
                 🔊 <span id="instruction-text">Listen...</span>
             </div>
             <div id="listening-grid" class="listening-grid"></div>
@@ -47,7 +47,14 @@ function startListeningRound() {
     }, 500);
 
     // Setup Replay Button
-    document.getElementById('instruction-area').onclick = () => playPrompt(target);
+    const instructionArea = document.getElementById('instruction-area');
+    instructionArea.onclick = () => playPrompt(target);
+    instructionArea.onkeydown = (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            playPrompt(target);
+        }
+    };
 
     options.forEach(item => {
         const card = document.createElement('div');
@@ -55,8 +62,15 @@ function startListeningRound() {
         card.innerHTML = `<div class="content listening-content">${item.e}</div>`;
         card.setAttribute('role', 'button');
         card.setAttribute('aria-label', item.n);
+        card.setAttribute('tabindex', '0');
 
         card.onclick = () => handleChoice(card, item, target);
+        card.onkeydown = (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleChoice(card, item, target);
+            }
+        };
 
         grid.appendChild(card);
     });
