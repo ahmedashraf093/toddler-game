@@ -13,3 +13,7 @@
 ## 2025-12-25 - Duplicate Method Definitions in Object Literals
 **Learning:** Duplicate method definitions in object literals (like `toggle` in `ParentalGate`) silently overwrite previous ones in JavaScript. This can lead to confusing bugs where the "logic looks right" at the top of the file, but the behavior is different because of a redefined method at the bottom.
 **Action:** When debugging unexpected behavior in large object literals, always check the *entire* file for redefinitions, especially at the end.
+
+## 2025-03-15 - Adding Math Game Click & Keyboard Support
+**Learning:** Pure drag-and-drop interfaces create critical barriers for users with motor impairments or those relying on screen readers or keyboards. While the `math.js` game utilized `makeDraggable` and `makeDroppable`, it entirely missed alternative input methods.
+**Action:** Always ensure that any core interaction relying on drag-and-drop has a fallback alternative (like `onclick` and `onkeydown` for Enter/Space) mapped to the same underlying game logic. Ensure interactive elements without native semantic meaning (like `div`) have `role="button"`, `tabindex="0"`, and `aria-label` explicitly assigned when created dynamically.

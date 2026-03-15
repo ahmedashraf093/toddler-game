@@ -94,9 +94,38 @@ function loadMathQuestion() {
         el.id = 'math-opt-' + val;
         el.dataset.label = val.toString();
         el.dataset.audioKey = 'num_' + val;
+
+        // 🎨 Palette: Accessibility & Click Support
+        el.setAttribute('role', 'button');
+        el.setAttribute('tabindex', '0');
+        el.setAttribute('aria-label', val.toString());
+
+        el.onclick = () => handleSelect(el, val.toString());
+        el.onkeydown = (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleSelect(el, val.toString());
+            }
+        };
+
         makeDraggable(el, val, el.id);
         optionsRow.appendChild(el);
     });
+}
+
+function handleSelect(el, val) {
+    const targetBox = document.getElementById('math-target-zone');
+    if (!targetBox || targetBox.classList.contains('matched')) return;
+
+    if (val === targetBox.dataset.match) {
+        // Force the target box to look like we dropped it there
+        dropMath(targetBox, val);
+    } else {
+        // Visual feedback for wrong answer
+        el.classList.add('wiggle-error');
+        setTimeout(() => el.classList.remove('wiggle-error'), 400);
+        speakText("Try again!", "generic_try_again");
+    }
 }
 
 function dropMath(targetBox, draggedVal) {
