@@ -69,13 +69,31 @@ export function initSentenceGame() {
 
     // Subject Part
     const subjectPart = createPart(currentSentence.subjectEmoji, false);
-    subjectPart.onclick = () => speakSequence([currentSentence.subject]);
+    subjectPart.setAttribute('aria-label', 'Hear subject');
+    const playSubject = () => speakSequence([currentSentence.subject]);
+    subjectPart.onclick = playSubject;
+    subjectPart.onkeydown = (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            playSubject();
+        }
+    };
 
     // Connector Part (Text/Icon placeholder)
     const connPart = document.createElement('div');
     connPart.className = 'sentence-part connector-part';
     connPart.innerHTML = getConnectorSymbol(currentSentence.conn); // Helper to get a nice icon
-    connPart.onclick = () => speakSequence([currentSentence.conn]);
+    connPart.setAttribute('role', 'button');
+    connPart.setAttribute('tabindex', '0');
+    connPart.setAttribute('aria-label', 'Hear action');
+    const playConn = () => speakSequence([currentSentence.conn]);
+    connPart.onclick = playConn;
+    connPart.onkeydown = (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            playConn();
+        }
+    };
 
     // Target Slot
     const slotPart = document.createElement('div');
@@ -103,6 +121,7 @@ export function initSentenceGame() {
 
         // Emoji Content
         btn.textContent = opt.emoji;
+        btn.setAttribute('aria-label', opt.label);
 
         optionsContainer.appendChild(btn);
     });
@@ -128,6 +147,8 @@ function createPart(emoji, isSlot) {
     const div = document.createElement('div');
     div.className = 'sentence-part';
     div.textContent = emoji;
+    div.setAttribute('role', 'button');
+    div.setAttribute('tabindex', '0');
     return div;
 }
 
