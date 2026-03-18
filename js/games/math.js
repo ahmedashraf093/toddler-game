@@ -94,6 +94,25 @@ function loadMathQuestion() {
         el.id = 'math-opt-' + val;
         el.dataset.label = val.toString();
         el.dataset.audioKey = 'num_' + val;
+        el.setAttribute('role', 'button');
+        el.setAttribute('tabindex', '0');
+        el.setAttribute('aria-label', val.toString());
+
+        const handleSelect = (e) => {
+            e.preventDefault();
+            const targetBox = document.getElementById('math-target-zone');
+            if (targetBox) {
+                dropMath(targetBox, val.toString());
+            }
+        };
+
+        el.onclick = handleSelect;
+        el.onkeydown = (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                handleSelect(e);
+            }
+        };
+
         makeDraggable(el, val, el.id);
         optionsRow.appendChild(el);
     });
