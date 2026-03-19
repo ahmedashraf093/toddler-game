@@ -13,3 +13,7 @@
 ## 2025-12-25 - Duplicate Method Definitions in Object Literals
 **Learning:** Duplicate method definitions in object literals (like `toggle` in `ParentalGate`) silently overwrite previous ones in JavaScript. This can lead to confusing bugs where the "logic looks right" at the top of the file, but the behavior is different because of a redefined method at the bottom.
 **Action:** When debugging unexpected behavior in large object literals, always check the *entire* file for redefinitions, especially at the end.
+
+## 2025-12-25 - Dynamic UI Elements and Keyboard Accessibility
+**Learning:** In mini-games with dynamically generated interactive elements (like the 'Listening Game' cards and instruction area), native keyboard accessibility attributes (`tabindex="0"`, `role="button"`) and explicit `keydown` listeners for 'Enter' and 'Space' keys are often omitted because standard mouse events (`onclick`) are easier to implement initially.
+**Action:** Always verify keyboard accessibility of dynamically injected HTML structures and DOM elements created via `document.createElement`, ensuring proper tab order, role assignment, and keydown handlers are added alongside mouse events.
