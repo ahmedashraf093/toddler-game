@@ -165,12 +165,19 @@ export function updateStickerUI() {
 
 export function toggleStickerBook(show) {
     const overlay = document.getElementById('sticker-book-overlay');
+    const btn = document.getElementById('sticker-book-btn');
+    const bar = document.getElementById('sticker-bar-container');
+
     if (overlay) {
         if (show === undefined) overlay.classList.toggle('hidden');
         else if (show) overlay.classList.remove('hidden');
         else overlay.classList.add('hidden');
 
-        if (!overlay.classList.contains('hidden')) {
+        const isVisible = !overlay.classList.contains('hidden');
+        if (btn) btn.setAttribute('aria-expanded', isVisible ? 'true' : 'false');
+        if (bar) bar.setAttribute('aria-expanded', isVisible ? 'true' : 'false');
+
+        if (isVisible) {
             updateStickerUI(); // Refresh content
         }
     }
