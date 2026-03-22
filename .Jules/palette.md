@@ -13,3 +13,7 @@
 ## 2025-12-25 - Duplicate Method Definitions in Object Literals
 **Learning:** Duplicate method definitions in object literals (like `toggle` in `ParentalGate`) silently overwrite previous ones in JavaScript. This can lead to confusing bugs where the "logic looks right" at the top of the file, but the behavior is different because of a redefined method at the bottom.
 **Action:** When debugging unexpected behavior in large object literals, always check the *entire* file for redefinitions, especially at the end.
+
+## 2025-12-25 - Modal Toggle Accessibility
+**Learning:** Modal toggle buttons (`#menu-btn`, etc.) were missing `aria-expanded` and `aria-controls` attributes, leaving screen reader users unaware of the menu's state or relationship.
+**Action:** Always ensure buttons that open overlays or menus have dynamic `aria-expanded` attributes updated in their toggle functions, along with `aria-controls` pointing to the overlay ID.

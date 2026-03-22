@@ -112,7 +112,11 @@ function checkDayCompletion(config) {
 // UI Handling for Challenges
 export function toggleChallengeMenu() {
     const overlay = document.getElementById('challenges-overlay');
-    if (overlay) overlay.classList.toggle('hidden');
+    if (overlay) {
+        const isHidden = overlay.classList.toggle('hidden');
+        const btn = document.getElementById('challenges-btn');
+        if (btn) btn.setAttribute('aria-expanded', isHidden ? 'false' : 'true');
+    }
     updateChallengeUI();
 }
 
