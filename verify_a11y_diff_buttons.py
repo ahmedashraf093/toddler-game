@@ -9,7 +9,7 @@ def run():
         page = context.new_page()
 
         # Use localhost to avoid CORS and module issues
-        file_url = "http://localhost:8080/index.html"
+        file_url = "http://localhost:8000/index.html"
 
         print(f"Loading {file_url}...")
         page.goto(file_url)
