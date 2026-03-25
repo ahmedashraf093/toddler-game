@@ -13,3 +13,7 @@
 ## 2025-12-25 - Duplicate Method Definitions in Object Literals
 **Learning:** Duplicate method definitions in object literals (like `toggle` in `ParentalGate`) silently overwrite previous ones in JavaScript. This can lead to confusing bugs where the "logic looks right" at the top of the file, but the behavior is different because of a redefined method at the bottom.
 **Action:** When debugging unexpected behavior in large object literals, always check the *entire* file for redefinitions, especially at the end.
+
+## 2025-12-26 - Absolute Positioning in Modals
+**Learning:** Absolutely positioned elements within modals (like a Close button) require their containing element to have `position: relative`. Without this, the absolute element positions itself relative to the entire page or the nearest positioned ancestor, often breaking the modal's layout and accessibility.
+**Action:** Always ensure modal content containers are styled with `position: relative` when they contain absolutely positioned interactive elements like close buttons.
