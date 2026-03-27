@@ -13,3 +13,7 @@
 ## 2025-12-25 - Duplicate Method Definitions in Object Literals
 **Learning:** Duplicate method definitions in object literals (like `toggle` in `ParentalGate`) silently overwrite previous ones in JavaScript. This can lead to confusing bugs where the "logic looks right" at the top of the file, but the behavior is different because of a redefined method at the bottom.
 **Action:** When debugging unexpected behavior in large object literals, always check the *entire* file for redefinitions, especially at the end.
+
+## 2024-05-18 - Dynamic ARIA attributes for modal toggle buttons
+**Learning:** Hardcoding `aria-expanded` attributes in HTML is insufficient for dynamically toggled modals (like the Games Menu, Daily Challenges, and Sticker Book overlays). Screen readers need the current visibility state to accurately announce whether the modal is open or closed.
+**Action:** When creating toggleable overlays or modals, ensure that the respective toggle function dynamically updates the button's `aria-expanded` attribute with explicit string values (`'true'` or `'false'`) instead of relying solely on CSS class toggling (`.hidden`). Also, include `aria-haspopup="dialog"` and `aria-controls` for context.
