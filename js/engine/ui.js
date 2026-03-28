@@ -368,6 +368,8 @@ export function toggleMenu(forceHide = false) {
     if (willShow) {
         lastFocus = document.activeElement;
         overlay.classList.remove('hidden');
+        const menuBtn = document.getElementById('menu-btn');
+        if (menuBtn) menuBtn.setAttribute('aria-expanded', 'true');
         // 🎨 Palette: Accessibility - Focus management
         setTimeout(() => {
             const closeBtn = overlay.querySelector('.close-menu-btn');
@@ -375,6 +377,8 @@ export function toggleMenu(forceHide = false) {
         }, 50);
     } else {
         overlay.classList.add('hidden');
+        const menuBtn = document.getElementById('menu-btn');
+        if (menuBtn) menuBtn.setAttribute('aria-expanded', 'false');
         if (lastFocus && document.body.contains(lastFocus)) {
             lastFocus.focus();
         }

@@ -170,7 +170,11 @@ export function toggleStickerBook(show) {
         else if (show) overlay.classList.remove('hidden');
         else overlay.classList.add('hidden');
 
-        if (!overlay.classList.contains('hidden')) {
+        const isHidden = overlay.classList.contains('hidden');
+        const btn = document.getElementById('sticker-book-btn');
+        if (btn) btn.setAttribute('aria-expanded', isHidden ? 'false' : 'true');
+
+        if (!isHidden) {
             updateStickerUI(); // Refresh content
         }
     }
