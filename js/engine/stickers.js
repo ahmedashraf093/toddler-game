@@ -165,12 +165,18 @@ export function updateStickerUI() {
 
 export function toggleStickerBook(show) {
     const overlay = document.getElementById('sticker-book-overlay');
+    const stickerBookBtn = document.getElementById('sticker-book-btn');
     if (overlay) {
         if (show === undefined) overlay.classList.toggle('hidden');
         else if (show) overlay.classList.remove('hidden');
         else overlay.classList.add('hidden');
 
-        if (!overlay.classList.contains('hidden')) {
+        const isHidden = overlay.classList.contains('hidden');
+        if (stickerBookBtn) {
+            stickerBookBtn.setAttribute('aria-expanded', !isHidden ? 'true' : 'false');
+        }
+
+        if (!isHidden) {
             updateStickerUI(); // Refresh content
         }
     }
