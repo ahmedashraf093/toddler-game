@@ -163,14 +163,37 @@ export function updateStickerUI() {
     }
 }
 
+let stickerLastFocus = null;
+
 export function toggleStickerBook(show) {
     const overlay = document.getElementById('sticker-book-overlay');
-    if (overlay) {
-        if (show === undefined) overlay.classList.toggle('hidden');
-        else if (show) overlay.classList.remove('hidden');
-        else overlay.classList.add('hidden');
+    const stickerBookBtn = document.getElementById('sticker-book-btn');
 
-        if (!overlay.classList.contains('hidden')) {
+    if (overlay) {
+        const isHidden = overlay.classList.contains('hidden');
+        const willShow = show === undefined ? isHidden : show;
+
+        if (willShow) {
+            if (isHidden) { // only store focus if we are actually opening it
+                stickerLastFocus = document.activeElement;
+            }
+            overlay.classList.remove('hidden');
+            if (stickerBookBtn) stickerBookBtn.setAttribute('aria-expanded', 'true');
+            // 🎨 Palette: Accessibility - Focus management
+            setTimeout(() => {
+                const closeBtn = overlay.querySelector('.close-menu-btn');
+                if (closeBtn) closeBtn.focus();
+            }, 50);
+        } else {
+            overlay.classList.add('hidden');
+            if (stickerBookBtn) stickerBookBtn.setAttribute('aria-expanded', 'false');
+            if (stickerLastFocus && document.body.contains(stickerLastFocus)) {
+                stickerLastFocus.focus();
+            }
+            stickerLastFocus = null;
+        }
+
+        if (willShow) {
             updateStickerUI(); // Refresh content
         }
     }
