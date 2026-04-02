@@ -13,3 +13,7 @@
 ## 2025-12-25 - Duplicate Method Definitions in Object Literals
 **Learning:** Duplicate method definitions in object literals (like `toggle` in `ParentalGate`) silently overwrite previous ones in JavaScript. This can lead to confusing bugs where the "logic looks right" at the top of the file, but the behavior is different because of a redefined method at the bottom.
 **Action:** When debugging unexpected behavior in large object literals, always check the *entire* file for redefinitions, especially at the end.
+
+## 2026-04-02 - ARIA Expanded and Modal Focus Management
+**Learning:** Modal toggle buttons (like Games, Daily Challenges, Sticker Book) must programmatically toggle `aria-expanded` and manage focus. When the modal opens, focus should move to a child element (e.g., the close button) and `aria-expanded` should become 'true'. When it closes, focus must return to the trigger element (`lastFocus`) and `aria-expanded` must revert to 'false', preventing screen reader users from getting trapped or losing context.
+**Action:** Ensure all custom modal implementations follow this pattern of pairing `aria-expanded` with explicit focus capture and restoration.
