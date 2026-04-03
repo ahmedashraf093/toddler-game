@@ -163,15 +163,40 @@ export function updateStickerUI() {
     }
 }
 
+let lastStickerFocus = null;
+
 export function toggleStickerBook(show) {
     const overlay = document.getElementById('sticker-book-overlay');
-    if (overlay) {
-        if (show === undefined) overlay.classList.toggle('hidden');
-        else if (show) overlay.classList.remove('hidden');
-        else overlay.classList.add('hidden');
+    const stickerBtn = document.getElementById('sticker-book-btn');
+    const stickerBar = document.getElementById('sticker-bar-container');
 
-        if (!overlay.classList.contains('hidden')) {
+    if (overlay) {
+        const willShow = show === undefined ? overlay.classList.contains('hidden') : show;
+
+        if (willShow) {
+            if (overlay.classList.contains('hidden')) {
+                lastStickerFocus = document.activeElement;
+            }
+            overlay.classList.remove('hidden');
+            if (stickerBtn) stickerBtn.setAttribute('aria-expanded', 'true');
+            if (stickerBar) stickerBar.setAttribute('aria-expanded', 'true');
+
+            // 🎨 Palette: Accessibility - Focus management
+            setTimeout(() => {
+                const closeBtn = overlay.querySelector('.close-menu-btn');
+                if (closeBtn) closeBtn.focus();
+            }, 50);
+
             updateStickerUI(); // Refresh content
+        } else {
+            overlay.classList.add('hidden');
+            if (stickerBtn) stickerBtn.setAttribute('aria-expanded', 'false');
+            if (stickerBar) stickerBar.setAttribute('aria-expanded', 'false');
+
+            if (lastStickerFocus && document.body.contains(lastStickerFocus)) {
+                lastStickerFocus.focus();
+            }
+            lastStickerFocus = null;
         }
     }
 }

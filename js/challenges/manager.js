@@ -110,9 +110,31 @@ function checkDayCompletion(config) {
 }
 
 // UI Handling for Challenges
+let lastChallengeFocus = null;
+
 export function toggleChallengeMenu() {
     const overlay = document.getElementById('challenges-overlay');
-    if (overlay) overlay.classList.toggle('hidden');
+    const challengeBtn = document.getElementById('challenges-btn');
+    if (overlay) {
+        const willShow = overlay.classList.contains('hidden');
+        if (willShow) {
+            lastChallengeFocus = document.activeElement;
+            overlay.classList.remove('hidden');
+            if (challengeBtn) challengeBtn.setAttribute('aria-expanded', 'true');
+            // 🎨 Palette: Accessibility - Focus management
+            setTimeout(() => {
+                const closeBtn = overlay.querySelector('.close-menu-btn');
+                if (closeBtn) closeBtn.focus();
+            }, 50);
+        } else {
+            overlay.classList.add('hidden');
+            if (challengeBtn) challengeBtn.setAttribute('aria-expanded', 'false');
+            if (lastChallengeFocus && document.body.contains(lastChallengeFocus)) {
+                lastChallengeFocus.focus();
+            }
+            lastChallengeFocus = null;
+        }
+    }
     updateChallengeUI();
 }
 
