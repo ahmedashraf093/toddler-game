@@ -16,7 +16,7 @@ def test_hideseek_game(page):
     """)
 
     # 2. Load the page
-    page.goto("http://localhost:8000")
+    page.goto("http://localhost:8080")
 
     # 3. Initialize Hide and Seek Game directly
     # We use evaluate to dynamically import and run.
