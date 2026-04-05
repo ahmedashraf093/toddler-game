@@ -165,10 +165,16 @@ export function updateStickerUI() {
 
 export function toggleStickerBook(show) {
     const overlay = document.getElementById('sticker-book-overlay');
+    const bookBtn = document.getElementById('sticker-book-btn');
+    const barBtn = document.getElementById('sticker-bar-container');
     if (overlay) {
         if (show === undefined) overlay.classList.toggle('hidden');
         else if (show) overlay.classList.remove('hidden');
         else overlay.classList.add('hidden');
+
+        const isExpanded = !overlay.classList.contains('hidden') ? 'true' : 'false';
+        if (bookBtn) bookBtn.setAttribute('aria-expanded', isExpanded);
+        if (barBtn) barBtn.setAttribute('aria-expanded', isExpanded);
 
         if (!overlay.classList.contains('hidden')) {
             updateStickerUI(); // Refresh content
