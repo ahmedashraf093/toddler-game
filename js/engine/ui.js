@@ -364,10 +364,12 @@ export function toggleMenu(forceHide = false) {
     // If forcing hide, we want to hide.
     // If NOT forcing hide, we check current state: if hidden, we show. If shown, we hide.
     const willShow = forceHide ? false : overlay.classList.contains('hidden');
+    const menuBtn = document.getElementById('menu-btn');
 
     if (willShow) {
         lastFocus = document.activeElement;
         overlay.classList.remove('hidden');
+        if (menuBtn) menuBtn.setAttribute('aria-expanded', 'true');
         // 🎨 Palette: Accessibility - Focus management
         setTimeout(() => {
             const closeBtn = overlay.querySelector('.close-menu-btn');
@@ -375,6 +377,7 @@ export function toggleMenu(forceHide = false) {
         }, 50);
     } else {
         overlay.classList.add('hidden');
+        if (menuBtn) menuBtn.setAttribute('aria-expanded', 'false');
         if (lastFocus && document.body.contains(lastFocus)) {
             lastFocus.focus();
         }
