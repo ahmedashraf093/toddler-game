@@ -13,3 +13,7 @@
 ## 2025-12-25 - Duplicate Method Definitions in Object Literals
 **Learning:** Duplicate method definitions in object literals (like `toggle` in `ParentalGate`) silently overwrite previous ones in JavaScript. This can lead to confusing bugs where the "logic looks right" at the top of the file, but the behavior is different because of a redefined method at the bottom.
 **Action:** When debugging unexpected behavior in large object literals, always check the *entire* file for redefinitions, especially at the end.
+
+## 2025-12-25 - Modal Trigger Focus Management & ARIA states
+**Learning:** Adding ARIA roles to a modal overlay isn't enough; the trigger buttons themselves must communicate their state (`aria-haspopup="dialog"`, `aria-expanded="true/false"`, `aria-controls="..."`) for screen readers. Furthermore, restoring focus (`document.activeElement.focus()`) upon closing the modal is vital to prevent users from losing their navigation context.
+**Action:** Whenever creating a custom modal or overlay toggle function, ensure focus is saved before opening and restored upon closing, and dynamically update `aria-expanded` on the corresponding trigger element.
